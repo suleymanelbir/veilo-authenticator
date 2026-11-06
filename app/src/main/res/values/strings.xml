@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Working product name. This is the only place it is defined; it is the same in every language. -->
+    <string name="app_name" translatable="false">Symbolon</string>
+
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Remove</string>
+    <string name="action_add_account">Add account</string>
+    <string name="action_next_code">Generate next code</string>
+    <string name="action_scan_qr">Scan QR code</string>
+    <string name="action_open_settings">Open security settings</string>
+
+    <string name="unlock_prompt_title">Unlock your codes</string>
+    <string name="unlock_prompt_subtitle">Confirm it\'s you to use the keys stored on this device</string>
+    <string name="lock_screen_message">Locked</string>
+
+    <string name="setup_required_title">Screen lock required</string>
+    <string name="setup_required_body">Your keys are kept in this device\'s secure hardware, which only releases them after you unlock with a PIN, pattern, password or a strong biometric. Set one up to continue.</string>
+
+    <string name="accounts_empty">No accounts yet. Tap + to add one.</string>
+    <string name="code_copied">Code copied</string>
+    <string name="badge_hardware_bound">Bound to this device</string>
+    <string name="key_unusable">This key can no longer be used. Remove the account and add it again.</string>
+    <string name="hotp_hidden">Tap the arrow to generate a code</string>
+
+    <string name="delete_title">Remove account?</string>
+    <string name="delete_body">%1$s will be removed from this device. If two-step verification is still switched on for it, you may be locked out of that account.</string>
+
+    <string name="add_title">Add account</string>
+    <string name="scan_prompt">Point the camera at the QR code</string>
+    <string name="scan_invalid">That QR code is not an authenticator code.</string>
+    <string name="scan_loaded">Secret key loaded from the QR code.</string>
+    <string name="field_issuer">Service (for example GitHub)</string>
+    <string name="field_account">Account (for example your e-mail)</string>
+    <string name="field_secret">Secret key</string>
+    <string name="secret_invalid">That secret key is not valid. It should contain only the letters A–Z and the digits 2–7.</string>
+
+    <string name="protection_title">Key storage</string>
+    <string name="protection_exportable_title">Can be backed up</string>
+    <string name="protection_exportable_body">Encrypted with a key held in secure hardware. Can be included in an encrypted backup.</string>
+    <string name="protection_hardware_title">Bound to this device</string>
+    <string name="protection_hardware_body">The key is moved into secure hardware and can never be read back or backed up. If you lose this phone you will have to enrol again.</string>
+
+    <string name="add_failed">The account could not be added.</string>
+    <string name="add_failed_hardware_hint">This key could not be bound to the device hardware. Try the option that can be backed up.</string>
+
+    <string name="action_more">More options</string>
+    <string name="action_export">Save backup file</string>
+    <string name="action_choose_file">Choose backup file</string>
+    <string name="action_import">Import</string>
+
+    <string name="field_passphrase">Passphrase</string>
+    <string name="field_passphrase_confirm">Repeat passphrase</string>
+    <string name="passphrase_too_short">Use at least 8 characters.</string>
+    <string name="passphrase_mismatch">The two passphrases do not match.</string>
+    <string name="backup_working">Working… This can take a few seconds.</string>
+
+    <string name="export_title">Export backup</string>
+    <string name="export_body">Saves your accounts to a file encrypted with a passphrase you choose. Anyone who has both the file and the passphrase can generate your codes, so choose a passphrase that is hard to guess.</string>
+    <string name="export_included">Accounts in this backup: %1$d</string>
+    <string name="export_excluded">Not included because they are bound to this device: %1$d</string>
+    <string name="export_passphrase_warning">The passphrase is not stored anywhere. If you forget it, the backup cannot be opened.</string>
+    <string name="export_failed">The backup could not be saved.</string>
+    <string name="export_done">Backup saved. Accounts: %1$d</string>
+
+    <string name="import_title">Import backup</string>
+    <string name="import_body">Adds the accounts from a backup file made by this app. Accounts that are already on this device are skipped.</string>
+    <string name="import_file_loaded">Backup file loaded.</string>
+    <string name="import_file_invalid">That file is not a backup made by this app.</string>
+    <string name="import_file_unsupported">This backup cannot be read by this version of the app.</string>
+    <string name="import_file_unreadable">The file could not be read.</string>
+    <string name="import_wrong_passphrase">Wrong passphrase, or the file is damaged.</string>
+    <string name="import_failed">The accounts could not be imported.</string>
+    <string name="import_done">Accounts added: %1$d. Already on this device: %2$d</string>
+</resources>

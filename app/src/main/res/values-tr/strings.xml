@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_unlock">Kilidi aç</string>
+    <string name="action_lock">Kilitle</string>
+    <string name="action_back">Geri</string>
+    <string name="action_cancel">Vazgeç</string>
+    <string name="action_save">Kaydet</string>
+    <string name="action_delete">Kaldır</string>
+    <string name="action_add_account">Hesap ekle</string>
+    <string name="action_next_code">Sonraki kodu üret</string>
+    <string name="action_scan_qr">QR kodu tara</string>
+    <string name="action_open_settings">Güvenlik ayarlarını aç</string>
+
+    <string name="unlock_prompt_title">Kodlarınızın kilidini açın</string>
+    <string name="unlock_prompt_subtitle">Bu cihazdaki anahtarları kullanmak için kimliğinizi doğrulayın</string>
+    <string name="lock_screen_message">Kilitli</string>
+
+    <string name="setup_required_title">Ekran kilidi gerekli</string>
+    <string name="setup_required_body">Anahtarlarınız bu cihazın güvenli donanımında saklanır. Donanım onları yalnızca PIN, desen, parola veya güçlü bir biyometriyle kilidi açtığınızda kullandırır. Devam etmek için bunlardan birini ayarlayın.</string>
+
+    <string name="accounts_empty">Henüz hesap yok. Eklemek için + düğmesine dokunun.</string>
+    <string name="code_copied">Kod kopyalandı</string>
+    <string name="badge_hardware_bound">Bu cihaza bağlı</string>
+    <string name="key_unusable">Bu anahtar artık kullanılamıyor. Hesabı kaldırıp yeniden ekleyin.</string>
+    <string name="hotp_hidden">Kod üretmek için oka dokunun</string>
+
+    <string name="delete_title">Hesap kaldırılsın mı?</string>
+    <string name="delete_body">%1$s bu cihazdan kaldırılacak. Bu hesapta iki adımlı doğrulama hâlâ açıksa hesaba erişiminizi kaybedebilirsiniz.</string>
+
+    <string name="add_title">Hesap ekle</string>
+    <string name="scan_prompt">Kamerayı QR koda doğrultun</string>
+    <string name="scan_invalid">Bu QR kod bir doğrulama kodu değil.</string>
+    <string name="scan_loaded">Gizli anahtar QR koddan alındı.</string>
+    <string name="field_issuer">Hizmet (örneğin GitHub)</string>
+    <string name="field_account">Hesap (örneğin e-posta adresiniz)</string>
+    <string name="field_secret">Gizli anahtar</string>
+    <string name="secret_invalid">Bu gizli anahtar geçerli değil. Yalnızca A–Z harfleri ile 2–7 rakamlarını içermelidir.</string>
+
+    <string name="protection_title">Anahtar saklama</string>
+    <string name="protection_exportable_title">Yedeklenebilir</string>
+    <string name="protection_exportable_body">Güvenli donanımdaki bir anahtarla şifrelenir. Şifreli yedeğe dahil edilebilir.</string>
+    <string name="protection_hardware_title">Bu cihaza bağlı</string>
+    <string name="protection_hardware_body">Anahtar güvenli donanıma taşınır; bir daha okunamaz ve yedeklenemez. Bu telefonu kaybederseniz yeniden kayıt olmanız gerekir.</string>
+
+    <string name="add_failed">Hesap eklenemedi.</string>
+    <string name="add_failed_hardware_hint">Bu anahtar cihaz donanımına bağlanamadı. Yedeklenebilir seçeneğini deneyin.</string>
+
+    <string name="action_more">Diğer seçenekler</string>
+    <string name="action_export">Yedek dosyasını kaydet</string>
+    <string name="action_choose_file">Yedek dosyası seç</string>
+    <string name="action_import">İçe aktar</string>
+
+    <string name="field_passphrase">Parola</string>
+    <string name="field_passphrase_confirm">Parolayı yineleyin</string>
+    <string name="passphrase_too_short">En az 8 karakter kullanın.</string>
+    <string name="passphrase_mismatch">İki parola birbiriyle aynı değil.</string>
+    <string name="backup_working">Çalışıyor… Bu birkaç saniye sürebilir.</string>
+
+    <string name="export_title">Yedeği dışa aktar</string>
+    <string name="export_body">Hesaplarınızı, seçeceğiniz bir parolayla şifrelenmiş bir dosyaya kaydeder. Hem dosyayı hem parolayı ele geçiren biri kodlarınızı üretebilir; bu yüzden tahmin edilmesi zor bir parola seçin.</string>
+    <string name="export_included">Bu yedekteki hesap sayısı: %1$d</string>
+    <string name="export_excluded">Bu cihaza bağlı olduğu için dahil edilmeyen: %1$d</string>
+    <string name="export_passphrase_warning">Parola hiçbir yerde saklanmaz. Unutursanız yedek açılamaz.</string>
+    <string name="export_failed">Yedek kaydedilemedi.</string>
+    <string name="export_done">Yedek kaydedildi. Hesap sayısı: %1$d</string>
+
+    <string name="import_title">Yedeği içe aktar</string>
+    <string name="import_body">Bu uygulamayla oluşturulmuş bir yedek dosyasındaki hesapları ekler. Bu cihazda zaten bulunan hesaplar atlanır.</string>
+    <string name="import_file_loaded">Yedek dosyası yüklendi.</string>
+    <string name="import_file_invalid">Bu dosya, bu uygulamayla oluşturulmuş bir yedek değil.</string>
+    <string name="import_file_unsupported">Bu yedek, uygulamanın bu sürümüyle okunamıyor.</string>
+    <string name="import_file_unreadable">Dosya okunamadı.</string>
+    <string name="import_wrong_passphrase">Parola yanlış ya da dosya bozulmuş.</string>
+    <string name="import_failed">Hesaplar içe aktarılamadı.</string>
+    <string name="import_done">Eklenen hesap: %1$d. Zaten bu cihazda olan: %2$d</string>
+</resources>
