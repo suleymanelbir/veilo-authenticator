@@ -36,6 +36,11 @@
             </intent-filter>
         </activity>
 
+        <!-- Removes a copied code from the clipboard when the app's own timer could not run. -->
+        <receiver
+            android:name=".security.ClipboardClearReceiver"
+            android:exported="false" />
+
         <!-- The scanner library locks itself to landscape by default. -->
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

@@ -1,10 +1,7 @@
 package com.selbir.authenticator.ui
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
-import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -48,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import com.selbir.authenticator.R
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpType
+import com.selbir.authenticator.security.SensitiveClipboard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +116,7 @@ fun AccountListScreen(
                     AccountItem(
                         row = row,
                         epochSeconds = state.epochSeconds,
-                        onCopy = { code -> copySensitive(context, code) },
+                        onCopy = { code -> copyCode(context, code) },
                         onLongPress = { pendingDelete = row },
                         onNextHotp = { onNextHotp(row.id) },
                     )
@@ -240,14 +238,12 @@ private fun Countdown(remaining: Int, period: Int) {
 /** "123456" -> "123 456", "12345678" -> "1234 5678". */
 private fun formatCode(code: String): String = code.chunked((code.length + 1) / 2).joinToString(" ")
 
-/** Copies [code] flagged as sensitive, so the system clipboard preview and keyboards do not display it. */
-private fun copySensitive(context: Context, code: String) {
-    val clip = ClipData.newPlainText("OTP", code)
-    // ClipDescription.EXTRA_IS_SENSITIVE; the constant only exists from API 33 but the key is honoured earlier too.
-    clip.description.extras = PersistableBundle().apply { putBoolean("android.content.extra.IS_SENSITIVE", true) }
-    context.getSystemService(ClipboardManager::class.java).setPrimaryClip(clip)
+private fun copyCode(context: Context, code: String) {
+    SensitiveClipboard.copy(context, code)
     // Android 13+ shows its own confirmation.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        Toast.makeText(context, R.string.code_copied, Toast.LENGTH_SHORT).show()
+        val seconds = SensitiveClipboard.CLEAR_AFTER_SECONDS
+        val message = context.resources.getQuantityString(R.plurals.code_copied, seconds, seconds)
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

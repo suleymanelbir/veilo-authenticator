@@ -22,7 +22,10 @@
     <string name="setup_required_body">Your keys are kept in this device\'s secure hardware, which only releases them after you unlock with a PIN, pattern, password or a strong biometric. Set one up to continue.</string>
 
     <string name="accounts_empty">No accounts yet. Tap + to add one.</string>
-    <string name="code_copied">Code copied</string>
+    <plurals name="code_copied">
+        <item quantity="one">Code copied. It will be cleared from the clipboard in %1$d second.</item>
+        <item quantity="other">Code copied. It will be cleared from the clipboard in %1$d seconds.</item>
+    </plurals>
     <string name="badge_hardware_bound">Bound to this device</string>
     <string name="key_unusable">This key can no longer be used. Remove the account and add it again.</string>
     <string name="hotp_hidden">Tap the arrow to generate a code</string>

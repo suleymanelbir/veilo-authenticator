@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
 import com.selbir.authenticator.security.BiometricGate
+import com.selbir.authenticator.security.SensitiveClipboard
 import com.selbir.authenticator.ui.AppRoot
 import com.selbir.authenticator.ui.AppViewModel
 import com.selbir.authenticator.ui.AuthenticatorTheme
@@ -38,6 +39,11 @@ class MainActivity : FragmentActivity() {
                 )
             }
         }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) SensitiveClipboard.onFocus(this)
     }
 
     override fun onStop() {

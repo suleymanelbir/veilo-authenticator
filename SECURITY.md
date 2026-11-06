@@ -49,7 +49,9 @@ version.
   through such strings (JSON, Base32). They are unreachable once the screen closes but
   stay in memory until the garbage collector reuses it.
 - Keys use the TEE; StrongBox is not requested yet.
-- Copied codes are flagged sensitive but are not yet cleared from the clipboard
-  automatically.
+- A copied code is cleared from the clipboard after 30 seconds, with limits Android
+  imposes: in the background the app cannot see what the clipboard holds, so it clears
+  whatever is there; the backup alarm may run late; and a keyboard's or vendor's own
+  clipboard history is out of reach.
 - No root or tamper detection. Client-side checks are bypassable; device integrity will
   be verified server-side through hardware key attestation in the enterprise edition.

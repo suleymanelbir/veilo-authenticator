@@ -19,7 +19,10 @@
     <string name="setup_required_body">Anahtarlarınız bu cihazın güvenli donanımında saklanır. Donanım onları yalnızca PIN, desen, parola veya güçlü bir biyometriyle kilidi açtığınızda kullandırır. Devam etmek için bunlardan birini ayarlayın.</string>
 
     <string name="accounts_empty">Henüz hesap yok. Eklemek için + düğmesine dokunun.</string>
-    <string name="code_copied">Kod kopyalandı</string>
+    <plurals name="code_copied">
+        <item quantity="one">Kod kopyalandı. %1$d saniye sonra panodan silinecek.</item>
+        <item quantity="other">Kod kopyalandı. %1$d saniye sonra panodan silinecek.</item>
+    </plurals>
     <string name="badge_hardware_bound">Bu cihaza bağlı</string>
     <string name="key_unusable">Bu anahtar artık kullanılamıyor. Hesabı kaldırıp yeniden ekleyin.</string>
     <string name="hotp_hidden">Kod üretmek için oka dokunun</string>
