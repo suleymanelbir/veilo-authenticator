@@ -1,7 +1,6 @@
 package com.selbir.authenticator.ui
 
 import android.content.Context
-import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -240,10 +239,9 @@ private fun formatCode(code: String): String = code.chunked((code.length + 1) / 
 
 private fun copyCode(context: Context, code: String) {
     SensitiveClipboard.copy(context, code)
-    // Android 13+ shows its own confirmation.
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        val seconds = SensitiveClipboard.CLEAR_AFTER_SECONDS
-        val message = context.resources.getQuantityString(R.plurals.code_copied, seconds, seconds)
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
+    // Android 13+ shows its own "copied" confirmation as well, but only this message says
+    // that the code will be cleared again.
+    val seconds = SensitiveClipboard.CLEAR_AFTER_SECONDS
+    val message = context.resources.getQuantityString(R.plurals.code_copied, seconds, seconds)
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

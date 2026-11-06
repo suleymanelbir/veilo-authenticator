@@ -1,8 +1,8 @@
 # Symbolon Authenticator
 
-> Working name. The product name is defined in one place (`app_name` in
-> `app/src/main/res/values/strings.xml`); the application ID `com.selbir.authenticator`
-> is deliberately brand-neutral.
+> The product name is defined in one place (`app_name` in
+> `app/src/main/res/values/strings.xml`). The application ID is `com.selbir.symbolon`;
+> the code keeps the `com.selbir.authenticator` namespace.
 >
 > A *symbolon* was the ancient Greek token broken in two: each party kept one half, and
 > the halves fitting together proved who they were. A one-time-password secret works the

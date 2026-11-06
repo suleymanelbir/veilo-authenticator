@@ -47,7 +47,7 @@ date.
 
 ## Contact
 
-<!-- TODO before publishing: add the public contact address. -->
+Questions about this policy: <suleymanelbir@gmail.com>
 
 ---
 
@@ -99,4 +99,4 @@ Bu politika değişirse yeni sürüm, yeni tarihiyle aynı adreste yayımlanır.
 
 ## İletişim
 
-<!-- TODO yayımlamadan önce: herkese açık iletişim adresini ekleyin. -->
+Bu politikayla ilgili sorularınız için: <suleymanelbir@gmail.com>

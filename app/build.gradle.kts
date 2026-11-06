@@ -18,15 +18,15 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        // Permanent once published on Google Play, so it is deliberately brand-neutral:
-        // the product name lives only in res/values/strings.xml (app_name).
-        applicationId = "com.selbir.authenticator"
+        // Permanent once published on Google Play. It differs from the code namespace
+        // above on purpose: the ID carries the product name, the code does not.
+        applicationId = "com.selbir.symbolon"
         // 30 is the first release where a Keystore key can require
         // "strong biometric OR device credential" (setUserAuthenticationParameters).
         minSdk = 30
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 3
+        versionName = "0.1.2"
     }
 
     signingConfigs {
