@@ -48,10 +48,17 @@ version.
   that cannot be wiped; while a backup is written or read, the secrets in it also pass
   through such strings (JSON, Base32). They are unreachable once the screen closes but
   stay in memory until the garbage collector reuses it.
-- Keys use the TEE; StrongBox is not requested yet.
+- Device-bound keys go into the StrongBox security chip only on Android 12 or later, when
+  the device has one and it can compute the account's HMAC (StrongBox need not support SHA-1, which most
+  services use); otherwise they stay in the TEE, as do accounts bound before 0.1.4. The
+  key that encrypts backup-capable secrets is always in the TEE. The level shown next to
+  an account is what the Keystore reports about itself; it is not attested. The StrongBox
+  path has not been exercised on real hardware yet.
 - A copied code is cleared from the clipboard after 30 seconds, with limits Android
   imposes: in the background the app cannot see what the clipboard holds, so it clears
   whatever is there; the backup alarm may run late; and a keyboard's or vendor's own
   clipboard history is out of reach.
-- No root or tamper detection. Client-side checks are bypassable; device integrity will
-  be verified server-side through hardware key attestation in the enterprise edition.
+- Root and debugger detection is a warning, not a control. It looks for an `su` binary,
+  a test-keys system image and an attached tracer; root that hides itself is not seen,
+  and nothing is blocked. Device integrity will be verified server-side through hardware
+  key attestation in the enterprise edition.

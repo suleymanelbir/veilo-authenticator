@@ -27,6 +27,12 @@
         <item quantity="other">Code copied. It will be cleared from the clipboard in %1$d seconds.</item>
     </plurals>
     <string name="badge_hardware_bound">Bound to this device</string>
+    <string name="badge_hardware_bound_strongbox">Bound to this device · security chip (StrongBox)</string>
+    <string name="badge_hardware_bound_tee">Bound to this device · secure hardware</string>
+    <string name="badge_hardware_bound_software">Bound to this device · software protection only</string>
+    <string name="badge_wrapped_software">This device has no secure hardware: the key is protected by software only</string>
+    <string name="risk_rooted">This device looks rooted or modified. On such a device, software with root rights can reach your keys.</string>
+    <string name="risk_debugger">A debugger is attached to this app. If you did not do that, close the app.</string>
     <string name="key_unusable">This key can no longer be used. Remove the account and add it again.</string>
     <string name="hotp_hidden">Tap the arrow to generate a code</string>
 

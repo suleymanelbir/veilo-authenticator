@@ -5,6 +5,7 @@ import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
+import com.selbir.authenticator.security.KeyLevel
 import com.selbir.authenticator.security.SecretStore
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,6 +31,7 @@ class AccountRepositoryTest {
     private class FakeSecretStore : SecretStore {
         val hardwareKeys = mutableMapOf<String, ByteArray>()
         var wrappingKeyDestroyed = false
+        private var wrapped = false
 
         override fun importHmacKey(alias: String, secret: ByteArray, algorithm: OtpAlgorithm) {
             hardwareKeys[alias] = secret.copyOf()
@@ -38,7 +40,14 @@ class AccountRepositoryTest {
         override fun hmac(alias: String, algorithm: OtpAlgorithm): HmacFunction =
             Otp.softwareHmac(hardwareKeys.getValue(alias), algorithm)
 
-        override fun wrap(secret: ByteArray) = xor(secret)
+        override fun keyLevel(alias: String) = if (alias in hardwareKeys) KeyLevel.STRONGBOX else KeyLevel.UNKNOWN
+
+        override fun wrappingKeyLevel(): KeyLevel? = if (wrapped) KeyLevel.SECURE_HARDWARE else null
+
+        override fun wrap(secret: ByteArray): ByteArray {
+            wrapped = true
+            return xor(secret)
+        }
 
         override fun unwrap(blob: ByteArray): ByteArray {
             if (wrappingKeyDestroyed) throw java.security.InvalidKeyException("Key permanently invalidated")
@@ -165,5 +174,17 @@ class AccountRepositoryTest {
         val plain2 = java.util.Base64.getEncoder().encodeToString(secret(2))
         assertTrue(account.wrappedSecret != plain1 && imported.wrappedSecret != plain2)
         assertNull(repository.add(totp(3), Protection.HARDWARE_BOUND).wrappedSecret)
+    }
+
+    @Test
+    fun keyLevelFollowsTheKeyThatProtectsTheAccount() {
+        val bound = repository.add(totp(1), Protection.HARDWARE_BOUND)
+        val wrapped = repository.add(totp(2), Protection.EXPORTABLE)
+
+        assertEquals(KeyLevel.STRONGBOX, repository.keyLevel(bound))
+        assertEquals(KeyLevel.SECURE_HARDWARE, repository.keyLevel(wrapped))
+
+        repository.delete(bound.id)
+        assertEquals(KeyLevel.UNKNOWN, repository.keyLevel(bound))
     }
 }

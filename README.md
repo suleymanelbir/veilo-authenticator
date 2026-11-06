@@ -21,8 +21,10 @@ reviewed. Do not rely on it for real accounts yet.
 - Add accounts by scanning an `otpauth://` QR code or typing the secret.
 - Two ways to store each account's secret, chosen per account:
   - **Bound to this device** — the secret is imported into the Android Keystore as a
-    non-exportable HMAC key. Codes are computed inside the TEE; the secret never returns
-    to app memory and cannot be backed up or cloned.
+    non-exportable HMAC key. Codes are computed inside secure hardware; the secret never
+    returns to app memory and cannot be backed up or cloned. Where the device has a
+    StrongBox security chip that can do the account's HMAC, the key goes there, otherwise
+    into the TEE. Each account shows which one the Keystore reports.
   - **Can be backed up** — the secret is encrypted with an AES-256-GCM key held in the
     Keystore and is in app memory only while a code is computed.
 - Encrypted backup: backup-capable accounts can be exported to a passphrase-protected
@@ -34,6 +36,8 @@ reviewed. Do not rely on it for real accounts yet.
 - A copied code is flagged sensitive and removed from the clipboard after 30 seconds.
 - Locks when it leaves the foreground; screenshots, screen recording and the recents
   thumbnail are blocked (`FLAG_SECURE`).
+- Warns (without blocking) when the device looks rooted or modified, or when a debugger
+  is attached to the app.
 - No network access: the `INTERNET` permission is stripped from the merged manifest.
   Android cloud backup and device-to-device transfer are disabled.
 - English and Turkish.
@@ -88,7 +92,9 @@ require "strong biometric or device credential".
 - [x] Export / import screens for backup-capable accounts
 - [ ] Instrumented tests on real devices (Keystore, biometric flows)
 - [x] Clipboard auto-clear
-- [ ] Tap-to-reveal, StrongBox where available
+- [x] StrongBox where available, key security level shown per account
+- [x] Root / debugger warning
+- [ ] Tap-to-reveal
 - [ ] Edit / reorder / search accounts, advanced manual entry (algorithm, digits, period)
 - [x] Release signing
 - [ ] Reproducible builds, Play closed testing

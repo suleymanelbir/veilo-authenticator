@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -44,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import com.selbir.authenticator.R
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpType
+import com.selbir.authenticator.security.DeviceRisk
+import com.selbir.authenticator.security.KeyLevel
 import com.selbir.authenticator.security.SensitiveClipboard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,14 +107,15 @@ fun AccountListScreen(
         when {
             rows == null -> Unit // First load after unlock: draw nothing rather than flash the empty message.
 
-            rows.isEmpty() -> Box(
-                modifier = Modifier.fillMaxSize().padding(padding).padding(32.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(stringResource(R.string.accounts_empty), textAlign = TextAlign.Center)
+            rows.isEmpty() -> Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+                RiskBanner(state.risks)
+                Box(modifier = Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
+                    Text(stringResource(R.string.accounts_empty), textAlign = TextAlign.Center)
+                }
             }
 
             else -> LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = padding) {
+                if (state.risks.isNotEmpty()) item(key = RISK_BANNER_KEY) { RiskBanner(state.risks) }
                 items(rows, key = { it.id }) { row ->
                     AccountItem(
                         row = row,
@@ -145,6 +150,28 @@ fun AccountListScreen(
 
 private val AccountRow.displayTitle: String
     get() = issuer.ifBlank { name }
+
+/** Account ids are UUIDs, so this cannot collide with a row key. */
+private const val RISK_BANNER_KEY = "risk-banner"
+
+/** Warns, without blocking: the checks behind it can be wrong in both directions. */
+@Composable
+private fun RiskBanner(risks: Set<DeviceRisk>) {
+    if (risks.isEmpty()) return
+    Surface(color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            if (DeviceRisk.ROOTED in risks) {
+                Text(stringResource(R.string.risk_rooted), style = MaterialTheme.typography.bodyMedium)
+            }
+            if (DeviceRisk.DEBUGGER in risks) {
+                Text(stringResource(R.string.risk_debugger), style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -203,9 +230,24 @@ private fun AccountItem(
             }
             if (row.hardwareBound) {
                 Text(
-                    text = stringResource(R.string.badge_hardware_bound),
+                    text = when (row.keyLevel) {
+                        KeyLevel.STRONGBOX -> stringResource(R.string.badge_hardware_bound_strongbox)
+                        KeyLevel.SECURE_HARDWARE -> stringResource(R.string.badge_hardware_bound_tee)
+                        KeyLevel.SOFTWARE -> stringResource(R.string.badge_hardware_bound_software)
+                        KeyLevel.UNKNOWN -> stringResource(R.string.badge_hardware_bound)
+                    },
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = if (row.keyLevel == KeyLevel.SOFTWARE) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    },
+                )
+            } else if (row.keyLevel == KeyLevel.SOFTWARE) {
+                Text(
+                    text = stringResource(R.string.badge_wrapped_software),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
         }

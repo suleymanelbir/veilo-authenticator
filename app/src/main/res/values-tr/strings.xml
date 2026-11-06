@@ -24,6 +24,12 @@
         <item quantity="other">Kod kopyalandı. %1$d saniye sonra panodan silinecek.</item>
     </plurals>
     <string name="badge_hardware_bound">Bu cihaza bağlı</string>
+    <string name="badge_hardware_bound_strongbox">Bu cihaza bağlı · güvenlik çipi (StrongBox)</string>
+    <string name="badge_hardware_bound_tee">Bu cihaza bağlı · güvenli donanım</string>
+    <string name="badge_hardware_bound_software">Bu cihaza bağlı · yalnızca yazılım koruması</string>
+    <string name="badge_wrapped_software">Bu cihazda güvenli donanım yok: anahtar yalnızca yazılımla korunuyor</string>
+    <string name="risk_rooted">Bu cihaz root\'lu ya da değiştirilmiş görünüyor. Böyle bir cihazda root yetkisi alan yazılımlar anahtarlarınıza erişebilir.</string>
+    <string name="risk_debugger">Bu uygulamaya bir hata ayıklayıcı bağlı. Bunu siz yapmadıysanız uygulamayı kapatın.</string>
     <string name="key_unusable">Bu anahtar artık kullanılamıyor. Hesabı kaldırıp yeniden ekleyin.</string>
     <string name="hotp_hidden">Kod üretmek için oka dokunun</string>
 

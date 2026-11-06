@@ -5,6 +5,7 @@ import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
+import com.selbir.authenticator.security.KeyLevel
 import com.selbir.authenticator.security.SecretStore
 import java.util.Base64
 import java.util.UUID
@@ -120,6 +121,15 @@ class AccountRepository(
         val account = all().find { it.id == id } ?: return
         persist(all() - account)
         if (account.protection == Protection.HARDWARE_BOUND) secrets.delete(keyAlias(id))
+    }
+
+    /**
+     * Where the key that protects [account] is held: the account's own key when it is
+     * hardware-bound, otherwise the key its secret is encrypted with.
+     */
+    fun keyLevel(account: Account): KeyLevel = when (account.protection) {
+        Protection.HARDWARE_BOUND -> secrets.keyLevel(keyAlias(account.id))
+        Protection.EXPORTABLE -> secrets.wrappingKeyLevel() ?: KeyLevel.UNKNOWN
     }
 
     /** The code for [counter]: a TOTP time step, or an HOTP counter value. */

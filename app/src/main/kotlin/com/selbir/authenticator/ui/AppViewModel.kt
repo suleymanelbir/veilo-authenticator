@@ -21,6 +21,9 @@ import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
 import com.selbir.authenticator.data.Account
 import com.selbir.authenticator.data.Protection
+import com.selbir.authenticator.security.DeviceIntegrity
+import com.selbir.authenticator.security.DeviceRisk
+import com.selbir.authenticator.security.KeyLevel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +47,8 @@ data class AccountRow(
     val type: OtpType,
     val period: Int,
     val hardwareBound: Boolean,
+    /** Where the key that protects this account is held. */
+    val keyLevel: KeyLevel,
     /** Null for an HOTP account that has not generated a code since the last unlock. */
     val code: String?,
     /** The key was destroyed (e.g. the screen lock was removed); the account must be re-enrolled. */
@@ -58,6 +63,8 @@ data class UiState(
     /** Null until the first load after an unlock. */
     val rows: List<AccountRow>? = null,
     val epochSeconds: Long = System.currentTimeMillis() / 1000,
+    /** What [DeviceIntegrity] found at the last unlock. */
+    val risks: Set<DeviceRisk> = emptySet(),
 )
 
 /** Outcome of an operation that needs a Keystore key. */
@@ -161,6 +168,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val totpCache = ConcurrentHashMap<String, Pair<Long, String>>()
     private val hotpCodes = ConcurrentHashMap<String, String>()
 
+    /** Key metadata, not key material: it does not change and need not be cleared on lock. */
+    private val keyLevels = ConcurrentHashMap<String, KeyLevel>()
+
     init {
         viewModelScope.launch {
             while (true) {
@@ -173,6 +183,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun onAuthenticated() {
         _state.update { it.copy(locked = false) }
         viewModelScope.launch { refresh() }
+        // Checked again at every unlock: a debugger can attach long after the app started.
+        viewModelScope.launch {
+            val risks = withContext(Dispatchers.IO) { DeviceIntegrity.check() }
+            _state.update { it.copy(risks = risks) }
+        }
     }
 
     fun lock() {
@@ -407,6 +422,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             withContext(Dispatchers.IO) { repository.delete(id) }
             totpCache.remove(id)
             hotpCodes.remove(id)
+            keyLevels.remove(id)
             refresh()
         }
     }
@@ -456,6 +472,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             type = account.type,
             period = account.period,
             hardwareBound = account.protection == Protection.HARDWARE_BOUND,
+            keyLevel = keyLevels.getOrPut(account.id) { repository.keyLevel(account) },
             code = code,
             unusable = unusable,
         )
