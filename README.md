@@ -31,13 +31,15 @@ reviewed. Do not rely on it for real accounts yet.
   device. The file format is documented in `core/BackupCodec` and `core/BackupPayload`.
 - Every key requires a strong biometric or the device credential within the last two
   minutes. The Keystore enforces this, not app logic.
+- A copied code is flagged sensitive and removed from the clipboard after 30 seconds.
 - Locks when it leaves the foreground; screenshots, screen recording and the recents
   thumbnail are blocked (`FLAG_SECURE`).
 - No network access: the `INTERNET` permission is stripped from the merged manifest.
   Android cloud backup and device-to-device transfer are disabled.
 - English and Turkish.
 
-See [SECURITY.md](SECURITY.md) for the threat model and known limitations.
+See [SECURITY.md](SECURITY.md) for the threat model and known limitations, and
+[PRIVACY.md](PRIVACY.md) for the privacy policy.
 
 ## Layout
 
@@ -55,6 +57,23 @@ Requires JDK 17 and the Android SDK (API 36).
 ./gradlew :app:assembleDebug  # debug APK in app/build/outputs/apk/debug/
 ```
 
+### Signed release
+
+Release builds are signed when a `key.properties` file exists in the project root; without
+it they are left unsigned. Neither it nor the keystore is ever committed.
+
+```properties
+storeFile=upload-keystore.jks
+storePassword=…
+keyAlias=upload
+keyPassword=…
+```
+
+```sh
+./gradlew :app:bundleRelease    # app/build/outputs/bundle/release/app-release.aab (for Google Play)
+./gradlew :app:assembleRelease  # app/build/outputs/apk/release/app-release.apk
+```
+
 Minimum Android version is 11 (API 30), the first release where a Keystore key can
 require "strong biometric or device credential".
 
@@ -68,9 +87,11 @@ require "strong biometric or device credential".
 - [x] Encrypted backup container format (`core/BackupCodec`)
 - [x] Export / import screens for backup-capable accounts
 - [ ] Instrumented tests on real devices (Keystore, biometric flows)
-- [ ] Clipboard auto-clear, tap-to-reveal, StrongBox where available
+- [x] Clipboard auto-clear
+- [ ] Tap-to-reveal, StrongBox where available
 - [ ] Edit / reorder / search accounts, advanced manual entry (algorithm, digits, period)
-- [ ] Release signing, reproducible builds, Play closed testing
+- [x] Release signing
+- [ ] Reproducible builds, Play closed testing
 
 **Phase 2** — server side: PAM integration, recovery codes, central verification service.
 
