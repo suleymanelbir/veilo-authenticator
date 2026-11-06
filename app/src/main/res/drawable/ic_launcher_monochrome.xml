@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The launcher mark in one colour, for themed icons (Android 13+), which keep only the
+    shape. Same paths as ic_launcher_foreground.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- The thin stroke in the fill colour only rounds the corners. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M57.49,29.85 L44.17,47.27 L57.03,61.07 L45.07,76.71 A24.4,24.4 0 0 1 57.49,29.85 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M62.93,31.29 L50.97,46.93 L63.83,60.73 L50.51,78.15 A24.4,24.4 0 0 0 62.93,31.29 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
+</vector>

@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Placeholder mark (a seal ring with a check); replace with real artwork before release. -->
+<!--
+    The Symbolon mark: a round token broken into two halves that fit each other. A symbolon
+    was such a token; each party kept one half, and matching them proved who they were.
+    The art stays inside the 66dp safe zone of the adaptive icon. The store icon and the
+    feature graphic are drawn from the same two paths; change them together.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- The thin stroke in the fill colour only rounds the corners. -->
     <path
-        android:pathData="M32,54a22,22 0 1,0 44,0a22,22 0 1,0 -44,0"
+        android:fillColor="#FFFFFF"
+        android:pathData="M57.49,29.85 L44.17,47.27 L57.03,61.07 L45.07,76.71 A24.4,24.4 0 0 1 57.49,29.85 Z"
         android:strokeColor="#FFFFFF"
-        android:strokeWidth="5" />
-    <path
-        android:pathData="M44,54l7,8l14,-16"
-        android:strokeColor="#FFFFFF"
-        android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:strokeWidth="5" />
+        android:strokeWidth="1.2" />
+    <path
+        android:fillColor="#F2B84B"
+        android:pathData="M62.93,31.29 L50.97,46.93 L63.83,60.73 L50.51,78.15 A24.4,24.4 0 0 0 62.93,31.29 Z"
+        android:strokeColor="#F2B84B"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.2" />
 </vector>
