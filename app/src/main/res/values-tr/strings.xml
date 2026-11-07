@@ -7,6 +7,7 @@
     <string name="action_save">Kaydet</string>
     <string name="action_delete">Kaldır</string>
     <string name="action_add_account">Hesap ekle</string>
+    <string name="action_edit">Düzenle</string>
     <string name="action_next_code">Sonraki kodu üret</string>
     <string name="action_scan_qr">QR kodu tara</string>
     <string name="action_open_settings">Güvenlik ayarlarını aç</string>
@@ -33,6 +34,9 @@
     <string name="key_unusable">Bu anahtar artık kullanılamıyor. Hesabı kaldırıp yeniden ekleyin.</string>
     <string name="hotp_hidden">Kod üretmek için oka dokunun</string>
 
+    <string name="edit_title">Hesabı düzenle</string>
+    <string name="search_hint">Hesap ara</string>
+    <string name="code_tap_to_reveal">Görmek ve kopyalamak için dokunun</string>
     <string name="delete_title">Hesap kaldırılsın mı?</string>
     <string name="delete_body">%1$s bu cihazdan kaldırılacak. Bu hesapta iki adımlı doğrulama hâlâ açıksa hesaba erişiminizi kaybedebilirsiniz.</string>
 

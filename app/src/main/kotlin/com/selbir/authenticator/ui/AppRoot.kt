@@ -160,6 +160,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onImport = { viewModel.navigate(Screen.Import) },
             onLock = viewModel::lock,
             onDelete = viewModel::delete,
+            onRename = viewModel::rename,
             onNextHotp = { id -> scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.generateHotp(id) } } },
         )
     }

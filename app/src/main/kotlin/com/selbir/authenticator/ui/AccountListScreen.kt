@@ -24,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,17 +61,49 @@ fun AccountListScreen(
     onImport: () -> Unit,
     onLock: () -> Unit,
     onDelete: (String) -> Unit,
+    onRename: (String, String, String) -> Unit,
     onNextHotp: (String) -> Unit,
 ) {
     val context = LocalContext.current
     var pendingDelete by remember { mutableStateOf<AccountRow?>(null) }
+    var pendingEdit by remember { mutableStateOf<AccountRow?>(null) }
+    var editingRow by remember { mutableStateOf<AccountRow?>(null) }
     var menuOpen by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+    var searchVisible by remember { mutableStateOf(false) }
+
+    // Tracks which account codes are currently revealed (tap-to-reveal).
+    val revealedIds = remember { mutableStateMapOf<String, Long>() }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
+                title = {
+                    if (searchVisible) {
+                        OutlinedTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text(stringResource(R.string.search_hint)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    } else {
+                        Text(stringResource(R.string.app_name))
+                    }
+                },
                 actions = {
+                    val rows = state.rows
+                    if (rows != null && rows.isNotEmpty()) {
+                        IconButton(onClick = {
+                            searchVisible = !searchVisible
+                            if (!searchVisible) searchQuery = ""
+                        }) {
+                            Icon(
+                                painterResource(if (searchVisible) R.drawable.ic_close else R.drawable.ic_search),
+                                stringResource(R.string.search_hint),
+                            )
+                        }
+                    }
                     IconButton(onClick = onLock) {
                         Icon(painterResource(R.drawable.ic_lock), stringResource(R.string.action_lock))
                     }
@@ -104,10 +138,18 @@ fun AccountListScreen(
         },
     ) { padding ->
         val rows = state.rows
-        when {
-            rows == null -> Unit // First load after unlock: draw nothing rather than flash the empty message.
+        val filteredRows = if (searchQuery.isBlank()) rows else rows?.filter { row ->
+            row.issuer.contains(searchQuery, ignoreCase = true) ||
+                row.name.contains(searchQuery, ignoreCase = true)
+        }
 
-            rows.isEmpty() -> Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        // Clear revealed state when the TOTP time step changes.
+        revealedIds.entries.removeAll { (_, step) -> step != state.epochSeconds / 30 }
+
+        when {
+            filteredRows == null -> Unit
+
+            filteredRows.isEmpty() -> Column(modifier = Modifier.fillMaxSize().padding(padding)) {
                 RiskBanner(state.risks)
                 Box(modifier = Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
                     Text(stringResource(R.string.accounts_empty), textAlign = TextAlign.Center)
@@ -116,12 +158,23 @@ fun AccountListScreen(
 
             else -> LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = padding) {
                 if (state.risks.isNotEmpty()) item(key = RISK_BANNER_KEY) { RiskBanner(state.risks) }
-                items(rows, key = { it.id }) { row ->
+                items(filteredRows, key = { it.id }) { row ->
+                    val revealed = row.id in revealedIds
                     AccountItem(
                         row = row,
+                        revealed = revealed,
                         epochSeconds = state.epochSeconds,
-                        onCopy = { code -> copyCode(context, code) },
-                        onLongPress = { pendingDelete = row },
+                        onTap = {
+                            if (row.code != null) {
+                                if (revealed) {
+                                    copyCode(context, row.code, row.displayTitle)
+                                } else {
+                                    revealedIds[row.id] = state.epochSeconds / 30
+                                    copyCode(context, row.code, row.displayTitle)
+                                }
+                            }
+                        },
+                        onLongPress = { pendingEdit = row },
                         onNextHotp = { onNextHotp(row.id) },
                     )
                     HorizontalDivider()
@@ -130,6 +183,33 @@ fun AccountListScreen(
         }
     }
 
+    // Long-press action sheet: Edit / Delete
+    pendingEdit?.let { row ->
+        AlertDialog(
+            onDismissRequest = { pendingEdit = null },
+            title = { Text(row.displayTitle) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    TextButton(onClick = {
+                        val target = row
+                        pendingEdit = null
+                        pendingDelete = target
+                    }) { Text(stringResource(R.string.action_delete)) }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    pendingEdit = null
+                    editingRow = row
+                }) { Text(stringResource(R.string.action_edit)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingEdit = null }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        )
+    }
+
+    // Delete confirmation
     pendingDelete?.let { row ->
         AlertDialog(
             onDismissRequest = { pendingDelete = null },
@@ -146,6 +226,60 @@ fun AccountListScreen(
             },
         )
     }
+
+    // Edit dialog
+    editingRow?.let { row ->
+        EditAccountDialog(
+            row = row,
+            onDismiss = { editingRow = null },
+            onSave = { issuer, name ->
+                onRename(row.id, issuer, name)
+                editingRow = null
+            },
+        )
+    }
+}
+
+@Composable
+private fun EditAccountDialog(
+    row: AccountRow,
+    onDismiss: () -> Unit,
+    onSave: (issuer: String, name: String) -> Unit,
+) {
+    var issuer by remember(row.id) { mutableStateOf(row.issuer) }
+    var name by remember(row.id) { mutableStateOf(row.name) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.edit_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = issuer,
+                    onValueChange = { issuer = it },
+                    label = { Text(stringResource(R.string.field_issuer)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.field_account)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onSave(issuer.trim(), name.trim()) },
+                enabled = issuer.isNotBlank() || name.isNotBlank(),
+            ) { Text(stringResource(R.string.action_save)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) }
+        },
+    )
 }
 
 private val AccountRow.displayTitle: String
@@ -177,8 +311,9 @@ private fun RiskBanner(risks: Set<DeviceRisk>) {
 @Composable
 private fun AccountItem(
     row: AccountRow,
+    revealed: Boolean,
     epochSeconds: Long,
-    onCopy: (String) -> Unit,
+    onTap: () -> Unit,
     onLongPress: () -> Unit,
     onNextHotp: () -> Unit,
 ) {
@@ -186,9 +321,9 @@ private fun AccountItem(
         modifier = Modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = { row.code?.let(onCopy) },
+                onClick = onTap,
                 onLongClick = onLongPress,
-                onLongClickLabel = stringResource(R.string.action_delete),
+                onLongClickLabel = stringResource(R.string.action_edit),
             )
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -216,10 +351,16 @@ private fun AccountItem(
                     color = MaterialTheme.colorScheme.error,
                 )
 
-                row.code != null -> Text(
+                row.code != null && (revealed || row.type == OtpType.HOTP) -> Text(
                     text = formatCode(row.code),
                     style = MaterialTheme.typography.headlineMedium,
                     fontFamily = FontFamily.Monospace,
+                )
+
+                row.code != null -> Text(
+                    text = stringResource(R.string.code_tap_to_reveal),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 else -> Text(
@@ -279,10 +420,8 @@ private fun Countdown(remaining: Int, period: Int) {
 /** "123456" -> "123 456", "12345678" -> "1234 5678". */
 private fun formatCode(code: String): String = code.chunked((code.length + 1) / 2).joinToString(" ")
 
-private fun copyCode(context: Context, code: String) {
-    SensitiveClipboard.copy(context, code)
-    // Android 13+ shows its own "copied" confirmation as well, but only this message says
-    // that the code will be cleared again.
+private fun copyCode(context: Context, code: String, label: String) {
+    SensitiveClipboard.copy(context, code, label)
     val seconds = SensitiveClipboard.CLEAR_AFTER_SECONDS
     val message = context.resources.getQuantityString(R.plurals.code_copied, seconds, seconds)
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()

@@ -10,6 +10,7 @@
     <string name="action_save">Save</string>
     <string name="action_delete">Remove</string>
     <string name="action_add_account">Add account</string>
+    <string name="action_edit">Edit</string>
     <string name="action_next_code">Generate next code</string>
     <string name="action_scan_qr">Scan QR code</string>
     <string name="action_open_settings">Open security settings</string>
@@ -36,6 +37,9 @@
     <string name="key_unusable">This key can no longer be used. Remove the account and add it again.</string>
     <string name="hotp_hidden">Tap the arrow to generate a code</string>
 
+    <string name="edit_title">Edit account</string>
+    <string name="search_hint">Search accounts</string>
+    <string name="code_tap_to_reveal">Tap to reveal and copy</string>
     <string name="delete_title">Remove account?</string>
     <string name="delete_body">%1$s will be removed from this device. If two-step verification is still switched on for it, you may be locked out of that account.</string>
 

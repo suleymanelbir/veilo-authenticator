@@ -417,6 +417,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         Toast.makeText(app, app.getString(messageRes, *args), Toast.LENGTH_LONG).show()
     }
 
+    fun rename(id: String, issuer: String, name: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { repository.rename(id, issuer, name) }
+            refresh()
+        }
+    }
+
     fun delete(id: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) { repository.delete(id) }

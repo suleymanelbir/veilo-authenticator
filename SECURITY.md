@@ -36,9 +36,9 @@ version.
 - **Loss of the screen lock.** Removing the device's screen lock destroys all
   authentication-bound keys by design. Device-bound accounts must then be re-enrolled.
 
-### Known limitations of the current skeleton
+### Known limitations
 
-- Not yet tested on physical devices and not independently audited.
+- Tested on a physical device (Samsung, Android 14) but not independently audited.
 - Account labels (service and account names) are stored unencrypted in app-private
   storage; only the secrets are encrypted.
 - The JVM gives no guarantee that a wiped byte array has no other copies. For
@@ -53,7 +53,7 @@ version.
   services use); otherwise they stay in the TEE, as do accounts bound before 0.1.4. The
   key that encrypts backup-capable secrets is always in the TEE. The level shown next to
   an account is what the Keystore reports about itself; it is not attested. The StrongBox
-  path has not been exercised on real hardware yet.
+  path has been verified on a device with a StrongBox chip.
 - A copied code is cleared from the clipboard after 30 seconds, with limits Android
   imposes: in the background the app cannot see what the clipboard holds, so it clears
   whatever is there; the backup alarm may run late; and a keyboard's or vendor's own

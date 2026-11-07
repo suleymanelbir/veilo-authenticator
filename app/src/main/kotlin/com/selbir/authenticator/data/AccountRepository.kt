@@ -117,6 +117,11 @@ class AccountRepository(
     }
 
     @Synchronized
+    fun rename(id: String, issuer: String, name: String) {
+        persist(all().map { if (it.id == id) it.copy(issuer = issuer, name = name) else it })
+    }
+
+    @Synchronized
     fun delete(id: String) {
         val account = all().find { it.id == id } ?: return
         persist(all() - account)

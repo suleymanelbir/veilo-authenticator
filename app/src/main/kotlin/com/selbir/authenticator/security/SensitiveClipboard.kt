@@ -13,6 +13,7 @@ import android.os.Looper
 import android.os.PersistableBundle
 import android.os.SystemClock
 import androidx.annotation.MainThread
+import com.selbir.authenticator.R
 
 /**
  * Puts one-time codes on the clipboard and takes them off again [CLEAR_AFTER_SECONDS] later.
@@ -48,11 +49,11 @@ object SensitiveClipboard {
 
     /** Copies [code], flagged sensitive so the system preview and keyboards do not display it. */
     @MainThread
-    fun copy(context: Context, code: String) {
+    fun copy(context: Context, code: String, label: String = context.getString(R.string.app_name)) {
         val app = context.applicationContext
         val clipboard = app.getSystemService(ClipboardManager::class.java)
 
-        val clip = ClipData.newPlainText("OTP", code)
+        val clip = ClipData.newPlainText(label, code)
         clip.description.extras = PersistableBundle().apply {
             putBoolean(EXTRA_IS_SENSITIVE, true)
             putLong(EXTRA_CLEAR_AT, System.currentTimeMillis() + CLEAR_AFTER_SECONDS * 1000L)
