@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Working product name. This is the only place it is defined; it is the same in every language. -->
-    <string name="app_name" translatable="false">Axon Gate</string>
+    <string name="app_name" translatable="false">Veilo Authenticator</string>
 
     <string name="action_unlock">Unlock</string>
     <string name="action_lock">Lock</string>

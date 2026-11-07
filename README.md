@@ -1,12 +1,11 @@
-# Axon Gate
+# Veilo Authenticator
 
 > The product name is defined in one place (`app_name` in
-> `app/src/main/res/values/strings.xml`). The application ID is `com.selbir.axongate`;
+> `app/src/main/res/values/strings.xml`). The application ID is `tr.veilo.authenticator`;
 > the code keeps the `com.selbir.authenticator` namespace.
 >
-> An *axon* carries signals across the nervous system; a *gate* controls which signals
-> pass through. An authenticator works the same way — it holds a shared secret and
-> opens the gate only when the right code is presented.
+> Part of the [Veilo](https://veilo.tr) ecosystem: secure communication, device
+> management and now two-factor authentication — all under one roof.
 
 An offline, open-source one-time-password authenticator for Android whose keys live in
 the device's secure hardware.
