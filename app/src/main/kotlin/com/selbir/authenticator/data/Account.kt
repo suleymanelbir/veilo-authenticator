@@ -26,6 +26,8 @@ data class Account(
     /** HOTP only: the counter the next code will be generated from. */
     val counter: Long = 0,
     val protection: Protection,
+    /** User-defined group for organising accounts (e.g. "Work", "Personal"). Empty = ungrouped. */
+    val group: String = "",
     /** [Protection.EXPORTABLE] only: Base64 of the Keystore-wrapped secret. */
     val wrappedSecret: String? = null,
 )

@@ -12,18 +12,30 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -35,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.selbir.authenticator.R
+import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpAuthUri
 import com.selbir.authenticator.data.Protection
 
@@ -46,6 +59,7 @@ import com.selbir.authenticator.data.Protection
 @Composable
 fun AddAccountScreen(
     form: AddFormState,
+    groups: List<String> = emptyList(),
     onBack: () -> Unit,
     onScannerVisible: (Boolean) -> Unit,
     onSave: () -> Unit,
@@ -142,6 +156,56 @@ fun AddAccountScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
+            OutlinedTextField(
+                value = form.group,
+                onValueChange = { form.group = it },
+                label = { Text(stringResource(R.string.field_group)) },
+                placeholder = { Text(stringResource(R.string.group_hint)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            if (groups.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    items(groups) { g ->
+                        FilterChip(
+                            selected = form.group == g,
+                            onClick = { form.group = g },
+                            label = { Text(g) },
+                        )
+                    }
+                }
+            }
+
+            // Advanced options — only for manual entry.
+            if (form.scanned == null) {
+                var advancedOpen by remember { mutableStateOf(false) }
+                TextButton(onClick = { advancedOpen = !advancedOpen }) {
+                    Text(stringResource(if (advancedOpen) R.string.advanced_hide else R.string.advanced_show))
+                }
+                if (advancedOpen) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        AlgorithmDropdown(
+                            selected = form.algorithm,
+                            onSelect = { form.algorithm = it },
+                            modifier = Modifier.weight(1f),
+                        )
+                        DigitsDropdown(
+                            selected = form.digits,
+                            onSelect = { form.digits = it },
+                            modifier = Modifier.weight(1f),
+                        )
+                        PeriodDropdown(
+                            selected = form.period,
+                            onSelect = { form.period = it },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+            }
+
             Text(stringResource(R.string.protection_title), style = MaterialTheme.typography.titleSmall)
             Column(modifier = Modifier.selectableGroup()) {
                 ProtectionOption(
@@ -172,6 +236,76 @@ fun AddAccountScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.action_save))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AlgorithmDropdown(selected: OtpAlgorithm, onSelect: (OtpAlgorithm) -> Unit, modifier: Modifier) {
+    val options = OtpAlgorithm.entries
+    val labels = mapOf(OtpAlgorithm.SHA1 to "SHA-1", OtpAlgorithm.SHA256 to "SHA-256", OtpAlgorithm.SHA512 to "SHA-512")
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
+        OutlinedTextField(
+            value = labels[selected] ?: "",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.field_algorithm)) },
+            singleLine = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            options.forEach { algo ->
+                DropdownMenuItem(text = { Text(labels[algo] ?: "") }, onClick = { onSelect(algo); expanded = false })
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DigitsDropdown(selected: Int, onSelect: (Int) -> Unit, modifier: Modifier) {
+    val options = listOf(6, 7, 8)
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
+        OutlinedTextField(
+            value = selected.toString(),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.field_digits)) },
+            singleLine = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            options.forEach { d ->
+                DropdownMenuItem(text = { Text(d.toString()) }, onClick = { onSelect(d); expanded = false })
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PeriodDropdown(selected: Int, onSelect: (Int) -> Unit, modifier: Modifier) {
+    val options = listOf(30, 60)
+    var expanded by remember { mutableStateOf(false) }
+    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }, modifier = modifier) {
+        OutlinedTextField(
+            value = "${selected}s",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.field_period)) },
+            singleLine = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
+        )
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            options.forEach { p ->
+                DropdownMenuItem(text = { Text("${p}s") }, onClick = { onSelect(p); expanded = false })
             }
         }
     }

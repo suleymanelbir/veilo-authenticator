@@ -39,6 +39,9 @@
 
     <string name="edit_title">Edit account</string>
     <string name="search_hint">Search accounts</string>
+    <string name="field_group">Group</string>
+    <string name="group_hint">e.g. Work, Personal, Finance</string>
+    <string name="group_all">All</string>
     <string name="code_tap_to_reveal">Tap to reveal and copy</string>
     <string name="delete_title">Remove account?</string>
     <string name="delete_body">%1$s will be removed from this device. If two-step verification is still switched on for it, you may be locked out of that account.</string>
@@ -50,6 +53,11 @@
     <string name="field_issuer">Service (for example GitHub)</string>
     <string name="field_account">Account (for example your e-mail)</string>
     <string name="field_secret">Secret key</string>
+    <string name="field_algorithm">Algorithm</string>
+    <string name="field_digits">Digits</string>
+    <string name="field_period">Period</string>
+    <string name="advanced_show">Advanced options</string>
+    <string name="advanced_hide">Hide advanced</string>
     <string name="secret_invalid">That secret key is not valid. It should contain only the letters A–Z and the digits 2–7.</string>
 
     <string name="protection_title">Key storage</string>
@@ -71,6 +79,11 @@
     <string name="passphrase_too_short">Use at least 8 characters.</string>
     <string name="passphrase_mismatch">The two passphrases do not match.</string>
     <string name="backup_working">Working… This can take a few seconds.</string>
+
+    <string name="backup_prompt_title">Back up your accounts</string>
+    <string name="backup_prompt_body">Create an encrypted backup so you can restore your codes if you lose this device.</string>
+    <string name="backup_prompt_confirm">Create backup</string>
+    <string name="backup_prompt_dismiss">Later</string>
 
     <string name="export_title">Export backup</string>
     <string name="export_body">Saves your accounts to a file encrypted with a passphrase you choose. Anyone who has both the file and the passphrase can generate your codes, so choose a passphrase that is hard to guess.</string>

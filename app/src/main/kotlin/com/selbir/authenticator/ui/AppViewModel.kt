@@ -16,6 +16,7 @@ import com.selbir.authenticator.core.BackupCodec
 import com.selbir.authenticator.core.BackupException
 import com.selbir.authenticator.core.BackupPayload
 import com.selbir.authenticator.core.Base32
+import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
@@ -53,6 +54,7 @@ data class AccountRow(
     val code: String?,
     /** The key was destroyed (e.g. the screen lock was removed); the account must be re-enrolled. */
     val unusable: Boolean,
+    val group: String = "",
 )
 
 data class UiState(
@@ -65,6 +67,10 @@ data class UiState(
     val epochSeconds: Long = System.currentTimeMillis() / 1000,
     /** What [DeviceIntegrity] found at the last unlock. */
     val risks: Set<DeviceRisk> = emptySet(),
+    /** Distinct non-empty groups found in accounts. */
+    val groups: List<String> = emptyList(),
+    /** Null = show all, "" = ungrouped, otherwise the group name. */
+    val selectedGroup: String? = null,
 )
 
 /** Outcome of an operation that needs a Keystore key. */
@@ -86,6 +92,13 @@ class AddFormState {
     var errorRes by mutableStateOf<Int?>(null)
     var saving by mutableStateOf(false)
 
+    var group by mutableStateOf("")
+
+    // Advanced manual entry options (ignored when scanned != null).
+    var algorithm by mutableStateOf(OtpAlgorithm.SHA1)
+    var digits by mutableStateOf(6)
+    var period by mutableStateOf(30)
+
     val canSave: Boolean
         get() = !saving && (scanned != null || secretText.isNotBlank()) && (issuer.isNotBlank() || account.isNotBlank())
 
@@ -96,7 +109,7 @@ class AddFormState {
             if (base != null) {
                 OtpSpec(base.type, issuer.trim(), account.trim(), base.secret, base.algorithm, base.digits, base.period, base.counter)
             } else {
-                OtpSpec(OtpType.TOTP, issuer.trim(), account.trim(), Base32.decode(secretText))
+                OtpSpec(OtpType.TOTP, issuer.trim(), account.trim(), Base32.decode(secretText), algorithm, digits, period)
             }
         } catch (e: IllegalArgumentException) {
             null
@@ -112,6 +125,10 @@ class AddFormState {
         protection = Protection.EXPORTABLE
         errorRes = null
         saving = false
+        group = ""
+        algorithm = OtpAlgorithm.SHA1
+        digits = 6
+        period = 30
     }
 }
 
@@ -149,7 +166,11 @@ class BackupFormState {
 }
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = (application as AuthenticatorApp).repository
+    private val app = application as AuthenticatorApp
+    private val repository = app.repository
+    private val preferences = app.preferences
+
+    var showBackupPrompt by mutableStateOf(false)
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
@@ -211,10 +232,21 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         if (screen == Screen.List) viewModelScope.launch { refresh() }
     }
 
-    suspend fun addAccount(spec: OtpSpec, protection: Protection): OpResult {
+    fun selectGroup(group: String?) {
+        _state.update { it.copy(selectedGroup = group) }
+    }
+
+    fun setGroup(id: String, group: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { repository.setGroup(id, group) }
+            refresh()
+        }
+    }
+
+    suspend fun addAccount(spec: OtpSpec, protection: Protection, group: String = ""): OpResult {
         val result = withContext(Dispatchers.IO) {
             try {
-                repository.add(spec, protection)
+                repository.add(spec, protection, group)
                 OpResult.Success
             } catch (e: UserNotAuthenticatedException) {
                 OpResult.NeedsAuth
@@ -224,9 +256,20 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         if (result == OpResult.Success) {
             spec.secret.fill(0)
+            if (!preferences.hasShownBackupPrompt()) showBackupPrompt = true
             navigate(Screen.List)
         }
         return result
+    }
+
+    fun dismissBackupPrompt() {
+        showBackupPrompt = false
+        preferences.markBackupPromptShown()
+    }
+
+    fun acceptBackupPrompt() {
+        dismissBackupPrompt()
+        navigate(Screen.Export)
     }
 
     suspend fun generateHotp(id: String): OpResult {
@@ -446,8 +489,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             lock()
             return@withLock
         }
+        val groups = rows.map { it.group }.filter { it.isNotEmpty() }.distinct().sorted()
         _state.update {
-            if (it.locked || it.lockEpoch != before.lockEpoch) it else it.copy(rows = rows, epochSeconds = now)
+            if (it.locked || it.lockEpoch != before.lockEpoch) it else it.copy(rows = rows, epochSeconds = now, groups = groups)
         }
     }
 
@@ -482,6 +526,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             keyLevel = keyLevels.getOrPut(account.id) { repository.keyLevel(account) },
             code = code,
             unusable = unusable,
+            group = account.group,
         )
     }
 

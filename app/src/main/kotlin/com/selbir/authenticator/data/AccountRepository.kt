@@ -29,7 +29,7 @@ class AccountRepository(
     fun all(): List<Account> = accounts ?: store.load().also { accounts = it }
 
     @Synchronized
-    fun add(spec: OtpSpec, protection: Protection): Account {
+    fun add(spec: OtpSpec, protection: Protection, group: String = ""): Account {
         val id = UUID.randomUUID().toString()
         if (protection == Protection.HARDWARE_BOUND) secrets.importHmacKey(keyAlias(id), spec.secret, spec.algorithm)
         val account = Account(
@@ -42,6 +42,7 @@ class AccountRepository(
             period = spec.period,
             counter = spec.counter,
             protection = protection,
+            group = group,
             wrappedSecret = if (protection == Protection.EXPORTABLE) wrapSecret(spec.secret) else null,
         )
         try {
@@ -119,6 +120,11 @@ class AccountRepository(
     @Synchronized
     fun rename(id: String, issuer: String, name: String) {
         persist(all().map { if (it.id == id) it.copy(issuer = issuer, name = name) else it })
+    }
+
+    @Synchronized
+    fun setGroup(id: String, group: String) {
+        persist(all().map { if (it.id == id) it.copy(group = group) else it })
     }
 
     @Synchronized

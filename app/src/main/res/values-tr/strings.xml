@@ -36,6 +36,9 @@
 
     <string name="edit_title">Hesabı düzenle</string>
     <string name="search_hint">Hesap ara</string>
+    <string name="field_group">Grup</string>
+    <string name="group_hint">ör. İş, Kişisel, Finans</string>
+    <string name="group_all">Tümü</string>
     <string name="code_tap_to_reveal">Görmek ve kopyalamak için dokunun</string>
     <string name="delete_title">Hesap kaldırılsın mı?</string>
     <string name="delete_body">%1$s bu cihazdan kaldırılacak. Bu hesapta iki adımlı doğrulama hâlâ açıksa hesaba erişiminizi kaybedebilirsiniz.</string>
@@ -47,6 +50,11 @@
     <string name="field_issuer">Hizmet (örneğin GitHub)</string>
     <string name="field_account">Hesap (örneğin e-posta adresiniz)</string>
     <string name="field_secret">Gizli anahtar</string>
+    <string name="field_algorithm">Algoritma</string>
+    <string name="field_digits">Basamak</string>
+    <string name="field_period">Periyot</string>
+    <string name="advanced_show">Gelişmiş seçenekler</string>
+    <string name="advanced_hide">Gelişmişi gizle</string>
     <string name="secret_invalid">Bu gizli anahtar geçerli değil. Yalnızca A–Z harfleri ile 2–7 rakamlarını içermelidir.</string>
 
     <string name="protection_title">Anahtar saklama</string>
@@ -68,6 +76,11 @@
     <string name="passphrase_too_short">En az 8 karakter kullanın.</string>
     <string name="passphrase_mismatch">İki parola birbiriyle aynı değil.</string>
     <string name="backup_working">Çalışıyor… Bu birkaç saniye sürebilir.</string>
+
+    <string name="backup_prompt_title">Hesaplarınızı yedekleyin</string>
+    <string name="backup_prompt_body">Bu cihazı kaybederseniz kodlarınızı kurtarabilmek için şifreli bir yedek oluşturun.</string>
+    <string name="backup_prompt_confirm">Yedek oluştur</string>
+    <string name="backup_prompt_dismiss">Sonra</string>
 
     <string name="export_title">Yedeği dışa aktar</string>
     <string name="export_body">Hesaplarınızı, seçeceğiniz bir parolayla şifrelenmiş bir dosyaya kaydeder. Hem dosyayı hem parolayı ele geçiren biri kodlarınızı üretebilir; bu yüzden tahmin edilmesi zor bir parola seçin.</string>

@@ -1,6 +1,9 @@
 package com.selbir.authenticator.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.res.stringResource
 import com.selbir.authenticator.R
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.BiometricGate
@@ -60,6 +64,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             BackHandler { viewModel.navigate(Screen.List) }
             AddAccountScreen(
                 form = form,
+                groups = state.groups,
                 onBack = { viewModel.navigate(Screen.List) },
                 onScannerVisible = { viewModel.childActivityInFront = it },
                 onSave = {
@@ -71,7 +76,8 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
                             form.saving = true
                             form.errorRes = null
                             val protection = form.protection
-                            val result = withAuthRetry(viewModel, promptOnce) { viewModel.addAccount(spec, protection) }
+                            val group = form.group
+                            val result = withAuthRetry(viewModel, promptOnce) { viewModel.addAccount(spec, protection, group) }
                             form.saving = false
                             if (result == OpResult.Failed) {
                                 form.errorRes = if (protection == Protection.HARDWARE_BOUND) {
@@ -161,7 +167,27 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onLock = viewModel::lock,
             onDelete = viewModel::delete,
             onRename = viewModel::rename,
+            onSelectGroup = viewModel::selectGroup,
+            onSetGroup = viewModel::setGroup,
             onNextHotp = { id -> scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.generateHotp(id) } } },
+        )
+    }
+
+    if (viewModel.showBackupPrompt) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissBackupPrompt,
+            title = { Text(stringResource(R.string.backup_prompt_title)) },
+            text = { Text(stringResource(R.string.backup_prompt_body)) },
+            confirmButton = {
+                TextButton(onClick = viewModel::acceptBackupPrompt) {
+                    Text(stringResource(R.string.backup_prompt_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissBackupPrompt) {
+                    Text(stringResource(R.string.backup_prompt_dismiss))
+                }
+            },
         )
     }
 }

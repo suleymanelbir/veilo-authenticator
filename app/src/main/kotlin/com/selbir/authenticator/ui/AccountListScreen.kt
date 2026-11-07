@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -62,6 +65,8 @@ fun AccountListScreen(
     onLock: () -> Unit,
     onDelete: (String) -> Unit,
     onRename: (String, String, String) -> Unit,
+    onSelectGroup: (String?) -> Unit,
+    onSetGroup: (String, String) -> Unit,
     onNextHotp: (String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -138,7 +143,11 @@ fun AccountListScreen(
         },
     ) { padding ->
         val rows = state.rows
-        val filteredRows = if (searchQuery.isBlank()) rows else rows?.filter { row ->
+        val groupFiltered = when (state.selectedGroup) {
+            null -> rows
+            else -> rows?.filter { it.group == state.selectedGroup }
+        }
+        val filteredRows = if (searchQuery.isBlank()) groupFiltered else groupFiltered?.filter { row ->
             row.issuer.contains(searchQuery, ignoreCase = true) ||
                 row.name.contains(searchQuery, ignoreCase = true)
         }
@@ -158,6 +167,27 @@ fun AccountListScreen(
 
             else -> LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = padding) {
                 if (state.risks.isNotEmpty()) item(key = RISK_BANNER_KEY) { RiskBanner(state.risks) }
+                if (state.groups.isNotEmpty()) item(key = GROUP_CHIPS_KEY) {
+                    LazyRow(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        item {
+                            FilterChip(
+                                selected = state.selectedGroup == null,
+                                onClick = { onSelectGroup(null) },
+                                label = { Text(stringResource(R.string.group_all)) },
+                            )
+                        }
+                        items(state.groups) { group ->
+                            FilterChip(
+                                selected = state.selectedGroup == group,
+                                onClick = { onSelectGroup(group) },
+                                label = { Text(group) },
+                            )
+                        }
+                    }
+                }
                 items(filteredRows, key = { it.id }) { row ->
                     val revealed = row.id in revealedIds
                     AccountItem(
@@ -238,9 +268,11 @@ fun AccountListScreen(
     editingRow?.let { row ->
         EditAccountDialog(
             row = row,
+            groups = state.groups,
             onDismiss = { editingRow = null },
-            onSave = { issuer, name ->
+            onSave = { issuer, name, group ->
                 onRename(row.id, issuer, name)
+                if (group != row.group) onSetGroup(row.id, group)
                 editingRow = null
             },
         )
@@ -250,11 +282,13 @@ fun AccountListScreen(
 @Composable
 private fun EditAccountDialog(
     row: AccountRow,
+    groups: List<String> = emptyList(),
     onDismiss: () -> Unit,
-    onSave: (issuer: String, name: String) -> Unit,
+    onSave: (issuer: String, name: String, group: String) -> Unit,
 ) {
     var issuer by remember(row.id) { mutableStateOf(row.issuer) }
     var name by remember(row.id) { mutableStateOf(row.name) }
+    var group by remember(row.id) { mutableStateOf(row.group) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -275,11 +309,31 @@ private fun EditAccountDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
+                OutlinedTextField(
+                    value = group,
+                    onValueChange = { group = it },
+                    label = { Text(stringResource(R.string.field_group)) },
+                    placeholder = { Text(stringResource(R.string.group_hint)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                if (groups.isNotEmpty()) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        items(groups) { g ->
+                            FilterChip(
+                                selected = group == g,
+                                onClick = { group = g },
+                                label = { Text(g, style = MaterialTheme.typography.labelSmall) },
+                                modifier = Modifier.height(32.dp),
+                            )
+                        }
+                    }
+                }
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(issuer.trim(), name.trim()) },
+                onClick = { onSave(issuer.trim(), name.trim(), group.trim()) },
                 enabled = issuer.isNotBlank() || name.isNotBlank(),
             ) { Text(stringResource(R.string.action_save)) }
         },
@@ -294,6 +348,7 @@ private val AccountRow.displayTitle: String
 
 /** Account ids are UUIDs, so this cannot collide with a row key. */
 private const val RISK_BANNER_KEY = "risk-banner"
+private const val GROUP_CHIPS_KEY = "group-chips"
 
 /** Warns, without blocking: the checks behind it can be wrong in both directions. */
 @Composable
