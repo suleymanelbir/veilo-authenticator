@@ -1,8 +1,8 @@
-# Privacy Policy — Symbolon Authenticator
+# Privacy Policy — Axon Gate
 
-Last updated: 6 November 2026
+Last updated: 7 November 2026
 
-**Symbolon Authenticator does not collect, transmit or share any personal data.** The app
+**Axon Gate does not collect, transmit or share any personal data.** The app
 has no internet permission: it cannot send anything off your device.
 
 ## What stays on your device
@@ -51,11 +51,11 @@ Questions about this policy: <suleymanelbir@gmail.com>
 
 ---
 
-# Gizlilik Politikası — Symbolon Authenticator
+# Gizlilik Politikası — Axon Gate
 
-Son güncelleme: 6 Kasım 2026
+Son güncelleme: 7 Kasım 2026
 
-**Symbolon Authenticator hiçbir kişisel veriyi toplamaz, iletmez ve paylaşmaz.**
+**Axon Gate hiçbir kişisel veriyi toplamaz, iletmez ve paylaşmaz.**
 Uygulamanın internet izni yoktur: cihazınızdan dışarıya hiçbir şey gönderemez.
 
 ## Cihazınızda kalanlar

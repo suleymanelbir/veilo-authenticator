@@ -20,7 +20,7 @@ android {
     defaultConfig {
         // Permanent once published on Google Play. It differs from the code namespace
         // above on purpose: the ID carries the product name, the code does not.
-        applicationId = "com.selbir.symbolon"
+        applicationId = "com.selbir.axongate"
         // 30 is the first release where a Keystore key can require
         // "strong biometric OR device credential" (setUserAuthenticationParameters).
         minSdk = 30

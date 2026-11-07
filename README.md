@@ -1,12 +1,12 @@
-# Symbolon Authenticator
+# Axon Gate
 
 > The product name is defined in one place (`app_name` in
-> `app/src/main/res/values/strings.xml`). The application ID is `com.selbir.symbolon`;
+> `app/src/main/res/values/strings.xml`). The application ID is `com.selbir.axongate`;
 > the code keeps the `com.selbir.authenticator` namespace.
 >
-> A *symbolon* was the ancient Greek token broken in two: each party kept one half, and
-> the halves fitting together proved who they were. A one-time-password secret works the
-> same way, shared between this app and the service it signs in to.
+> An *axon* carries signals across the nervous system; a *gate* controls which signals
+> pass through. An authenticator works the same way — it holds a shared secret and
+> opens the gate only when the right code is presented.
 
 An offline, open-source one-time-password authenticator for Android whose keys live in
 the device's secure hardware.
