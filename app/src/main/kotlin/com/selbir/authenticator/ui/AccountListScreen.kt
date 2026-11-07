@@ -189,23 +189,30 @@ fun AccountListScreen(
             onDismissRequest = { pendingEdit = null },
             title = { Text(row.displayTitle) },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TextButton(onClick = {
-                        val target = row
-                        pendingEdit = null
-                        pendingDelete = target
-                    }) { Text(stringResource(R.string.action_delete)) }
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(
+                        onClick = {
+                            pendingEdit = null
+                            editingRow = row
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text(stringResource(R.string.action_edit)) }
+                    TextButton(
+                        onClick = {
+                            val target = row
+                            pendingEdit = null
+                            pendingDelete = target
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(
+                            stringResource(R.string.action_delete),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 }
             },
-            confirmButton = {
-                TextButton(onClick = {
-                    pendingEdit = null
-                    editingRow = row
-                }) { Text(stringResource(R.string.action_edit)) }
-            },
-            dismissButton = {
-                TextButton(onClick = { pendingEdit = null }) { Text(stringResource(R.string.action_cancel)) }
-            },
+            confirmButton = {},
         )
     }
 
