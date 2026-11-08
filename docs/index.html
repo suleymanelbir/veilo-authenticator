@@ -1,19 +1,24 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gizlilik Politikasi — Veilo Authenticator</title>
-    <meta name="description" content="Veilo Authenticator gizlilik politikasi. Uygulama hicbir kisisel veri toplamaz, iletmez ve paylasmaz.">
-    <link rel="canonical" href="https://veilo.tr/authenticator/privacy">
+    <title>Veilo Authenticator — Offline 2FA with Hardware-Backed Security</title>
+    <meta name="description" content="Veilo Authenticator: offline, open-source two-factor authentication for Android. Hardware-backed keys, zero tracking, encrypted backup. TOTP &amp; HOTP, MFA, OTP security.">
+    <meta name="keywords" content="authenticator, 2FA, TOTP, HOTP, OTP, MFA, two factor authentication, security, offline authenticator, hardware-backed, StrongBox, open source, Android">
+    <link rel="canonical" href="https://suleymanelbir.github.io/veilo-authenticator/">
     <style>
         :root {
             --bg: #0a0f1a;
             --surface: #111827;
+            --card: #1a2332;
             --text: #e2e8f0;
             --muted: #94a3b8;
             --accent: #00C875;
+            --accent2: #00A3FF;
+            --danger: #ef4444;
             --border: #1e293b;
+            --gradient: linear-gradient(135deg, #00C875, #00A3FF);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -21,180 +26,436 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.7;
-            padding: 2rem 1rem;
         }
-        .container {
-            max-width: 720px;
-            margin: 0 auto;
+        .container { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* Nav */
+        nav {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
         }
-        .lang-switch {
-            text-align: right;
-            margin-bottom: 2rem;
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .lang-switch a {
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.9rem;
-            padding: 0.4rem 0.8rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-        }
-        .lang-switch a:hover { border-color: var(--accent); }
-        h1 {
-            font-family: 'Syne', 'Inter', sans-serif;
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-        }
-        .updated {
+        .logo { font-weight: 700; font-size: 1.2rem; color: var(--accent); text-decoration: none; }
+        .nav-links a {
             color: var(--muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
-        }
-        .lead {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background: var(--surface);
-            border-left: 3px solid var(--accent);
-            border-radius: 4px;
-        }
-        h2 {
-            font-size: 1.2rem;
-            margin: 2rem 0 0.8rem;
-            color: var(--text);
-        }
-        p, li { margin-bottom: 0.6rem; }
-        ul { padding-left: 1.5rem; }
-        li strong { color: var(--text); }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-        }
-        th, td {
-            text-align: left;
-            padding: 0.6rem 0.8rem;
-            border: 1px solid var(--border);
-        }
-        th {
-            background: var(--surface);
-            color: var(--accent);
-            font-weight: 600;
-        }
-        a { color: var(--accent); }
-        hr {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 3rem 0;
-        }
-        .back {
-            display: inline-block;
-            margin-top: 2rem;
-            color: var(--accent);
             text-decoration: none;
+            margin-left: 1.5rem;
             font-size: 0.9rem;
+            transition: color 0.2s;
         }
-        .back:hover { text-decoration: underline; }
-        .section { display: none; }
-        .section.active { display: block; }
+        .nav-links a:hover { color: var(--accent); }
+        .lang-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .lang-btn:hover { border-color: var(--accent); color: var(--text); }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 5rem 0 3rem;
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .hero .cta {
+            display: inline-block;
+            background: var(--gradient);
+            color: #000;
+            font-weight: 700;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            transition: transform 0.2s;
+        }
+        .hero .cta:hover { transform: translateY(-2px); }
+        .badge-row {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* Features */
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 4rem 0 0.5rem;
+        }
+        .section-subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 3rem;
+        }
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .feature-card:hover { border-color: var(--accent); }
+        .feature-card .icon { font-size: 1.6rem; margin-bottom: 0.8rem; }
+        .feature-card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+        .feature-card p { color: var(--muted); font-size: 0.9rem; }
+
+        /* Security */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 3rem;
+        }
+        .security-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.8rem 1rem;
+            background: var(--surface);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent);
+        }
+        .security-item .check { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+        .security-item span { font-size: 0.9rem; }
+
+        /* Ecosystem */
+        .eco-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+        .eco-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .eco-card:hover { border-color: var(--accent2); transform: translateY(-2px); }
+        .eco-card h4 { color: var(--accent2); margin-bottom: 0.3rem; }
+        .eco-card p { color: var(--muted); font-size: 0.85rem; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .hero .tagline { font-size: 1rem; }
+            .nav-links a { margin-left: 0.8rem; font-size: 0.8rem; }
+        }
+
+        /* Localization */
+        .lang { display: none; }
+        .lang.active { display: block; }
+        .lang-inline { display: none; }
+        .lang-inline.active { display: inline; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="lang-switch">
-            <a href="#" onclick="switchLang('tr'); return false;" id="btn-tr">Turkce</a>
-            <a href="#" onclick="switchLang('en'); return false;" id="btn-en">English</a>
+    <nav>
+        <div class="container">
+            <a href="https://veilo.tr" class="logo">Veilo</a>
+            <div class="nav-links">
+                <a href="#features" class="lang-inline active" data-lang="en">Features</a>
+                <a href="#features" class="lang-inline" data-lang="tr">Ozellikler</a>
+                <a href="#security" class="lang-inline active" data-lang="en">Security</a>
+                <a href="#security" class="lang-inline" data-lang="tr">Guvenlik</a>
+                <a href="privacy.html" class="lang-inline active" data-lang="en">Privacy</a>
+                <a href="privacy.html" class="lang-inline" data-lang="tr">Gizlilik</a>
+                <button class="lang-btn" onclick="toggleLang()">TR / EN</button>
+            </div>
         </div>
+    </nav>
 
-        <!-- TURKISH -->
-        <div id="lang-tr" class="section active">
-            <h1>Gizlilik Politikasi</h1>
-            <p class="updated">Son guncelleme: 7 Kasim 2026</p>
-            <p class="lead"><strong>Veilo Authenticator hicbir kisisel veriyi toplamaz, iletmez ve paylasmaz.</strong> Uygulamanin internet izni yoktur: cihazinizdan disariya hicbir sey gonderemez.</p>
+    <!-- ENGLISH -->
+    <div class="lang active" data-lang="en">
+        <section class="hero">
+            <div class="container">
+                <h1>Veilo Authenticator</h1>
+                <p class="tagline">Offline two-factor authentication with hardware-backed security. No internet. No account. No tracking. Your keys never leave your device.</p>
+                <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="cta">Get it on Google Play</a>
+                <div class="badge-row">
+                    <span class="badge">TOTP &amp; HOTP</span>
+                    <span class="badge">SHA-1 / SHA-256 / SHA-512</span>
+                    <span class="badge">6–8 digits</span>
+                    <span class="badge">Android 11+</span>
+                    <span class="badge">Open Source</span>
+                </div>
+            </div>
+        </section>
 
-            <h2>Cihazinizda kalanlar</h2>
-            <ul>
-                <li><strong>Hesaplariniz.</strong> Girdiginiz ya da taradiginiz hizmet ve hesap adlari ile kod uretmekte kullanilan gizli anahtarlar. Gizli anahtarlar cihazin guvenli donaniminda (Android Keystore) tutulur ya da onunla sifrelenir. Uygulamanin ozel depolama alaninda saklanir; Android bulut yedeklemesine ve cihazdan cihaza aktarima dahil edilmez.</li>
-                <li><strong>Baska hicbir sey.</strong> Uygulamada analiz, reklam, hata raporlama ya da ucuncu taraf hizmeti yoktur; kullanici hesabi olusturulmaz.</li>
-            </ul>
+        <div class="container">
+            <h2 class="section-title" id="features">Features</h2>
+            <p class="section-subtitle">Everything you need for secure two-factor authentication</p>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="icon">&#128274;</div>
+                    <h3>Hardware-Backed Keys</h3>
+                    <p>Secrets stored in Android Keystore with StrongBox security chip support. Keys never return to app memory.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128225;</div>
+                    <h3>QR Code Scanner</h3>
+                    <p>Scan otpauth:// QR codes instantly. Automatic detection of algorithm, digits, and period parameters.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128274;</div>
+                    <h3>Biometric Lock</h3>
+                    <p>Fingerprint, face, or device PIN required to unlock. Auto-locks when leaving the app.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128230;</div>
+                    <h3>Encrypted Backup</h3>
+                    <p>Export accounts to a passphrase-protected file (Argon2id + AES-256-GCM). Import on any device.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128196;</div>
+                    <h3>Printable PDF</h3>
+                    <p>Generate a PDF with QR codes for all accounts. Print and store as a physical offline backup.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128259;</div>
+                    <h3>Easy Migration</h3>
+                    <p>Import from Google Authenticator, Microsoft Authenticator, or Aegis with one scan or file pick.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128204;</div>
+                    <h3>Favorites &amp; Groups</h3>
+                    <p>Pin frequently used accounts to the top. Organize with custom groups: Work, Personal, Finance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#127760;</div>
+                    <h3>Fully Offline</h3>
+                    <p>INTERNET permission explicitly removed. No analytics, no tracking, no third-party services. Air-gapped by design.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#127463;&#127479;</div>
+                    <h3>Multilingual</h3>
+                    <p>Available in English, Turkish, and Arabic. RTL layout fully supported.</p>
+                </div>
+            </div>
 
-            <h2>Izinler</h2>
-            <table>
-                <tr><th>Izin</th><th>Neden</th></tr>
-                <tr><td>Kamera</td><td>Yalnizca hesap eklerken QR kodu taramak icin. Goruntuler cihazda islenir; saklanmaz ve hicbir yere gonderilmez.</td></tr>
-                <tr><td>Biyometri / ekran kilidi</td><td>Kilit acma islemini Android yurutur. Uygulama parmak izinizi, yuzunuzu ya da PIN'inizi hicbir zaman almaz; yalnizca dogrulamanin basarili olup olmadigini ogrenir.</td></tr>
-            </table>
+            <h2 class="section-title" id="security">Security</h2>
+            <p class="section-subtitle">Built for security from the ground up</p>
+            <div class="security-grid">
+                <div class="security-item"><span class="check">&#10003;</span><span>Hardware-backed Android Keystore (StrongBox)</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Biometric or device credential required</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Screen capture &amp; app-switcher blocked</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Clipboard auto-clear in 30 seconds</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Secret keys zeroed in memory after use</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Root &amp; debugger detection</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>No internet permission — air-gapped</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>No analytics, tracking, or third-party SDKs</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Encrypted backup (Argon2id + AES-256-GCM)</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>ProGuard/R8 code obfuscation</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Cloud backup &amp; device transfer disabled</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Open source — auditable code</span></div>
+            </div>
 
-            <h2>Sizin tercihinizle olanlar</h2>
-            <ul>
-                <li><strong>Kod kopyalamak</strong>, kodu cihazin panosuna koyar; kullandiginiz diger uygulamalar panoyu okuyabilir. Uygulama kodu yaklasik 30 saniye sonra panodan siler.</li>
-                <li><strong>Yedek disa aktarmak</strong>, sectiginiz parolayla sifrelenmis bir dosyayi belirlediginiz konuma yazar. O andan sonra dosya uygulamanin degil, sizin denetiminizdir.</li>
-            </ul>
-
-            <h2>Verilerinizi silmek</h2>
-            <p>Uygulama icinden bir hesabi kaldirabilir ya da uygulamayi kaldirarak (veya Android ayarlarindan verilerini temizleyerek) sakladigi her seyi silebilirsiniz. Disa aktardiginiz yedek dosyalarini, kaydettiginiz yerden ayrica silmeniz gerekir.</p>
-
-            <h2>Uygulama magazalari</h2>
-            <p>Uygulamayi bir uygulama magazasindan kurarsaniz, magaza isletmecisi kendi gizlilik politikasi kapsaminda kurulum ve cokme istatistikleri gibi bilgiler toplayabilir. Uygulamanin kendisi hicbir sey gondermez.</p>
-
-            <h2>Degisiklikler</h2>
-            <p>Bu politika degisirse yeni surum, yeni tarihiyle ayni adreste yayimlanir.</p>
-
-            <h2>Iletisim</h2>
-            <p>Bu politikayla ilgili sorulariniz icin: <a href="mailto:suleymanelbir@gmail.com">suleymanelbir@gmail.com</a></p>
-
-            <a href="https://veilo.tr" class="back">&larr; veilo.tr</a>
-        </div>
-
-        <!-- ENGLISH -->
-        <div id="lang-en" class="section">
-            <h1>Privacy Policy</h1>
-            <p class="updated">Last updated: 7 November 2026</p>
-            <p class="lead"><strong>Veilo Authenticator does not collect, transmit or share any personal data.</strong> The app has no internet permission: it cannot send anything off your device.</p>
-
-            <h2>What stays on your device</h2>
-            <ul>
-                <li><strong>Your accounts.</strong> The service and account names you enter or scan, and the secret keys used to generate codes. Secret keys are held in, or encrypted by, the device's secure hardware (Android Keystore). They are kept in the app's private storage and are excluded from Android cloud backup and device-to-device transfer.</li>
-                <li><strong>Nothing else.</strong> The app has no analytics, advertising, crash reporting or third-party services, and creates no user account.</li>
-            </ul>
-
-            <h2>Permissions</h2>
-            <table>
-                <tr><th>Permission</th><th>Why</th></tr>
-                <tr><td>Camera</td><td>Only to scan a QR code when you add an account. Images are processed on the device and are not stored or sent anywhere.</td></tr>
-                <tr><td>Biometrics / screen lock</td><td>Unlocking is handled by Android. The app never receives your fingerprint, face or PIN; it is only told whether the check succeeded.</td></tr>
-            </table>
-
-            <h2>Things you choose to do</h2>
-            <ul>
-                <li><strong>Copying a code</strong> places it on the device clipboard, where other apps you use may be able to read it. The app removes it again after about 30 seconds.</li>
-                <li><strong>Exporting a backup</strong> writes a file, encrypted with a passphrase you choose, to the location you pick. From then on that file is under your control, not the app's.</li>
-            </ul>
-
-            <h2>Deleting your data</h2>
-            <p>Remove an account inside the app, or uninstall the app (or clear its data in Android settings) to delete everything it has stored. Backup files you exported must be deleted separately, wherever you saved them.</p>
-
-            <h2>App stores</h2>
-            <p>If you install the app from an app store, the store operator may collect information such as installs and crash statistics under its own privacy policy. The app itself sends nothing.</p>
-
-            <h2>Changes</h2>
-            <p>If this policy changes, the new version will be published at the same address with a new date.</p>
-
-            <h2>Contact</h2>
-            <p>Questions about this policy: <a href="mailto:suleymanelbir@gmail.com">suleymanelbir@gmail.com</a></p>
-
-            <a href="https://veilo.tr" class="back">&larr; veilo.tr</a>
+            <h2 class="section-title">Veilo Ecosystem</h2>
+            <p class="section-subtitle">Part of a complete enterprise security suite</p>
+            <div class="eco-grid">
+                <a href="https://veilo.tr/" class="eco-card">
+                    <h4>Veilo Messenger</h4>
+                    <p>End-to-end encrypted enterprise messaging for closed networks</p>
+                </a>
+                <a href="https://axon.veilo.tr/" class="eco-card">
+                    <h4>Axon</h4>
+                    <p>Smart backbone for enterprise infrastructure management</p>
+                </a>
+                <a href="https://radar.veilo.tr/" class="eco-card">
+                    <h4>Radar</h4>
+                    <p>Real-time attack detection and automated response</p>
+                </a>
+                <a href="https://volt.veilo.tr/" class="eco-card">
+                    <h4>Voltbox</h4>
+                    <p>Zero-knowledge enterprise password vault</p>
+                </a>
+            </div>
         </div>
     </div>
 
+    <!-- TURKISH -->
+    <div class="lang" data-lang="tr">
+        <section class="hero">
+            <div class="container">
+                <h1>Veilo Authenticator</h1>
+                <p class="tagline">Donanim destekli guvenlikle cevrimdisi iki faktorlu dogrulama. Internet yok. Hesap yok. Izleme yok. Anahtarlariniz asla cihazinizdan cikmaz.</p>
+                <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="cta">Google Play'den Indir</a>
+                <div class="badge-row">
+                    <span class="badge">TOTP &amp; HOTP</span>
+                    <span class="badge">SHA-1 / SHA-256 / SHA-512</span>
+                    <span class="badge">6–8 hane</span>
+                    <span class="badge">Android 11+</span>
+                    <span class="badge">Acik Kaynak</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <h2 class="section-title" id="features-tr">Ozellikler</h2>
+            <p class="section-subtitle">Guvenli iki faktorlu dogrulama icin ihtiyaciniz olan her sey</p>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="icon">&#128274;</div>
+                    <h3>Donanim Destekli Anahtarlar</h3>
+                    <p>Gizli anahtarlar StrongBox guvenlik cipi destekli Android Keystore'da saklanir. Anahtarlar asla uygulama bellegine donmez.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128225;</div>
+                    <h3>QR Kod Tarayici</h3>
+                    <p>otpauth:// QR kodlarini aninda tarayin. Algoritma, hane sayisi ve periyot parametreleri otomatik algilanir.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128274;</div>
+                    <h3>Biyometrik Kilit</h3>
+                    <p>Parmak izi, yuz veya cihaz PIN'i gerekli. Uygulamadan ayrilinca otomatik kilitlenir.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128230;</div>
+                    <h3>Sifreli Yedekleme</h3>
+                    <p>Hesaplarinizi parola korumalı dosyaya aktarin (Argon2id + AES-256-GCM). Herhangi bir cihazda iceri aktarin.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128196;</div>
+                    <h3>Yazdirilabilir PDF</h3>
+                    <p>Tum hesaplar icin QR kodlu PDF olusturun. Yazdirip fiziksel cevrimdisi yedek olarak saklayin.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128259;</div>
+                    <h3>Kolay Goc</h3>
+                    <p>Google Authenticator, Microsoft Authenticator veya Aegis'ten tek tarama veya dosya secimiyle aktarin.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#128204;</div>
+                    <h3>Favoriler ve Gruplar</h3>
+                    <p>Sik kullanilan hesaplari uste sabitleyin. Ozel gruplarla duzenleyin: Is, Kisisel, Finans.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#127760;</div>
+                    <h3>Tamamen Cevrimdisi</h3>
+                    <p>INTERNET izni acikca kaldirilmis. Analitik, izleme, ucuncu taraf hizmeti yok. Tasarim geregi hava boslukludi.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">&#127463;&#127479;</div>
+                    <h3>Cok Dilli</h3>
+                    <p>Ingilizce, Turkce ve Arapca destegi. RTL duzen tam desteklenir.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title" id="security-tr">Guvenlik</h2>
+            <p class="section-subtitle">Temelinden guvenlik icin insa edildi</p>
+            <div class="security-grid">
+                <div class="security-item"><span class="check">&#10003;</span><span>Donanim destekli Android Keystore (StrongBox)</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Biyometrik veya cihaz kimlik bilgisi gerekli</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Ekran goruntusu ve uygulama degistirici engelli</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Pano 30 saniyede otomatik temizlenir</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Gizli anahtarlar kullanim sonrasi bellekte sifirlanir</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Root ve hata ayiklayici tespiti</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Internet izni yok — hava boslukludi</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Analitik, izleme veya ucuncu taraf SDK'si yok</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Sifreli yedekleme (Argon2id + AES-256-GCM)</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>ProGuard/R8 kod karartma</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Bulut yedekleme ve cihaz aktarimi devre disi</span></div>
+                <div class="security-item"><span class="check">&#10003;</span><span>Acik kaynak — denetlenebilir kod</span></div>
+            </div>
+
+            <h2 class="section-title">Veilo Ekosistemi</h2>
+            <p class="section-subtitle">Tam bir kurumsal guvenlik paketinin parcasi</p>
+            <div class="eco-grid">
+                <a href="https://veilo.tr/" class="eco-card">
+                    <h4>Veilo Messenger</h4>
+                    <p>Kapali aglar icin uctan uca sifreli kurumsal mesajlasma</p>
+                </a>
+                <a href="https://axon.veilo.tr/" class="eco-card">
+                    <h4>Axon</h4>
+                    <p>Kurumsal altyapi yonetiminin akilli omurgasi</p>
+                </a>
+                <a href="https://radar.veilo.tr/" class="eco-card">
+                    <h4>Radar</h4>
+                    <p>Gercek zamanli saldiri tespit ve otomatik mudahale</p>
+                </a>
+                <a href="https://volt.veilo.tr/" class="eco-card">
+                    <h4>Voltbox</h4>
+                    <p>Sifir bilgi mimarili kurumsal sifre kasasi</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 <a href="https://veilo.tr">Veilo Technology</a>. All rights reserved.</p>
+            <p style="margin-top: 0.5rem;"><a href="privacy.html">Privacy Policy</a> · <a href="https://github.com/suleymanelbir/veilo-authenticator">GitHub</a></p>
+        </div>
+    </footer>
+
     <script>
-        function switchLang(lang) {
-            document.getElementById('lang-tr').classList.toggle('active', lang === 'tr');
-            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-            document.documentElement.lang = lang === 'en' ? 'en' : 'tr';
+        let currentLang = (navigator.language && navigator.language.startsWith('tr')) ? 'tr' : 'en';
+        function toggleLang() {
+            currentLang = currentLang === 'en' ? 'tr' : 'en';
+            applyLang();
         }
-        if (navigator.language && navigator.language.startsWith('en')) switchLang('en');
+        function applyLang() {
+            document.querySelectorAll('.lang').forEach(el => {
+                el.classList.toggle('active', el.dataset.lang === currentLang);
+            });
+            document.querySelectorAll('.lang-inline').forEach(el => {
+                el.classList.toggle('active', el.dataset.lang === currentLang);
+            });
+            document.documentElement.lang = currentLang;
+        }
+        applyLang();
     </script>
 </body>
 </html>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_unlock">فتح القفل</string>
+    <string name="action_lock">قفل</string>
+    <string name="action_back">رجوع</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_save">حفظ</string>
+    <string name="action_delete">إزالة</string>
+    <string name="action_add_account">إضافة حساب</string>
+    <string name="action_edit">تعديل</string>
+    <string name="action_pin">تثبيت في الأعلى</string>
+    <string name="action_unpin">إلغاء التثبيت</string>
+    <string name="action_next_code">إنشاء الرمز التالي</string>
+    <string name="action_scan_qr">مسح رمز QR</string>
+    <string name="action_open_settings">فتح إعدادات الأمان</string>
+
+    <string name="unlock_prompt_title">افتح رموزك</string>
+    <string name="unlock_prompt_subtitle">أكّد هويتك لاستخدام المفاتيح المخزنة على هذا الجهاز</string>
+    <string name="lock_screen_message">مقفل</string>
+
+    <string name="setup_required_title">قفل الشاشة مطلوب</string>
+    <string name="setup_required_body">يتم حفظ مفاتيحك في العتاد الآمن لهذا الجهاز، ولا يتم إطلاقها إلا بعد فتح القفل باستخدام رمز PIN أو نمط أو كلمة مرور أو مقاييس حيوية قوية. قم بإعداد أحدها للمتابعة.</string>
+
+    <string name="accounts_empty">لا توجد حسابات بعد. اضغط + لإضافة حساب.</string>
+    <plurals name="code_copied">
+        <item quantity="one">تم نسخ الرمز. سيُمسح من الحافظة خلال %1$d ثانية.</item>
+        <item quantity="other">تم نسخ الرمز. سيُمسح من الحافظة خلال %1$d ثانية.</item>
+    </plurals>
+    <string name="badge_hardware_bound">مرتبط بهذا الجهاز</string>
+    <string name="badge_hardware_bound_strongbox">مرتبط بهذا الجهاز · شريحة أمان (StrongBox)</string>
+    <string name="badge_hardware_bound_tee">مرتبط بهذا الجهاز · عتاد آمن</string>
+    <string name="badge_hardware_bound_software">مرتبط بهذا الجهاز · حماية برمجية فقط</string>
+    <string name="badge_wrapped_software">لا يحتوي هذا الجهاز على عتاد آمن: المفتاح محمي بالبرمجيات فقط</string>
+    <string name="risk_rooted">يبدو أن هذا الجهاز مُعدّل (root). على مثل هذا الجهاز، يمكن للبرامج ذات صلاحيات الجذر الوصول إلى مفاتيحك.</string>
+    <string name="risk_debugger">هناك مصحح أخطاء متصل بهذا التطبيق. إذا لم تكن أنت من فعل ذلك، أغلق التطبيق.</string>
+    <string name="key_unusable">لم يعد بالإمكان استخدام هذا المفتاح. أزل الحساب وأعد إضافته.</string>
+    <string name="hotp_hidden">اضغط على السهم لإنشاء رمز</string>
+
+    <string name="edit_title">تعديل الحساب</string>
+    <string name="search_hint">البحث في الحسابات</string>
+    <string name="field_group">المجموعة</string>
+    <string name="group_hint">مثال: عمل، شخصي، مالي</string>
+    <string name="group_all">الكل</string>
+    <string name="code_tap_to_reveal">اضغط للكشف والنسخ</string>
+    <string name="delete_title">إزالة الحساب؟</string>
+    <string name="delete_body">سيتم إزالة %1$s من هذا الجهاز. إذا كان التحقق بخطوتين لا يزال مفعّلاً، فقد تفقد الوصول إلى هذا الحساب.</string>
+
+    <string name="add_title">إضافة حساب</string>
+    <string name="scan_prompt">وجّه الكاميرا نحو رمز QR</string>
+    <string name="scan_invalid">رمز QR هذا ليس رمز مصادقة.</string>
+    <string name="scan_loaded">تم تحميل المفتاح السري من رمز QR.</string>
+    <string name="field_issuer">الخدمة (مثال: GitHub)</string>
+    <string name="field_account">الحساب (مثال: بريدك الإلكتروني)</string>
+    <string name="field_secret">المفتاح السري</string>
+    <string name="field_algorithm">الخوارزمية</string>
+    <string name="field_digits">عدد الأرقام</string>
+    <string name="field_period">المدة</string>
+    <string name="advanced_show">خيارات متقدمة</string>
+    <string name="advanced_hide">إخفاء المتقدم</string>
+    <string name="secret_invalid">المفتاح السري غير صالح. يجب أن يحتوي فقط على الأحرف A–Z والأرقام 2–7.</string>
+
+    <string name="protection_title">تخزين المفتاح</string>
+    <string name="protection_exportable_title">قابل للنسخ الاحتياطي</string>
+    <string name="protection_exportable_body">مشفّر بمفتاح محفوظ في العتاد الآمن. يمكن تضمينه في نسخة احتياطية مشفرة.</string>
+    <string name="protection_hardware_title">مرتبط بهذا الجهاز</string>
+    <string name="protection_hardware_body">يتم نقل المفتاح إلى العتاد الآمن ولا يمكن قراءته أو نسخه احتياطياً أبداً. إذا فقدت هذا الهاتف، ستحتاج إلى التسجيل مجدداً.</string>
+
+    <string name="add_failed">تعذّرت إضافة الحساب.</string>
+    <string name="add_failed_hardware_hint">تعذّر ربط هذا المفتاح بعتاد الجهاز. جرّب الخيار القابل للنسخ الاحتياطي.</string>
+
+    <string name="action_more">خيارات إضافية</string>
+    <string name="action_export">حفظ ملف النسخة الاحتياطية</string>
+    <string name="action_choose_file">اختيار ملف النسخة الاحتياطية</string>
+    <string name="action_import">استيراد</string>
+
+    <string name="field_passphrase">عبارة المرور</string>
+    <string name="field_passphrase_confirm">أعد كتابة عبارة المرور</string>
+    <string name="passphrase_too_short">استخدم 8 أحرف على الأقل.</string>
+    <string name="passphrase_mismatch">عبارتا المرور غير متطابقتين.</string>
+    <string name="backup_working">جارٍ العمل… قد يستغرق بضع ثوانٍ.</string>
+
+    <string name="backup_prompt_title">انسخ حساباتك احتياطياً</string>
+    <string name="backup_prompt_body">أنشئ نسخة احتياطية مشفرة لتتمكن من استعادة رموزك إذا فقدت هذا الجهاز.</string>
+    <string name="backup_prompt_confirm">إنشاء نسخة احتياطية</string>
+    <string name="backup_prompt_dismiss">لاحقاً</string>
+
+    <string name="export_title">تصدير النسخة الاحتياطية</string>
+    <string name="export_body">يحفظ حساباتك في ملف مشفر بعبارة مرور تختارها. أي شخص يمتلك الملف وعبارة المرور يمكنه إنشاء رموزك، لذا اختر عبارة مرور يصعب تخمينها.</string>
+    <string name="export_included">الحسابات في هذه النسخة: %1$d</string>
+    <string name="export_excluded">غير مضمنة لأنها مرتبطة بهذا الجهاز: %1$d</string>
+    <string name="export_passphrase_warning">لا يتم تخزين عبارة المرور في أي مكان. إذا نسيتها، لا يمكن فتح النسخة الاحتياطية.</string>
+    <string name="export_failed">تعذّر حفظ النسخة الاحتياطية.</string>
+    <string name="export_done">تم حفظ النسخة الاحتياطية. عدد الحسابات: %1$d</string>
+
+    <string name="import_title">استيراد النسخة الاحتياطية</string>
+    <string name="import_body">يضيف الحسابات من ملف نسخة احتياطية أنشأه هذا التطبيق. يتم تخطي الحسابات الموجودة بالفعل على هذا الجهاز.</string>
+    <string name="import_file_loaded">تم تحميل ملف النسخة الاحتياطية.</string>
+    <string name="import_file_invalid">هذا الملف ليس نسخة احتياطية أنشأها هذا التطبيق.</string>
+    <string name="import_file_unsupported">لا يمكن قراءة هذه النسخة الاحتياطية بواسطة هذا الإصدار من التطبيق.</string>
+    <string name="import_file_unreadable">تعذّرت قراءة الملف.</string>
+    <string name="import_wrong_passphrase">عبارة المرور خاطئة، أو الملف تالف.</string>
+    <string name="import_failed">تعذّر استيراد الحسابات.</string>
+    <string name="import_done">تمت إضافة: %1$d حساب. موجود بالفعل على هذا الجهاز: %2$d</string>
+
+    <!-- حول التطبيق -->
+    <string name="about_title">حول التطبيق</string>
+    <string name="about_version">الإصدار %1$s</string>
+    <string name="about_tagline">بدون إنترنت. مدعوم بالعتاد. بدون تتبع.\nمفاتيحك لا تغادر جهازك أبداً.</string>
+    <string name="about_description">ينشئ Veilo Authenticator كلمات مرور لمرة واحدة مبنية على الوقت (TOTP) وعلى العدّاد (HOTP) للتحقق بخطوتين. يعمل بالكامل بدون اتصال بالإنترنت — بدون حساب وبدون تتبع.</string>
+
+    <string name="about_howto_title">كيفية الاستخدام</string>
+    <string name="about_howto_body">1. إضافة حساب: اضغط + وامسح رمز QR، أو أدخل المفتاح السري يدوياً.\n\n2. عرض الرموز: تظهر رموزك لمرة واحدة على الشاشة الرئيسية. اضغط للكشف والنسخ. يُمسح الرمز من الحافظة بعد 30 ثانية.\n\n3. المفضلة: اضغط مطولاً على حساب لتثبيته في أعلى القائمة.\n\n4. المجموعات: نظّم حساباتك في مجموعات (عمل، شخصي، مالي، إلخ) من شاشة التعديل.\n\n5. النسخ الاحتياطي: استخدم النسخ الاحتياطي المشفر لحفظ حساباتك في ملف محمي بعبارة مرور. يمكنك أيضاً إنشاء ملف PDF قابل للطباعة يحتوي على رموز QR.\n\n6. النقل: استورد حساباتك من Google Authenticator أو Microsoft Authenticator أو Aegis عبر قائمة النقل.\n\n7. القفل: يُقفل التطبيق تلقائياً عند مغادرته. افتحه بالمقاييس الحيوية أو رمز PIN الجهاز.</string>
+
+    <string name="about_security_title">الأمان</string>
+    <string name="about_security_body">• المفاتيح محفوظة في Android Keystore المدعوم بالعتاد (StrongBox عند التوفر)\n• مطلوب مقاييس حيوية أو بيانات اعتماد الجهاز لفتح القفل\n• حظر التقاط الشاشة ومعاينة مبدّل التطبيقات\n• مسح الرموز المنسوخة من الحافظة خلال 30 ثانية\n• تصفير بيانات المفاتيح السرية من الذاكرة بعد الاستخدام\n• كشف الجذر (root) ومصحح الأخطاء عند التشغيل\n• بدون إذن إنترنت — معزول بالكامل حسب التصميم\n• بدون تحليلات، بدون تتبع، بدون خدمات طرف ثالث\n• نسخ احتياطي مشفر مع اشتقاق مفتاح مبني على عبارة المرور\n• تشويش الكود بـ ProGuard/R8 في إصدارات الإنتاج\n• النسخ الاحتياطي السحابي ونقل الجهاز معطّلان صراحةً</string>
+    <string name="about_ecosystem_title">منظومة Veilo</string>
+    <string name="about_ecosystem_body">Veilo Authenticator جزء من منظومة Veilo Technology — مجموعة منتجات أمان مؤسسية مستضافة ذاتياً بمعمارية انعدام الثقة.</string>
+    <string name="about_other_projects">منتجات Veilo الأخرى</string>
+    <string name="about_open_website">فتح الموقع</string>
+    <string name="about_developer">تطوير Veilo Technology\nhttps://veilo.tr</string>
+    <string name="about_copyright">© 2026 Veilo Technology. جميع الحقوق محفوظة.</string>
+
+    <!-- مشاريع منظومة Veilo -->
+    <string name="project_veilo_tagline">مراسلة مؤسسية مشفرة من طرف إلى طرف</string>
+    <string name="project_veilo_info">منصة مراسلة مؤسسية مشفرة من طرف إلى طرف ومستضافة ذاتياً للشبكات المغلقة. بياناتك لا تغادر بنيتك التحتية أبداً.\n\n• شبكة VPN شبكية بمعمارية انعدام الثقة، تعمل بدون إنترنت\n• تشفير على مستوى الجهاز بـ Signal Protocol\n• تحكم إداري كامل: المستخدمون، الأجهزة، سجلات التدقيق\n• المراسلة، المكالمات الصوتية/المرئية، مشاركة الملفات\n• حظر التقاط الشاشة، مسح الجهاز عن بُعد، قفل بيومتري\n• متوافق مع KVKK وGDPR وISO 27001</string>
+
+    <string name="project_axon_tagline">العمود الفقري الذكي للبنية التحتية المؤسسية</string>
+    <string name="project_axon_info">منظومة مؤسسية مشفرة من طرف إلى طرف بمعمارية انعدام الثقة تدير جميع أجهزتك من لوحة واحدة.\n\n• Axon Core: نقل ملفات مشفر، طرفية متعددة الأجهزة، إدارة Docker/SSH/Nginx\n• Axon Data Engine: مراقبة CPU/RAM/القرص في الوقت الفعلي، تتبع وقت التشغيل وSLA، بحث مركزي في السجلات\n• Axon Guard: تدقيق أمان CIS، ماسح الشبكة، التحكم بـ Fail2ban وجدار الحماية\n• SLA بنسبة 99.9%، دعم متعدد المنصات (Linux، Windows، ARM)</string>
+
+    <string name="project_radar_tagline">كشف الهجمات والاستجابة في الوقت الفعلي</string>
+    <string name="project_radar_info">منصة كشف هجمات والاستجابة التلقائية تعمل بالكامل على بنيتك التحتية — بدون اعتماد على السحابة.\n\n• محرك قواعد Sigma: يكشف هجمات SSH brute-force ومسح المنافذ وأكثر في أقل من 5 ثوانٍ\n• ترابط سلسلة الهجوم وتقييم المخاطر 0–100 مع تعيين MITRE ATT&amp;CK\n• SOAR: حظر IP تلقائي، عزل المضيف عبر YAML playbooks\n• طبقة الخداع: خدمات honeypot وhoneytokens\n• يعمل في بيئات معزولة عن الإنترنت (air-gapped)\n• بنية متعددة المستأجرين مع دعم edge collector</string>
+
+    <string name="project_voltbox_tagline">خزنة كلمات مرور مؤسسية بمعمارية صفر معرفة</string>
+    <string name="project_voltbox_info">خزنة كلمات مرور بمعمارية صفر معرفة للفرق. كلمة المرور الرئيسية لا تصل أبداً إلى الخادم — تُشتق على الجهاز باستخدام Argon2id.\n\n• تشفير AES-256-GCM وRSA-OAEP\n• استخبارات تهديدات نشطة: كشف brute-force وcredential stuffing والوصول غير المعتاد\n• التحكم بالوصول القائم على الأدوار والخزائن المشتركة\n• سجل تدقيق كامل وسيادة البيانات\n• تطبيق جوال بقفل PIN/بيومتري\n• مستضاف ذاتياً، متوافق مع KVKK</string>
+
+    <!-- النقل -->
+    <string name="migration_title">الاستيراد من تطبيق آخر</string>
+    <string name="migration_body">انقل حساباتك من تطبيق مصادقة آخر. حساباتك الحالية لن تتأثر — يتم تخطي المكررات تلقائياً.</string>
+    <string name="migration_scan_prompt">وجّه الكاميرا نحو رمز QR للنقل</string>
+    <string name="migration_scan_qr">مسح رمز QR للنقل</string>
+    <string name="migration_choose_file">اختيار ملف التصدير</string>
+    <string name="migration_scan_invalid">رمز QR هذا ليس رمز نقل معروف.</string>
+    <string name="migration_file_invalid">هذا الملف ليس تصدير تطبيق مصادقة معروف.</string>
+    <string name="migration_failed">تعذّر استيراد الحسابات.</string>
+    <string name="migration_done">تم الاستيراد: %1$d حساب جديد. موجود بالفعل على هذا الجهاز: %2$d</string>
+
+    <string name="migration_google_title">Google Authenticator</string>
+    <string name="migration_google_body">في Google Authenticator، اضغط ⋯ ← نقل الحسابات ← تصدير الحسابات. سيظهر رمز QR — امسحه هنا.</string>
+    <string name="migration_microsoft_title">Microsoft Authenticator</string>
+    <string name="migration_microsoft_body">في Microsoft Authenticator، انتقل إلى الإعدادات ← النسخ الاحتياطي، ثم نقل الحسابات ← تصدير إلى رمز QR. امسحه هنا.</string>
+    <string name="migration_aegis_title">Aegis Authenticator</string>
+    <string name="migration_aegis_body">في Aegis، اضغط ⋯ ← تصدير ← اختر التنسيق: نص عادي، ثم احفظ ملف JSON واختره هنا.</string>
+
+    <!-- تصدير PDF -->
+    <string name="pdf_export_title">نسخة احتياطية PDF قابلة للطباعة</string>
+    <string name="pdf_export_body">ينشئ ملف PDF يحتوي على رمز QR لكل حساب. يمكنك طباعته وتخزينه في مكان آمن كنسخة احتياطية غير متصلة. يمكن مسح كل رمز QR بأي تطبيق مصادقة.</string>
+    <string name="pdf_export_warning">يحتوي هذا الملف على مفاتيحك السرية بشكل مكشوف. أي شخص يمتلك هذا المستند يمكنه إنشاء رموز 2FA الخاصة بك. احفظه في مكان آمن فعلياً.</string>
+    <string name="pdf_export_save">حفظ PDF</string>
+    <string name="pdf_export_done">تم حفظ نسخة PDF الاحتياطية.</string>
+</resources>

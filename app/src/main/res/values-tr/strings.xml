@@ -105,12 +105,20 @@
     <!-- Hakkında ekranı -->
     <string name="about_title">Hakkında</string>
     <string name="about_version">Sürüm %1$s</string>
+    <string name="about_tagline">Çevrimdışı. Donanım destekli. Sıfır izleme.\nAnahtarlarınız asla cihazınızdan çıkmaz.</string>
     <string name="about_description">Veilo Authenticator, iki adımlı doğrulama için zamana dayalı (TOTP) ve sayaca dayalı (HOTP) tek kullanımlık parolalar üretir. Tamamen çevrimdışı çalışır — internet bağlantısı, hesap veya izleme yoktur.</string>
+
+    <string name="about_howto_title">Nasıl kullanılır</string>
+    <string name="about_howto_body">1. Hesap ekle: + düğmesine dokunup QR kodu tarayın veya gizli anahtarı elle girin.\n\n2. Kodları gör: tek kullanımlık kodlarınız ana ekranda görünür. Görmek ve kopyalamak için dokunun. Kod 30 saniye sonra panodan silinir.\n\n3. Favoriler: bir hesabı listenin en üstüne sabitlemek için uzun basın.\n\n4. Gruplar: hesapları düzenleme ekranından gruplara ayırın (İş, Kişisel, Finans vb.).\n\n5. Yedekleme: hesaplarınızı bir parolayla korunan şifreli dosyaya kaydedin. QR kodlu yazdırılabilir PDF de oluşturabilirsiniz.\n\n6. Göç: Google Authenticator, Microsoft Authenticator veya Aegis\'ten aktarım menüsüyle hesaplarınızı taşıyın.\n\n7. Kilit: uygulama arka plana geçtiğinde otomatik kilitlenir. Biyometrik veya cihaz PIN\'i ile açın.</string>
+
     <string name="about_security_title">Güvenlik</string>
     <string name="about_security_body">• Anahtarlar donanım destekli Android Keystore\'da saklanır (varsa StrongBox)\n• Kilit açmak için biyometrik veya cihaz kimlik bilgisi gerekir\n• Ekran görüntüsü ve uygulama değiştirici önizlemesi engellenir\n• Kopyalanan kodlar 30 saniyede panodan silinir\n• Gizli anahtar verileri kullanımdan sonra bellekte sıfırlanır\n• Başlatmada root ve hata ayıklayıcı tespiti\n• İnternet izni yok — tasarım gereği tamamen hava boşluklu\n• Analitik yok, izleme yok, üçüncü taraf hizmeti yok\n• Parola tabanlı anahtar türetmeli şifreli yedekleme\n• Yayın derlemelerinde ProGuard/R8 kod karartma\n• Bulut yedekleme ve cihaz aktarımı açıkça devre dışı</string>
+    <string name="about_ecosystem_title">Veilo Ekosistemi</string>
+    <string name="about_ecosystem_body">Veilo Authenticator, Veilo Teknoloji ekosisteminin bir parçasıdır — self-hosted, sıfır güven mimarili kurumsal güvenlik ürünleri ailesi.</string>
     <string name="about_other_projects">Diğer Veilo Ürünleri</string>
     <string name="about_open_website">Siteyi aç</string>
     <string name="about_developer">Veilo Teknoloji tarafından geliştirilmiştir\nhttps://veilo.tr</string>
+    <string name="about_copyright">© 2026 Veilo Teknoloji. Tüm hakları saklıdır.</string>
 
     <!-- Veilo ekosistemi projeleri -->
     <string name="project_veilo_tagline">Uçtan uca şifreli kurumsal mesajlaşma</string>

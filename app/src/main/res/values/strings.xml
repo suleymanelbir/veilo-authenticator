@@ -109,12 +109,20 @@
     <!-- About screen -->
     <string name="about_title">About</string>
     <string name="about_version">Version %1$s</string>
+    <string name="about_tagline">Offline. Hardware-backed. Zero tracking.\nYour keys never leave your device.</string>
     <string name="about_description">Veilo Authenticator generates time-based (TOTP) and counter-based (HOTP) one-time passwords for two-step verification. It works entirely offline — no internet connection, no account, no tracking.</string>
+
+    <string name="about_howto_title">How to use</string>
+    <string name="about_howto_body">1. Add an account: tap + and scan a QR code, or enter the secret key manually.\n\n2. View codes: your one-time codes appear on the main screen. Tap to reveal and copy. The code is cleared from the clipboard after 30 seconds.\n\n3. Pin favorites: long-press an account to pin it to the top of the list.\n\n4. Groups: organize accounts into groups (Work, Personal, Finance, etc.) from the edit screen.\n\n5. Backup: use the encrypted backup to save your accounts to a file protected by a passphrase. You can also generate a printable PDF with QR codes.\n\n6. Migrate: import accounts from Google Authenticator, Microsoft Authenticator or Aegis via the transfer menu.\n\n7. Lock: the app locks automatically when you leave it. Unlock with your biometric or device PIN.</string>
+
     <string name="about_security_title">Security</string>
     <string name="about_security_body">• Keys stored in hardware-backed Android Keystore (StrongBox when available)\n• Biometric or device credential required to unlock\n• Screen capture and app-switcher preview blocked\n• Copied codes cleared from clipboard in 30 seconds\n• Secret key material zeroed in memory after use\n• Root and debugger detection at launch\n• No internet permission — fully air-gapped by design\n• No analytics, no tracking, no third-party services\n• Encrypted backup with passphrase-based key derivation\n• ProGuard/R8 code obfuscation in release builds\n• Cloud backup and device transfer explicitly disabled</string>
+    <string name="about_ecosystem_title">Veilo Ecosystem</string>
+    <string name="about_ecosystem_body">Veilo Authenticator is part of the Veilo Technology ecosystem — a suite of self-hosted, zero-trust enterprise security products.</string>
     <string name="about_other_projects">Other Veilo Products</string>
     <string name="about_open_website">Open website</string>
     <string name="about_developer">Developed by Veilo Technology\nhttps://veilo.tr</string>
+    <string name="about_copyright">© 2026 Veilo Technology. All rights reserved.</string>
 
     <!-- Veilo ecosystem projects -->
     <string name="project_veilo_name" translatable="false">Veilo Messenger</string>
