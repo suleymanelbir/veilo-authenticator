@@ -311,7 +311,7 @@ No dependencies with known CVEs at time of assessment. No dependencies require n
 | ISO 27001 A.8.5 | Secure authentication | ALIGNED |
 | ISO 27001 A.8.24 | Cryptography use | ALIGNED |
 | NIST SP 800-63B | Multi-factor authentication | ALIGNED |
-| KVKK / GDPR | Data minimization, no processing | COMPLIANT (no data collected) |
+| KVKK / GDPR | Data minimization, no processing | ALIGNED (no personal data collected, processed, or transmitted) |
 
 ---
 
