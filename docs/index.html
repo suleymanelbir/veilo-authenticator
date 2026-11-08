@@ -1171,6 +1171,109 @@
         }
 
         /* ============================================================
+           SECTION 5b: AUTHENTICATOR COMPARISON
+           ============================================================ */
+        .compare-section {
+            background:
+                radial-gradient(circle at 50% 30%, rgba(59,130,246,0.05), transparent 50%),
+                var(--bg-dark);
+        }
+
+        .compare-wrap {
+            overflow-x: auto;
+            margin-top: 48px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 780px;
+            font-size: 14px;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .compare-table thead th {
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            background: var(--bg-panel);
+        }
+
+        .compare-table thead th.veilo-col {
+            color: var(--shield-blue);
+            text-shadow: 0 0 12px var(--shield-glow);
+            background: rgba(59,130,246,0.06);
+            border-top: 2px solid var(--shield-blue);
+        }
+
+        .compare-table tbody tr {
+            transition: background var(--transition);
+        }
+
+        .compare-table tbody tr:hover td {
+            background: rgba(59,130,246,0.03);
+        }
+
+        .compare-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .compare-table td.feat-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .compare-table td.veilo-col {
+            background: rgba(59,130,246,0.04);
+        }
+
+        .cmp-yes {
+            color: var(--emerald);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .cmp-no {
+            color: var(--text-faint);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .cmp-partial {
+            color: var(--amber);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .compare-note {
+            text-align: center;
+            color: var(--text-faint);
+            font-size: 12px;
+            margin-top: 16px;
+            font-style: italic;
+        }
+
+        @media (max-width: 800px) {
+            .compare-table { font-size: 12px; }
+            .compare-table th, .compare-table td { padding: 12px 14px; }
+        }
+
+        /* ============================================================
            SECTION 6: RECOVERY & BACKUP
            ============================================================ */
         .recovery-section {
@@ -2018,6 +2121,165 @@
                     </p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5b: AUTHENTICATOR COMPARISON
+         ============================================================ -->
+    <section class="compare-section section-padding">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">COMPARISON</span>
+                    <span class="lang-tr">KARŞILAŞTIRMA</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">How We Compare to Other Authenticators</span>
+                    <span class="lang-tr">Diğer Doğrulama Uygulamalarıyla Karşılaştırma</span>
+                </h2>
+                <p class="section-subtitle">
+                    <span class="lang-en">Not all authenticator apps are created equal. Here's what sets Veilo apart — no names, just facts.</span>
+                    <span class="lang-tr">Tüm doğrulama uygulamaları aynı değildir. Veilo'yu farklı kılan özellikler — isim yok, sadece gerçekler.</span>
+                </p>
+            </div>
+
+            <div class="compare-wrap reveal" style="transition-delay: 0.2s">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="lang-en">Feature</span>
+                                <span class="lang-tr">Özellik</span>
+                            </th>
+                            <th class="veilo-col">Veilo</th>
+                            <th>
+                                <span class="lang-en">Popular Free App</span>
+                                <span class="lang-tr">Popüler Ücretsiz Uygulama</span>
+                            </th>
+                            <th>
+                                <span class="lang-en">Popular Open-Source App</span>
+                                <span class="lang-tr">Popüler Açık Kaynak Uygulama</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Hardware-Backed Keys (StrongBox)</span>
+                                <span class="lang-tr">Donanım Destekli Anahtarlar (StrongBox)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Fully Offline (No INTERNET Permission)</span>
+                                <span class="lang-tr">Tamamen Çevrimdışı (İnternet İzni Yok)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Zero Analytics &amp; Tracking</span>
+                                <span class="lang-tr">Sıfır Analitik ve İzleme</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Encrypted Backup (Argon2id + AES-256)</span>
+                                <span class="lang-tr">Şifreli Yedekleme (Argon2id + AES-256)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Printable PDF Backup</span>
+                                <span class="lang-tr">Yazdırılabilir PDF Yedek</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Screen Capture Blocked</span>
+                                <span class="lang-tr">Ekran Görüntüsü Engeli</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Clipboard Auto-Clear</span>
+                                <span class="lang-tr">Pano Otomatik Temizleme</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Root &amp; Debugger Detection</span>
+                                <span class="lang-tr">Root ve Hata Ayıklayıcı Tespiti</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Secret Zeroed in Memory</span>
+                                <span class="lang-tr">Bellekte Anahtar Sıfırlama</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Open Source</span>
+                                <span class="lang-tr">Açık Kaynak</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">SHA-256 / SHA-512 / 8-Digit Codes</span>
+                                <span class="lang-tr">SHA-256 / SHA-512 / 8 Haneli Kodlar</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Favorites &amp; Account Groups</span>
+                                <span class="lang-tr">Favoriler ve Hesap Grupları</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="compare-note reveal" style="transition-delay: 0.3s">
+                <span class="lang-en">Based on publicly available feature lists as of November 2026. No specific products are named or endorsed.</span>
+                <span class="lang-tr">Kasım 2026 itibarıyla kamuya açık özellik listelerine dayanmaktadır. Belirli bir ürün adı verilmemekte veya onaylanmamaktadır.</span>
+            </p>
         </div>
     </section>
 
