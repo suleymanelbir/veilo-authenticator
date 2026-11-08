@@ -102,4 +102,31 @@
     <string name="import_wrong_passphrase">Wrong passphrase, or the file is damaged.</string>
     <string name="import_failed">The accounts could not be imported.</string>
     <string name="import_done">Accounts added: %1$d. Already on this device: %2$d</string>
+
+    <!-- About screen -->
+    <string name="about_title">About</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_description">Veilo Authenticator generates time-based (TOTP) and counter-based (HOTP) one-time passwords for two-step verification. It works entirely offline — no internet connection, no account, no tracking.</string>
+    <string name="about_security_title">Security</string>
+    <string name="about_security_body">• Keys stored in hardware-backed Android Keystore (StrongBox when available)\n• Biometric or device credential required to unlock\n• Screen capture and app-switcher preview blocked\n• Copied codes cleared from clipboard in 30 seconds\n• Secret key material zeroed in memory after use\n• Root and debugger detection at launch\n• No internet permission — fully air-gapped by design\n• No analytics, no tracking, no third-party services\n• Encrypted backup with passphrase-based key derivation\n• ProGuard/R8 code obfuscation in release builds\n• Cloud backup and device transfer explicitly disabled</string>
+    <string name="about_other_projects">Other Veilo Products</string>
+    <string name="about_open_website">Open website</string>
+    <string name="about_developer">Developed by Veilo Technology\nhttps://veilo.tr</string>
+
+    <!-- Veilo ecosystem projects -->
+    <string name="project_veilo_name" translatable="false">Veilo Messenger</string>
+    <string name="project_veilo_tagline">End-to-end encrypted enterprise messaging</string>
+    <string name="project_veilo_info">Self-hosted, end-to-end encrypted corporate messaging platform for closed networks. Your data never leaves your infrastructure.\n\n• Zero-Trust mesh VPN, works without internet\n• Signal Protocol device-level encryption\n• Full admin control: users, devices, audit logs\n• Messaging, voice/video calls, file sharing\n• Screen capture blocking, remote device wipe, biometric lock\n• KVKK, GDPR and ISO 27001 compliant</string>
+
+    <string name="project_axon_name" translatable="false">Axon</string>
+    <string name="project_axon_tagline">Smart backbone for enterprise infrastructure</string>
+    <string name="project_axon_info">End-to-end encrypted, Zero-Trust enterprise ecosystem that manages all your devices from a single panel.\n\n• Axon Core: encrypted file transfer, multi-device terminal, Docker/SSH/Nginx management\n• Axon Data Engine: real-time CPU/RAM/disk monitoring, uptime and SLA tracking, centralized log search\n• Axon Guard: CIS security audit, network scanner, Fail2ban and firewall control\n• 99.9% uptime SLA, multi-platform (Linux, Windows, ARM)</string>
+
+    <string name="project_radar_name" translatable="false">Radar</string>
+    <string name="project_radar_tagline">Real-time attack detection and response</string>
+    <string name="project_radar_info">Real-time attack detection and automated response platform that runs entirely on your own infrastructure — zero cloud dependency.\n\n• Sigma rule engine: detects SSH brute-force, port scans and more in under 5 seconds\n• Attack chain correlation and 0–100 risk scoring with MITRE ATT&amp;CK mapping\n• SOAR: automated IP blocking, host isolation via YAML playbooks\n• Deception layer: honeypot services and honeytokens\n• Works in air-gapped environments\n• Multi-tenant with edge collector support</string>
+
+    <string name="project_voltbox_name" translatable="false">Voltbox</string>
+    <string name="project_voltbox_tagline">Zero-knowledge enterprise password vault</string>
+    <string name="project_voltbox_info">Zero-knowledge password vault for teams. Your master password never reaches the server — derived on-device with Argon2id.\n\n• AES-256-GCM and RSA-OAEP encryption\n• Active threat intelligence: detects brute-force, credential stuffing, anomalous access\n• Role-based access control and shared vaults\n• Full audit log and data sovereignty\n• Mobile app with PIN/biometric unlock\n• Self-hosted, KVKK compliant</string>
 </resources>

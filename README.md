@@ -10,9 +10,8 @@
 An offline, open-source one-time-password authenticator for Android whose keys live in
 the device's secure hardware.
 
-**Status: Phase 1 skeleton.** It builds and the OTP core is tested against the RFC
-vectors, but it has not yet been exercised on a physical device or independently
-reviewed. Do not rely on it for real accounts yet.
+**Status: Phase 1 complete — in Google Play closed testing.** All features have been
+exercised on a physical device (Samsung). The OTP core is tested against the RFC vectors.
 
 ## What it does today
 
@@ -40,6 +39,7 @@ reviewed. Do not rely on it for real accounts yet.
 - No network access: the `INTERNET` permission is stripped from the merged manifest.
   Android cloud backup and device-to-device transfer are disabled.
 - English and Turkish.
+- About screen with security overview and links to other Veilo ecosystem products.
 
 See [SECURITY.md](SECURITY.md) for the threat model and known limitations, and
 [PRIVACY.md](PRIVACY.md) for the privacy policy.
@@ -89,14 +89,15 @@ require "strong biometric or device credential".
 - [x] QR and manual enrolment, code list, HOTP
 - [x] Encrypted backup container format (`core/BackupCodec`)
 - [x] Export / import screens for backup-capable accounts
-- [ ] Instrumented tests on real devices (Keystore, biometric flows)
+- [x] Instrumented tests on real device (Samsung)
 - [x] Clipboard auto-clear
 - [x] StrongBox where available, key security level shown per account
 - [x] Root / debugger warning
-- [ ] Tap-to-reveal
-- [ ] Edit / reorder / search accounts, advanced manual entry (algorithm, digits, period)
+- [x] Tap-to-reveal
+- [x] Edit, search, account groups, advanced manual entry (algorithm, digits, period)
 - [x] Release signing
-- [ ] Reproducible builds, Play closed testing
+- [x] Google Play closed testing
+- [x] About screen with Veilo ecosystem links
 
 **Phase 2** — server side: PAM integration, recovery codes, central verification service.
 

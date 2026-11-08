@@ -39,7 +39,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 
-enum class Screen { List, Add, Export, Import }
+enum class Screen { List, Add, Export, Import, About }
 
 data class AccountRow(
     val id: String,

@@ -159,11 +159,17 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             )
         }
 
+        state.screen == Screen.About -> {
+            BackHandler { viewModel.navigate(Screen.List) }
+            AboutScreen(onBack = { viewModel.navigate(Screen.List) })
+        }
+
         else -> AccountListScreen(
             state = state,
             onAdd = { viewModel.navigate(Screen.Add) },
             onExport = { viewModel.navigate(Screen.Export) },
             onImport = { viewModel.navigate(Screen.Import) },
+            onAbout = { viewModel.navigate(Screen.About) },
             onLock = viewModel::lock,
             onDelete = viewModel::delete,
             onRename = viewModel::rename,

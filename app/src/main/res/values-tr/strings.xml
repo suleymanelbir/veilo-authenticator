@@ -99,4 +99,27 @@
     <string name="import_wrong_passphrase">Parola yanlış ya da dosya bozulmuş.</string>
     <string name="import_failed">Hesaplar içe aktarılamadı.</string>
     <string name="import_done">Eklenen hesap: %1$d. Zaten bu cihazda olan: %2$d</string>
+
+    <!-- Hakkında ekranı -->
+    <string name="about_title">Hakkında</string>
+    <string name="about_version">Sürüm %1$s</string>
+    <string name="about_description">Veilo Authenticator, iki adımlı doğrulama için zamana dayalı (TOTP) ve sayaca dayalı (HOTP) tek kullanımlık parolalar üretir. Tamamen çevrimdışı çalışır — internet bağlantısı, hesap veya izleme yoktur.</string>
+    <string name="about_security_title">Güvenlik</string>
+    <string name="about_security_body">• Anahtarlar donanım destekli Android Keystore\'da saklanır (varsa StrongBox)\n• Kilit açmak için biyometrik veya cihaz kimlik bilgisi gerekir\n• Ekran görüntüsü ve uygulama değiştirici önizlemesi engellenir\n• Kopyalanan kodlar 30 saniyede panodan silinir\n• Gizli anahtar verileri kullanımdan sonra bellekte sıfırlanır\n• Başlatmada root ve hata ayıklayıcı tespiti\n• İnternet izni yok — tasarım gereği tamamen hava boşluklu\n• Analitik yok, izleme yok, üçüncü taraf hizmeti yok\n• Parola tabanlı anahtar türetmeli şifreli yedekleme\n• Yayın derlemelerinde ProGuard/R8 kod karartma\n• Bulut yedekleme ve cihaz aktarımı açıkça devre dışı</string>
+    <string name="about_other_projects">Diğer Veilo Ürünleri</string>
+    <string name="about_open_website">Siteyi aç</string>
+    <string name="about_developer">Veilo Teknoloji tarafından geliştirilmiştir\nhttps://veilo.tr</string>
+
+    <!-- Veilo ekosistemi projeleri -->
+    <string name="project_veilo_tagline">Uçtan uca şifreli kurumsal mesajlaşma</string>
+    <string name="project_veilo_info">Kapalı ağlar için self-hosted, uçtan uca şifreli kurumsal mesajlaşma platformu. Verileriniz asla altyapınızın dışına çıkmaz.\n\n• Zero-Trust mesh VPN, internet olmadan çalışır\n• Signal Protocol cihaz düzeyinde şifreleme\n• Tam yönetim kontrolü: kullanıcılar, cihazlar, denetim logları\n• Mesajlaşma, sesli/görüntülü arama, dosya paylaşımı\n• Ekran görüntüsü engeli, uzaktan cihaz silme, biyometrik kilit\n• KVKK, GDPR ve ISO 27001 uyumlu</string>
+
+    <string name="project_axon_tagline">Kurumsal altyapının akıllı omurgası</string>
+    <string name="project_axon_info">Tüm cihazlarınızı tek bir panelden yöneten, uçtan uca şifreli, Zero-Trust kurumsal ekosistem.\n\n• Axon Core: şifreli dosya transferi, çoklu cihaz terminal, Docker/SSH/Nginx yönetimi\n• Axon Data Engine: gerçek zamanlı CPU/RAM/disk izleme, uptime ve SLA takibi, merkezi log arama\n• Axon Guard: CIS güvenlik denetimi, ağ tarayıcı, Fail2ban ve güvenlik duvarı kontrolü\n• %99,9 uptime SLA, çok platform desteği (Linux, Windows, ARM)</string>
+
+    <string name="project_radar_tagline">Gerçek zamanlı saldırı tespit ve müdahale</string>
+    <string name="project_radar_info">Tamamen kendi altyapınızda çalışan, sıfır bulut bağımlılığı olan gerçek zamanlı saldırı tespit ve otomatik müdahale platformu.\n\n• Sigma kural motoru: SSH brute-force, port taraması ve daha fazlasını 5 saniyenin altında tespit eder\n• Saldırı zinciri korelasyonu ve MITRE ATT&amp;CK eşlemeli 0–100 risk puanlama\n• SOAR: YAML playbook\'larla otomatik IP engelleme, host izolasyonu\n• Aldatma katmanı: honeypot servisleri ve honeytoken\'lar\n• İnternetsiz (air-gapped) ortamlarda çalışır\n• Edge collector destekli çok kiracılı yapı</string>
+
+    <string name="project_voltbox_tagline">Sıfır bilgi mimarili kurumsal şifre kasası</string>
+    <string name="project_voltbox_info">Ekipler için sıfır bilgi mimarili şifre kasası. Ana parolanız asla sunucuya ulaşmaz — cihazda Argon2id ile türetilir.\n\n• AES-256-GCM ve RSA-OAEP şifreleme\n• Aktif tehdit istihbaratı: brute-force, credential stuffing, olağandışı erişim tespiti\n• Rol tabanlı erişim kontrolü ve paylaşılan kasalar\n• Tam denetim kaydı ve veri egemenliği\n• PIN/biyometrik kilitle mobil uygulama\n• Self-hosted, KVKK uyumlu</string>
 </resources>

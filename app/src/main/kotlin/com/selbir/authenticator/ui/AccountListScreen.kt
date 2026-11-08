@@ -62,6 +62,7 @@ fun AccountListScreen(
     onAdd: () -> Unit,
     onExport: () -> Unit,
     onImport: () -> Unit,
+    onAbout: () -> Unit,
     onLock: () -> Unit,
     onDelete: (String) -> Unit,
     onRename: (String, String, String) -> Unit,
@@ -129,6 +130,13 @@ fun AccountListScreen(
                                 onClick = {
                                     menuOpen = false
                                     onImport()
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.about_title)) },
+                                onClick = {
+                                    menuOpen = false
+                                    onAbout()
                                 },
                             )
                         }
