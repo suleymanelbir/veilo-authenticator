@@ -63,11 +63,14 @@ fun AccountListScreen(
     onExport: () -> Unit,
     onImport: () -> Unit,
     onAbout: () -> Unit,
+    onMigrate: () -> Unit,
+    onPdfExport: () -> Unit,
     onLock: () -> Unit,
     onDelete: (String) -> Unit,
     onRename: (String, String, String) -> Unit,
     onSelectGroup: (String?) -> Unit,
     onSetGroup: (String, String) -> Unit,
+    onTogglePin: (String) -> Unit,
     onNextHotp: (String) -> Unit,
 ) {
     val context = LocalContext.current
@@ -130,6 +133,20 @@ fun AccountListScreen(
                                 onClick = {
                                     menuOpen = false
                                     onImport()
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.pdf_export_title)) },
+                                onClick = {
+                                    menuOpen = false
+                                    onPdfExport()
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.migration_title)) },
+                                onClick = {
+                                    menuOpen = false
+                                    onMigrate()
                                 },
                             )
                             DropdownMenuItem(
@@ -221,13 +238,22 @@ fun AccountListScreen(
         }
     }
 
-    // Long-press action sheet: Edit / Delete
+    // Long-press action sheet: Pin / Edit / Delete
     pendingEdit?.let { row ->
         AlertDialog(
             onDismissRequest = { pendingEdit = null },
             title = { Text(row.displayTitle) },
             text = {
                 Column(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(
+                        onClick = {
+                            pendingEdit = null
+                            onTogglePin(row.id)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(stringResource(if (row.pinned) R.string.action_unpin else R.string.action_pin))
+                    }
                     TextButton(
                         onClick = {
                             pendingEdit = null
@@ -399,12 +425,22 @@ private fun AccountItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = row.displayTitle,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (row.pinned) {
+                    Text(
+                        text = stringResource(R.string.pin_indicator),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 4.dp),
+                    )
+                }
+                Text(
+                    text = row.displayTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
             if (row.issuer.isNotBlank() && row.name.isNotBlank()) {
                 Text(
                     text = row.name,
@@ -475,17 +511,26 @@ private fun AccountItem(
 
 @Composable
 private fun Countdown(remaining: Int, period: Int) {
+    val color = when {
+        remaining <= 5 -> MaterialTheme.colorScheme.error
+        remaining <= 10 -> WarningColor
+        else -> MaterialTheme.colorScheme.primary
+    }
     Box(contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             progress = { remaining / period.toFloat() },
             modifier = Modifier.size(40.dp),
+            color = color,
         )
         Text(
             text = remaining.toString(),
             style = MaterialTheme.typography.labelMedium,
+            color = color,
         )
     }
 }
+
+private val WarningColor = androidx.compose.ui.graphics.Color(0xFFE6A700)
 
 /** "123456" -> "123 456", "12345678" -> "1234 5678". */
 private fun formatCode(code: String): String = code.chunked((code.length + 1) / 2).joinToString(" ")

@@ -11,6 +11,9 @@
     <string name="action_delete">Remove</string>
     <string name="action_add_account">Add account</string>
     <string name="action_edit">Edit</string>
+    <string name="action_pin">Pin to top</string>
+    <string name="action_unpin">Unpin</string>
+    <string name="pin_indicator" translatable="false">📌</string>
     <string name="action_next_code">Generate next code</string>
     <string name="action_scan_qr">Scan QR code</string>
     <string name="action_open_settings">Open security settings</string>
@@ -129,4 +132,29 @@
     <string name="project_voltbox_name" translatable="false">Voltbox</string>
     <string name="project_voltbox_tagline">Zero-knowledge enterprise password vault</string>
     <string name="project_voltbox_info">Zero-knowledge password vault for teams. Your master password never reaches the server — derived on-device with Argon2id.\n\n• AES-256-GCM and RSA-OAEP encryption\n• Active threat intelligence: detects brute-force, credential stuffing, anomalous access\n• Role-based access control and shared vaults\n• Full audit log and data sovereignty\n• Mobile app with PIN/biometric unlock\n• Self-hosted, KVKK compliant</string>
+
+    <!-- Migration -->
+    <string name="migration_title">Import from another app</string>
+    <string name="migration_body">Transfer your accounts from another authenticator app. Your existing accounts are not affected — duplicates are automatically skipped.</string>
+    <string name="migration_scan_prompt">Point the camera at the transfer QR code</string>
+    <string name="migration_scan_qr">Scan transfer QR code</string>
+    <string name="migration_choose_file">Choose export file</string>
+    <string name="migration_scan_invalid">That QR code is not a recognized transfer code.</string>
+    <string name="migration_file_invalid">That file is not a recognized authenticator export.</string>
+    <string name="migration_failed">The accounts could not be imported.</string>
+    <string name="migration_done">Imported: %1$d new accounts. Already on this device: %2$d</string>
+
+    <string name="migration_google_title">Google Authenticator</string>
+    <string name="migration_google_body">In Google Authenticator, tap ⋯ → Transfer accounts → Export accounts. A QR code will appear — scan it here.</string>
+    <string name="migration_microsoft_title">Microsoft Authenticator</string>
+    <string name="migration_microsoft_body">In Microsoft Authenticator, go to Settings → Backup, then Transfer accounts → Export to a QR code. Scan it here.</string>
+    <string name="migration_aegis_title">Aegis Authenticator</string>
+    <string name="migration_aegis_body">In Aegis, tap ⋯ → Export → Choose format: Plain text, then save the JSON file and select it here.</string>
+
+    <!-- PDF export -->
+    <string name="pdf_export_title">Printable PDF backup</string>
+    <string name="pdf_export_body">Generates a PDF with one QR code per account. You can print it and store it in a safe place as an offline backup. Each QR code can be scanned by any authenticator app.</string>
+    <string name="pdf_export_warning">This PDF contains your secret keys in plain form. Anyone with this document can generate your 2FA codes. Keep it in a physically secure location.</string>
+    <string name="pdf_export_save">Save PDF</string>
+    <string name="pdf_export_done">PDF backup saved.</string>
 </resources>

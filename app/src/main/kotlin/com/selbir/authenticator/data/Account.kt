@@ -28,6 +28,8 @@ data class Account(
     val protection: Protection,
     /** User-defined group for organising accounts (e.g. "Work", "Personal"). Empty = ungrouped. */
     val group: String = "",
+    /** Pinned accounts are shown at the top of the list. */
+    val pinned: Boolean = false,
     /** [Protection.EXPORTABLE] only: Base64 of the Keystore-wrapped secret. */
     val wrappedSecret: String? = null,
 )

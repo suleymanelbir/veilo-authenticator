@@ -164,17 +164,48 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             AboutScreen(onBack = { viewModel.navigate(Screen.List) })
         }
 
+        state.screen == Screen.Migrate -> {
+            BackHandler { viewModel.navigate(Screen.List) }
+            MigrationScreen(
+                onBack = { viewModel.navigate(Screen.List) },
+                onScannerVisible = { viewModel.childActivityInFront = it },
+                onGoogleAuthScanned = viewModel::handleGoogleAuthScan,
+                onAegisFileChosen = viewModel::handleAegisFile,
+                onPickerVisible = { viewModel.childActivityInFront = it },
+                migrationResult = viewModel.migrationResult,
+            )
+        }
+
+        state.screen == Screen.PdfExport -> {
+            val rows = state.rows.orEmpty()
+            BackHandler { viewModel.navigate(Screen.List) }
+            PdfExportScreen(
+                exportableCount = rows.count { !it.hardwareBound },
+                hardwareBoundCount = rows.count { it.hardwareBound },
+                onBack = { viewModel.navigate(Screen.List) },
+                onPickerVisible = { viewModel.childActivityInFront = it },
+                onDestinationChosen = { uri ->
+                    if (uri != null) {
+                        scope.launch { viewModel.writePdfExport(uri) }
+                    }
+                },
+            )
+        }
+
         else -> AccountListScreen(
             state = state,
             onAdd = { viewModel.navigate(Screen.Add) },
             onExport = { viewModel.navigate(Screen.Export) },
             onImport = { viewModel.navigate(Screen.Import) },
             onAbout = { viewModel.navigate(Screen.About) },
+            onMigrate = { viewModel.navigate(Screen.Migrate) },
+            onPdfExport = { viewModel.navigate(Screen.PdfExport) },
             onLock = viewModel::lock,
             onDelete = viewModel::delete,
             onRename = viewModel::rename,
             onSelectGroup = viewModel::selectGroup,
             onSetGroup = viewModel::setGroup,
+            onTogglePin = viewModel::togglePin,
             onNextHotp = { id -> scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.generateHotp(id) } } },
         )
     }

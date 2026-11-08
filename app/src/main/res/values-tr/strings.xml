@@ -8,6 +8,8 @@
     <string name="action_delete">Kaldır</string>
     <string name="action_add_account">Hesap ekle</string>
     <string name="action_edit">Düzenle</string>
+    <string name="action_pin">Üste sabitle</string>
+    <string name="action_unpin">Sabitlemeyi kaldır</string>
     <string name="action_next_code">Sonraki kodu üret</string>
     <string name="action_scan_qr">QR kodu tara</string>
     <string name="action_open_settings">Güvenlik ayarlarını aç</string>
@@ -122,4 +124,29 @@
 
     <string name="project_voltbox_tagline">Sıfır bilgi mimarili kurumsal şifre kasası</string>
     <string name="project_voltbox_info">Ekipler için sıfır bilgi mimarili şifre kasası. Ana parolanız asla sunucuya ulaşmaz — cihazda Argon2id ile türetilir.\n\n• AES-256-GCM ve RSA-OAEP şifreleme\n• Aktif tehdit istihbaratı: brute-force, credential stuffing, olağandışı erişim tespiti\n• Rol tabanlı erişim kontrolü ve paylaşılan kasalar\n• Tam denetim kaydı ve veri egemenliği\n• PIN/biyometrik kilitle mobil uygulama\n• Self-hosted, KVKK uyumlu</string>
+
+    <!-- Göç -->
+    <string name="migration_title">Başka uygulamadan aktar</string>
+    <string name="migration_body">Hesaplarınızı başka bir doğrulama uygulamasından aktarın. Mevcut hesaplarınız etkilenmez — yinelenler otomatik atlanır.</string>
+    <string name="migration_scan_prompt">Kamerayı aktarım QR koduna doğrultun</string>
+    <string name="migration_scan_qr">Aktarım QR kodunu tara</string>
+    <string name="migration_choose_file">Dışa aktarım dosyası seç</string>
+    <string name="migration_scan_invalid">Bu QR kod tanınan bir aktarım kodu değil.</string>
+    <string name="migration_file_invalid">Bu dosya tanınan bir doğrulama uygulaması dışa aktarımı değil.</string>
+    <string name="migration_failed">Hesaplar içe aktarılamadı.</string>
+    <string name="migration_done">İçe aktarılan: %1$d yeni hesap. Zaten bu cihazda olan: %2$d</string>
+
+    <string name="migration_google_title">Google Authenticator</string>
+    <string name="migration_google_body">Google Authenticator\'da ⋯ → Hesapları aktar → Hesapları dışa aktar\'a dokunun. Bir QR kod görünecek — burada tarayın.</string>
+    <string name="migration_microsoft_title">Microsoft Authenticator</string>
+    <string name="migration_microsoft_body">Microsoft Authenticator\'da Ayarlar → Yedekle, ardından Hesapları aktar → QR koda dışa aktar\'a gidin. Burada tarayın.</string>
+    <string name="migration_aegis_title">Aegis Authenticator</string>
+    <string name="migration_aegis_body">Aegis\'te ⋯ → Dışa aktar → Biçim: Düz metin\'i seçin, JSON dosyasını kaydedin ve burada seçin.</string>
+
+    <!-- PDF dışa aktarma -->
+    <string name="pdf_export_title">Yazdırılabilir PDF yedek</string>
+    <string name="pdf_export_body">Her hesap için bir QR kod içeren bir PDF oluşturur. Yazdırıp güvenli bir yerde çevrimdışı yedek olarak saklayabilirsiniz. Her QR kod herhangi bir doğrulama uygulamasıyla taranabilir.</string>
+    <string name="pdf_export_warning">Bu PDF, gizli anahtarlarınızı açık biçimde içerir. Bu belgeye sahip herkes 2FA kodlarınızı üretebilir. Fiziksel olarak güvenli bir yerde saklayın.</string>
+    <string name="pdf_export_save">PDF kaydet</string>
+    <string name="pdf_export_done">PDF yedek kaydedildi.</string>
 </resources>

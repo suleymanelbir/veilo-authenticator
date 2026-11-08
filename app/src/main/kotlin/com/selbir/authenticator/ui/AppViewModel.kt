@@ -12,15 +12,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.selbir.authenticator.AuthenticatorApp
 import com.selbir.authenticator.R
+import com.selbir.authenticator.core.AegisMigration
 import com.selbir.authenticator.core.BackupCodec
 import com.selbir.authenticator.core.BackupException
 import com.selbir.authenticator.core.BackupPayload
 import com.selbir.authenticator.core.Base32
+import com.selbir.authenticator.core.GoogleAuthMigration
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
 import com.selbir.authenticator.data.Account
+import com.selbir.authenticator.export.PdfExport
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.DeviceIntegrity
 import com.selbir.authenticator.security.DeviceRisk
@@ -39,7 +42,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.ConcurrentHashMap
 
-enum class Screen { List, Add, Export, Import, About }
+enum class Screen { List, Add, Export, Import, About, Migrate, PdfExport }
 
 data class AccountRow(
     val id: String,
@@ -55,6 +58,7 @@ data class AccountRow(
     /** The key was destroyed (e.g. the screen lock was removed); the account must be re-enrolled. */
     val unusable: Boolean,
     val group: String = "",
+    val pinned: Boolean = false,
 )
 
 data class UiState(
@@ -177,6 +181,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     val addForm = AddFormState()
     val backupForm = BackupFormState()
+    var migrationResult by mutableStateOf<MigrationResult?>(null)
 
     /**
      * True while an activity we opened ourselves (the QR scanner, the system file picker)
@@ -228,6 +233,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun navigate(screen: Screen) {
         addForm.clear()
         backupForm.clear()
+        migrationResult = null
         _state.update { it.copy(screen = screen) }
         if (screen == Screen.List) viewModelScope.launch { refresh() }
     }
@@ -489,9 +495,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             lock()
             return@withLock
         }
-        val groups = rows.map { it.group }.filter { it.isNotEmpty() }.distinct().sorted()
+        val sorted = rows.sortedByDescending { it.pinned }
+        val groups = sorted.map { it.group }.filter { it.isNotEmpty() }.distinct().sorted()
         _state.update {
-            if (it.locked || it.lockEpoch != before.lockEpoch) it else it.copy(rows = rows, epochSeconds = now, groups = groups)
+            if (it.locked || it.lockEpoch != before.lockEpoch) it else it.copy(rows = sorted, epochSeconds = now, groups = groups)
         }
     }
 
@@ -527,12 +534,120 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             code = code,
             unusable = unusable,
             group = account.group,
+            pinned = account.pinned,
         )
+    }
+
+    fun togglePin(id: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { repository.togglePin(id) }
+            refresh()
+        }
     }
 
     private fun clearCodes() {
         totpCache.clear()
         hotpCodes.clear()
+    }
+
+    // --- Migration ---
+
+    fun handleGoogleAuthScan(data: String) {
+        viewModelScope.launch {
+            val specs = try {
+                withContext(Dispatchers.Default) { GoogleAuthMigration.parse(data) }
+            } catch (e: Exception) {
+                toast(R.string.migration_scan_invalid)
+                return@launch
+            }
+            importMigrationSpecs(specs)
+        }
+    }
+
+    fun handleAegisFile(uri: Uri) {
+        viewModelScope.launch {
+            val resolver = getApplication<Application>().contentResolver
+            val specs = withContext(Dispatchers.IO) {
+                try {
+                    val bytes = (resolver.openInputStream(uri) ?: throw IOException("No stream")).use { input ->
+                        val out = ByteArrayOutputStream()
+                        val buffer = ByteArray(8192)
+                        while (out.size() <= MAX_BACKUP_BYTES) {
+                            val n = input.read(buffer)
+                            if (n < 0) break
+                            out.write(buffer, 0, n)
+                        }
+                        out.toByteArray()
+                    }
+                    AegisMigration.parse(bytes)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            if (specs == null || specs.isEmpty()) {
+                toast(R.string.migration_file_invalid)
+                return@launch
+            }
+            importMigrationSpecs(specs)
+        }
+    }
+
+    private suspend fun importMigrationSpecs(specs: List<OtpSpec>) {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                repository.importAll(specs)
+            } catch (e: UserNotAuthenticatedException) {
+                null
+            } catch (e: Exception) {
+                null
+            } finally {
+                specs.forEach { it.secret.fill(0) }
+            }
+        }
+        if (result != null) {
+            migrationResult = MigrationResult(result.added, result.alreadyPresent)
+            toast(R.string.migration_done, result.added, result.alreadyPresent)
+            refresh()
+        } else {
+            toast(R.string.migration_failed)
+        }
+    }
+
+    // --- PDF Export ---
+
+    suspend fun writePdfExport(uri: Uri): Boolean {
+        val resolver = getApplication<Application>().contentResolver
+        val specs = withContext(Dispatchers.IO) {
+            try {
+                repository.exportableSpecs()
+            } catch (e: UserNotAuthenticatedException) {
+                null
+            } catch (e: Exception) {
+                null
+            }
+        }
+        if (specs == null || specs.isEmpty()) return false
+        val written = withContext(Dispatchers.IO) {
+            try {
+                (resolver.openOutputStream(uri, "wt") ?: throw IOException("No stream")).use { out ->
+                    PdfExport.generate(getApplication(), specs, out)
+                }
+                true
+            } catch (e: Exception) {
+                try {
+                    DocumentsContract.deleteDocument(resolver, uri)
+                } catch (_: Exception) {
+                }
+                false
+            } finally {
+                specs.forEach { it.secret.fill(0) }
+            }
+        }
+        if (written) {
+            toast(R.string.pdf_export_done)
+            navigate(Screen.List)
+        }
+        return written
     }
 
     private companion object {

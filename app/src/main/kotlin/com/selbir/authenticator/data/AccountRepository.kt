@@ -128,6 +128,11 @@ class AccountRepository(
     }
 
     @Synchronized
+    fun togglePin(id: String) {
+        persist(all().map { if (it.id == id) it.copy(pinned = !it.pinned) else it })
+    }
+
+    @Synchronized
     fun delete(id: String) {
         val account = all().find { it.id == id } ?: return
         persist(all() - account)
