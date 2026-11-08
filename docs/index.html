@@ -17,22 +17,24 @@
            ============================================================ */
 
         :root {
-            --shield-blue: #2563eb;
+            --shield-blue: #3b82f6;
             --shield-blue-dark: #1e40af;
-            --shield-glow: rgba(37,99,235,0.4);
+            --shield-glow: rgba(59,130,246,0.4);
+            --shield-blue-subtle: rgba(96,165,250,0.15);
             --emerald: #10b981;
             --emerald-bright: #34d399;
-            --emerald-glow: rgba(16,185,129,0.35);
+            --emerald-glow: rgba(16,185,129,0.25);
             --bg-dark: #0b1628;
             --bg-panel: #111e33;
             --bg-card: #162240;
+            --bg-card-hover: #1a2a4d;
             --threat-red: #ef4444;
             --amber: #f59e0b;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-muted: #b8c5da;
             --text-faint: #475569;
-            --border: rgba(37,99,235,0.12);
-            --border-strong: rgba(37,99,235,0.3);
+            --border: var(--shield-blue-subtle);
+            --border-strong: rgba(59,130,246,0.3);
             --font-display: 'Orbitron', monospace;
             --font-heading: 'Syne', sans-serif;
             --font-body: 'Inter', sans-serif;
@@ -209,7 +211,7 @@
         }
 
         .lang-toggle {
-            background: rgba(37,99,235,0.1);
+            background: rgba(59,130,246,0.1);
             border: 1px solid var(--border-strong);
             color: var(--text-muted);
             padding: 6px 14px;
@@ -307,6 +309,10 @@
             padding-bottom: 60px;
             position: relative;
             overflow: hidden;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(59,130,246,0.12), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(16,185,129,0.06), transparent 45%),
+                var(--bg-dark);
         }
 
         #shield-canvas {
@@ -355,7 +361,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(37,99,235,0.1);
+            background: rgba(59,130,246,0.1);
             border: 1px solid var(--border-strong);
             padding: 6px 16px;
             border-radius: 100px;
@@ -702,7 +708,7 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            background: rgba(37,99,235,0.1);
+            background: rgba(59,130,246,0.1);
             border: 1px solid var(--border-strong);
             display: flex;
             align-items: center;
@@ -995,7 +1001,9 @@
            SECTION 5: THREAT HEATMAP
            ============================================================ */
         .heatmap-section {
-            background: var(--bg-panel);
+            background:
+                radial-gradient(circle at 70% 20%, rgba(59,130,246,0.06), transparent 50%),
+                var(--bg-panel);
         }
 
         .heatmap-grid {
@@ -1110,23 +1118,27 @@
         }
 
         .diff-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: rgba(22,34,64,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
             border-radius: 14px;
             padding: 28px 24px;
             text-align: center;
             transition: all var(--transition);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
         }
         .diff-card:hover {
             border-color: var(--border-strong);
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 40px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.3);
+            background: rgba(26,42,77,0.9);
         }
         .diff-card-icon {
             width: 52px;
             height: 52px;
             border-radius: 14px;
-            background: rgba(37,99,235,0.1);
+            background: rgba(59,130,246,0.1);
             border: 1px solid var(--border-strong);
             display: flex;
             align-items: center;
@@ -1173,14 +1185,17 @@
         }
 
         .recovery-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: rgba(22,34,64,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
             border-radius: 16px;
             padding: 36px 28px;
             text-align: center;
             transition: all var(--transition);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
         }
         .recovery-card::before {
             content: '';
@@ -1245,7 +1260,9 @@
            SECTION 7: ECOSYSTEM
            ============================================================ */
         .ecosystem-section {
-            background: var(--bg-panel);
+            background:
+                radial-gradient(circle at 30% 60%, rgba(59,130,246,0.06), transparent 50%),
+                var(--bg-panel);
         }
 
         .ecosystem-cards {
@@ -1256,18 +1273,21 @@
         }
 
         .eco-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: rgba(22,34,64,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
             border-radius: 16px;
             padding: 32px 24px;
             transition: all var(--transition);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
         }
         .eco-card:hover {
             border-color: var(--border-strong);
             transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 40px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.3);
         }
 
         .eco-accent {
