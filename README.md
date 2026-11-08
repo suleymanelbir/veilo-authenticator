@@ -41,8 +41,9 @@ exercised on a physical device (Samsung). The OTP core is tested against the RFC
 - English and Turkish.
 - About screen with security overview and links to other Veilo ecosystem products.
 
-See [SECURITY.md](SECURITY.md) for the threat model and known limitations, and
-[PRIVACY.md](PRIVACY.md) for the privacy policy.
+See [SECURITY.md](SECURITY.md) for the threat model and known limitations,
+[PRIVACY.md](PRIVACY.md) for the privacy policy, and
+[Security Assessment Report](docs/SECURITY-ASSESSMENT.md) for the full security audit.
 
 ## Layout
 
