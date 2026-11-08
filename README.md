@@ -83,29 +83,52 @@ require "strong biometric or device credential".
 
 ## Roadmap
 
-**Phase 1 — offline authenticator (this repository)**
+**v0.1 — Offline authenticator** ✅ *Released*
 
-- [x] OTP core with RFC test vectors
-- [x] Hardware-backed key storage, biometric gate, screen protection
-- [x] QR and manual enrolment, code list, HOTP
-- [x] Encrypted backup container format (`core/BackupCodec`)
-- [x] Export / import screens for backup-capable accounts
-- [x] Instrumented tests on real device (Samsung)
-- [x] Clipboard auto-clear
-- [x] StrongBox where available, key security level shown per account
-- [x] Root / debugger warning
-- [x] Tap-to-reveal
-- [x] Edit, search, account groups, advanced manual entry (algorithm, digits, period)
-- [x] Release signing
-- [x] Google Play closed testing
-- [x] About screen with Veilo ecosystem links
+- [x] OTP core with RFC test vectors (TOTP + HOTP, SHA-1/256/512, 6–8 digits)
+- [x] Hardware-backed key storage (StrongBox / TEE), biometric gate, screen protection
+- [x] QR and manual enrolment, code list, tap-to-reveal
+- [x] Encrypted backup (Argon2id + AES-256-GCM) export / import
+- [x] Clipboard auto-clear, root / debugger detection
+- [x] Edit, search, account groups, advanced manual entry
+- [x] Release signing, Google Play closed testing
 
-**Phase 2** — server side: PAM integration, recovery codes, central verification service.
+**v0.2 — Migration & polish** ✅ *Released — in Play Store review*
 
-**Phase 3** — enterprise edition (separate build flavor with network access): per-device
-key pair, hardware key attestation, signed challenge-response, admin console.
+- [x] Import from Google Authenticator, Microsoft Authenticator, Aegis
+- [x] Printable PDF backup with QR codes
+- [x] Pin favorite accounts to top
+- [x] Countdown color warning (amber → red)
+- [x] Arabic language support (English, Turkish, Arabic)
+- [x] Professional About screen with usage guide
+- [x] Security Assessment Report v1.0
+- [x] Product landing page (auth.veilo.tr)
 
-**Phase 4** — passkeys, iOS, independent security audit.
+**v0.3 — Cloud-less encrypted sync** *(next)*
+
+- [ ] Device-to-device transfer via encrypted QR chain (no cloud)
+- [ ] Encrypt account metadata file (issuer/name)
+- [ ] Independent third-party penetration test
+- [ ] Reproducible builds
+
+**v0.4 — Wear OS**
+
+- [ ] Companion app for Wear OS — view codes on your watch
+- [ ] Secure Data Layer API communication (phone ↔ watch)
+
+**v0.5 — Enterprise edition**
+
+- [ ] Separate build flavor with network access
+- [ ] Hardware key attestation (device integrity verification)
+- [ ] Signed challenge-response authentication
+- [ ] Admin console for centralized enrollment
+- [ ] Managed Google Play (MDM) support
+
+**v0.6 — Passkeys & cross-platform**
+
+- [ ] FIDO2 / Passkey support (phishing-resistant authentication)
+- [ ] iOS companion app
+- [ ] Desktop companion (view-only, no key storage)
 
 ## License
 
