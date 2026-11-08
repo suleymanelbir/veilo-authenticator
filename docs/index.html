@@ -3,572 +3,2563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veilo Authenticator — Offline 2FA with Hardware-Backed Security</title>
+    <title>Veilo Authenticator — Next-Generation 2FA Security</title>
     <meta name="description" content="Veilo Authenticator: offline, open-source two-factor authentication for Android. Hardware-backed keys, zero tracking, encrypted backup. TOTP, HOTP, MFA, OTP security.">
     <meta name="keywords" content="authenticator, 2FA, TOTP, HOTP, OTP, MFA, two factor authentication, security, offline authenticator, hardware-backed, StrongBox, open source, Android">
     <link rel="canonical" href="https://suleymanelbir.github.io/veilo-authenticator/">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================
+           VEILO AUTHENTICATOR — LANDING PAGE
+           Design System: Microsoft Sentinel / Defender aesthetic
+           ============================================================ */
+
         :root {
-            --bg: #060810;
-            --bg-secondary: #0C0F1A;
-            --bg-card: #111827;
-            --emerald: #00C875;
-            --emerald-hover: #00e88a;
-            --gold: #F59E0B;
-            --red: #ef4444;
-            --text: #E8EAF0;
-            --muted: #8892A4;
-            --border: rgba(0,200,117,0.1);
-            --border-strong: rgba(0,200,117,0.28);
-            --glow: 0 0 24px rgba(0,200,117,0.45), 0 0 64px rgba(0,200,117,0.15);
-            --shadow-card: 0 4px 32px rgba(0,0,0,0.45);
+            --shield-blue: #2563eb;
+            --shield-blue-dark: #1e40af;
+            --shield-glow: rgba(37,99,235,0.4);
+            --emerald: #10b981;
+            --emerald-bright: #34d399;
+            --emerald-glow: rgba(16,185,129,0.35);
+            --bg-dark: #07111f;
+            --bg-panel: #0f172a;
+            --bg-card: #131c2e;
+            --threat-red: #ef4444;
+            --amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-faint: #475569;
+            --border: rgba(37,99,235,0.12);
+            --border-strong: rgba(37,99,235,0.3);
             --font-display: 'Orbitron', monospace;
             --font-heading: 'Syne', sans-serif;
             --font-body: 'Inter', sans-serif;
-            --ease: cubic-bezier(0.4,0,0.2,1);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
             --transition: 0.35s var(--ease);
         }
+
+        /* ---- RESET & BASE ---- */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        ::selection { background: rgba(0,200,117,0.22); color: #fff; }
-        html { scroll-behavior: smooth; }
-        body { font-family: var(--font-body); background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+        ::selection { background: rgba(37,99,235,0.3); color: #fff; }
+        html { scroll-behavior: smooth; font-size: 16px; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
-        ::-webkit-scrollbar-thumb { background: var(--emerald); border-radius: 2px; }
-
-        .container { max-width: 1160px; margin: 0 auto; padding: 0 5%; }
-
-        /* --- NAV --- */
-        nav { position: fixed; top: 0; left: 0; right: 0; height: 72px; z-index: 100; background: rgba(6,8,16,0.6); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(0,200,117,0.05); transition: background var(--transition); }
-        nav.scrolled { background: rgba(6,8,16,0.92); border-bottom-color: var(--border); }
-        .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
-        .nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 900; color: var(--emerald); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .nav-logo .icon-box { width: 34px; height: 34px; background: var(--emerald); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .nav-logo .icon-box svg { width: 20px; height: 20px; fill: #060810; }
-        .nav-links { display: flex; align-items: center; gap: 32px; }
-        .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color var(--transition); }
-        .nav-links a:hover { color: var(--text); }
-        .btn-nav { background: var(--emerald); color: #060810; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; transition: all var(--transition); border: none; cursor: pointer; }
-        .btn-nav:hover { background: var(--emerald-hover); box-shadow: 0 4px 20px rgba(0,200,117,0.4); transform: translateY(-1px); }
-        .lang-toggle { background: transparent; border: 1px solid var(--border-strong); color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: var(--font-display); transition: all var(--transition); }
-        .lang-toggle:hover { border-color: var(--emerald); color: var(--text); }
-
-        /* --- HERO --- */
-        .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 100px 0 60px; }
-        .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,200,117,0.12); border: 1px solid var(--border-strong); border-radius: 100px; padding: 7px 16px; font-family: var(--font-display); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--emerald); margin-bottom: 24px; }
-        .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: pulse-dot 2s infinite; }
-        .hero h1 { font-family: var(--font-heading); font-size: clamp(34px, 5vw, 58px); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
-        .hero h1 .accent { color: var(--emerald); position: relative; }
-        .hero h1 .accent::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--emerald), transparent); border-radius: 2px; }
-        .hero-sub { font-size: 17px; color: var(--muted); margin-bottom: 32px; max-width: 480px; }
-        .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
-        .btn-primary { background: var(--emerald); color: #060810; padding: 14px 28px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px; }
-        .btn-primary:hover { background: var(--emerald-hover); box-shadow: 0 8px 36px rgba(0,200,117,0.35); transform: translateY(-2px); }
-        .btn-secondary { background: transparent; color: var(--text); padding: 14px 28px; border-radius: 10px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--border-strong); transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px; }
-        .btn-secondary:hover { background: rgba(0,200,117,0.12); }
-
-        /* Hero metrics */
-        .hero-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .metric { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
-        .metric .num { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--emerald); }
-        .metric .label { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-        /* OTP Animation */
-        .hero-visual { display: flex; justify-content: center; align-items: center; }
-        .otp-device { width: 280px; background: #0d1117; border: 2px solid var(--border-strong); border-radius: 36px; padding: 20px; position: relative; animation: device-float 4s ease-in-out infinite; }
-        .otp-notch { width: 80px; height: 6px; background: #1a2332; border-radius: 3px; margin: 0 auto 16px; }
-        .otp-header { text-align: center; font-family: var(--font-display); font-size: 10px; color: var(--emerald); letter-spacing: 2px; margin-bottom: 16px; }
-        .otp-account { background: rgba(0,200,117,0.08); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; transition: all 0.4s var(--ease); }
-        .otp-account.active { border-color: var(--border-strong); background: rgba(0,200,117,0.12); box-shadow: 0 0 20px rgba(0,200,117,0.1); }
-        .otp-issuer { font-size: 11px; color: var(--muted); margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
-        .otp-issuer .pin { color: var(--emerald); font-size: 10px; }
-        .otp-code { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: 6px; display: flex; align-items: center; gap: 12px; }
-        .otp-code .digits { flex: 1; }
-        .otp-timer { position: relative; width: 36px; height: 36px; flex-shrink: 0; }
-        .otp-timer svg { transform: rotate(-90deg); }
-        .otp-timer circle { fill: none; stroke-width: 3; cx: 18; cy: 18; r: 15; }
-        .otp-timer .bg { stroke: rgba(255,255,255,0.08); }
-        .otp-timer .progress { stroke: var(--emerald); stroke-dasharray: 94.2; stroke-dashoffset: 0; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s; }
-        .otp-timer .progress.warn { stroke: var(--gold); }
-        .otp-timer .progress.danger { stroke: var(--red); }
-        .otp-timer-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
-        .otp-fab { width: 44px; height: 44px; background: var(--emerald); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 14px auto 10px; box-shadow: 0 4px 16px rgba(0,200,117,0.35); font-size: 20px; color: #060810; font-weight: 700; }
-        .otp-home { display: flex; justify-content: center; gap: 4px; padding: 8px 0; }
-        .otp-home span { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
-        .otp-home span.active { width: 16px; border-radius: 2px; background: var(--emerald); }
-
-        @keyframes device-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
-        @keyframes digit-change { 0% { transform: translateY(-100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-
-        /* --- SECTIONS --- */
-        section { padding: 100px 0; }
-        .section-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,200,117,0.12); border: 1px solid var(--border-strong); border-radius: 100px; padding: 6px 14px; font-family: var(--font-display); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--emerald); margin-bottom: 16px; }
-        .section-title { font-family: var(--font-heading); font-size: clamp(26px, 3.6vw, 40px); font-weight: 800; margin-bottom: 12px; }
-        .section-title .accent { color: var(--emerald); }
-        .section-sub { font-size: 16px; color: var(--muted); max-width: 560px; margin-bottom: 48px; }
-        .section-center { text-align: center; }
-        .section-center .section-sub { margin-left: auto; margin-right: auto; }
-
-        /* --- FEATURES --- */
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .feature-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px; transition: all 0.4s var(--ease); }
-        .feature-card:hover { border-color: var(--border-strong); transform: translateY(-4px); box-shadow: var(--glow), var(--shadow-card); }
-        .feature-icon { width: 52px; height: 52px; background: rgba(0,200,117,0.12); border: 1px solid var(--border-strong); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; transition: all var(--transition); }
-        .feature-card:hover .feature-icon { background: rgba(0,200,117,0.2); box-shadow: 0 0 16px rgba(0,200,117,0.3); }
-        .feature-card h3 { font-family: var(--font-heading); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-        .feature-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-        .feature-tag { display: inline-block; font-size: 10px; font-weight: 600; background: rgba(0,200,117,0.12); border: 1px solid rgba(0,200,117,0.2); padding: 3px 9px; border-radius: 100px; color: var(--emerald); margin-top: 12px; }
-
-        /* --- COMPARISON --- */
-        .compare-table { width: 100%; border-collapse: collapse; margin-top: 32px; }
-        .compare-table th, .compare-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .compare-table thead th { background: #0a0d18; font-weight: 700; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-        .compare-table .veilo-col { color: var(--emerald); background: rgba(0,200,117,0.06); border-top: 2px solid var(--emerald); }
-        .compare-table tbody tr { transition: background var(--transition); }
-        .compare-table tbody tr:hover { background: rgba(0,200,117,0.03); }
-        .compare-table .feature-name { font-weight: 600; }
-        .tbl-yes { color: var(--emerald); font-weight: 700; }
-        .tbl-no { color: var(--red); }
-        .tbl-partial { color: var(--gold); }
-
-        /* --- SECURITY GRID --- */
-        .security-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-        .security-item { display: flex; align-items: flex-start; gap: 10px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; border-left: 3px solid var(--emerald); transition: all var(--transition); }
-        .security-item:hover { border-color: var(--border-strong); transform: translateX(4px); }
-        .security-item .check { color: var(--emerald); font-weight: 700; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-        .security-item span { font-size: 13px; line-height: 1.5; }
-
-        /* --- ECOSYSTEM --- */
-        .eco-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .eco-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-decoration: none; color: var(--text); transition: all var(--transition); position: relative; overflow: hidden; }
-        .eco-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--emerald), transparent); transform: scaleX(0); transition: transform var(--transition); }
-        .eco-card:hover { border-color: var(--border-strong); transform: translateY(-4px); box-shadow: var(--shadow-card); }
-        .eco-card:hover::after { transform: scaleX(1); }
-        .eco-card h4 { font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: var(--emerald); margin-bottom: 6px; }
-        .eco-card p { font-size: 13px; color: var(--muted); }
-
-        /* --- CTA --- */
-        .cta-section { background: linear-gradient(180deg, var(--bg), #0a1020); text-align: center; padding: 80px 0 100px; }
-        .cta-section h2 { font-family: var(--font-heading); font-size: clamp(28px, 4vw, 44px); font-weight: 800; margin-bottom: 16px; }
-        .cta-section p { color: var(--muted); font-size: 16px; margin-bottom: 32px; }
-
-        /* --- FOOTER --- */
-        footer { background: #040608; border-top: 1px solid var(--border); padding: 48px 0 24px; }
-        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-        .footer-links { display: flex; gap: 24px; }
-        .footer-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color var(--transition); }
-        .footer-links a:hover { color: var(--emerald); }
-        .footer-copy { color: var(--muted); font-size: 12px; }
-
-        /* --- REVEAL --- */
-        .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
-        .reveal.visible { opacity: 1; transform: none; }
-        .reveal-d1 { transition-delay: 0.1s; }
-        .reveal-d2 { transition-delay: 0.2s; }
-        .reveal-d3 { transition-delay: 0.3s; }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 1024px) {
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-            .security-grid { grid-template-columns: repeat(2, 1fr); }
-            .eco-grid { grid-template-columns: repeat(2, 1fr); }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        @media (max-width: 768px) {
-            .hero-inner { grid-template-columns: 1fr; text-align: center; }
-            .hero-sub { margin-left: auto; margin-right: auto; }
-            .hero-buttons { justify-content: center; }
-            .hero-visual { display: none; }
-            .hero-metrics { grid-template-columns: repeat(2, 1fr); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--shield-blue-dark); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--shield-blue); }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+
+        /* Language Toggle */
+        .lang-tr { display: none; }
+        body.tr .lang-en { display: none; }
+        body.tr .lang-tr { display: block; }
+        body.tr span.lang-en { display: none; }
+        body.tr span.lang-tr { display: inline; }
+        body.tr div.lang-en { display: none; }
+        body.tr div.lang-tr { display: flex; }
+        body.tr p.lang-en { display: none; }
+        body.tr p.lang-tr { display: block; }
+        body.tr h1.lang-en,
+        body.tr h2.lang-en,
+        body.tr h3.lang-en { display: none; }
+        body.tr h1.lang-tr,
+        body.tr h2.lang-tr,
+        body.tr h3.lang-tr { display: block; }
+        body.tr a.lang-en { display: none; }
+        body.tr a.lang-tr { display: inline-flex; }
+        body.tr li.lang-en { display: none; }
+        body.tr li.lang-tr { display: list-item; }
+
+        /* ---- TYPOGRAPHY ---- */
+        h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height: 1.2; }
+        h1 { font-size: clamp(2.4rem, 5vw, 4rem); }
+        h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+        h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--shield-blue);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 640px;
+            margin-bottom: 48px;
+        }
+
+        .text-center { text-align: center; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* ---- REVEAL ANIMATION ---- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+           NAVIGATION
+           ============================================================ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            transition: background 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav.scrolled {
+            background: rgba(7, 17, 31, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 10px 0;
+            box-shadow: 0 1px 0 var(--border);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+        .nav-brand svg {
+            width: 32px;
+            height: 32px;
+        }
+        .nav-brand span {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+        .nav-links a:hover { color: var(--text-main); }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-toggle {
+            background: rgba(37,99,235,0.1);
+            border: 1px solid var(--border-strong);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .lang-toggle:hover {
+            background: rgba(37,99,235,0.2);
+            color: var(--text-main);
+        }
+
+        .btn-nav {
+            background: var(--shield-blue);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-nav:hover {
+            background: var(--shield-blue-dark);
+            box-shadow: 0 0 20px var(--shield-glow);
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-main);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(7,17,31,0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: color var(--transition);
+        }
+        .mobile-menu a:hover { color: var(--shield-blue); }
+
+        @media (max-width: 800px) {
             .nav-links { display: none; }
-            .features-grid { grid-template-columns: 1fr; }
-            .security-grid { grid-template-columns: 1fr; }
-            .eco-grid { grid-template-columns: 1fr; }
-            .compare-table { font-size: 12px; }
-            .compare-table th, .compare-table td { padding: 10px 12px; }
-            section { padding: 72px 0; }
+            .nav-actions .btn-nav { display: none; }
+            .hamburger { display: flex; }
         }
 
-        /* i18n */
-        .lang { display: none; }
-        .lang.active { display: block; }
+        /* ============================================================
+           SECTION 1: HERO
+           ============================================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            padding-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #shield-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero-bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--shield-glow) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: radar-pulse 4s ease-out infinite;
+        }
+
+        @keyframes radar-pulse {
+            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 0.15; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37,99,235,0.1);
+            border: 1px solid var(--border-strong);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--shield-blue);
+            margin-bottom: 24px;
+        }
+        .hero-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--emerald);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+            50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        .hero h1 .accent {
+            color: var(--shield-blue);
+            display: block;
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            line-height: 1.7;
+            max-width: 520px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--shield-blue);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: var(--shield-blue-dark);
+            box-shadow: 0 0 30px var(--shield-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--text-main);
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-strong);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            border-color: var(--shield-blue);
+            background: rgba(37,99,235,0.08);
+            transform: translateY(-2px);
+        }
+
+        .hero-trust {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+        }
+        .hero-trust span {
+            color: var(--text-muted);
+        }
+
+        /* Phone Mockup */
+        .phone-mockup {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            animation: float-phone 4s ease-in-out infinite;
+        }
+        @keyframes float-phone {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .phone-frame {
+            width: 300px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-strong);
+            border-radius: 32px;
+            padding: 20px;
+            box-shadow:
+                0 0 60px rgba(37,99,235,0.15),
+                0 20px 60px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .phone-notch {
+            width: 120px;
+            height: 24px;
+            background: var(--bg-dark);
+            border-radius: 0 0 16px 16px;
+            margin: -20px auto 16px;
+        }
+        .phone-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        .phone-header-title {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: var(--shield-blue);
+        }
+        .phone-header-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(37,99,235,0.15);
+            border: 1px solid var(--border-strong);
+        }
+
+        .otp-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .otp-card:hover {
+            border-color: var(--border-strong);
+        }
+        .otp-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .otp-issuer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .otp-issuer-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .otp-issuer-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .otp-pin-badge {
+            font-size: 0.6rem;
+            color: var(--amber);
+            opacity: 0.7;
+        }
+        .otp-timer-ring {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+        .otp-timer-ring svg {
+            width: 32px;
+            height: 32px;
+            transform: rotate(-90deg);
+        }
+        .otp-timer-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.06);
+            stroke-width: 3;
+        }
+        .otp-timer-ring .ring-progress {
+            fill: none;
+            stroke: var(--emerald);
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .otp-timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 0.5rem;
+            color: var(--text-muted);
+        }
+        .otp-code {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--text-main);
+        }
+        .otp-code .digit {
+            display: inline-block;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .otp-code .digit.changing {
+            transform: translateY(-8px);
+            opacity: 0;
+        }
+
+        @media (max-width: 800px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-subtitle { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .hero-trust { text-align: center; }
+            .phone-mockup { margin-top: 40px; }
+        }
+
+        /* ============================================================
+           SECTION 2: TRUST STRIP
+           ============================================================ */
+        .trust-strip {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: rgba(15,23,42,0.4);
+            text-align: center;
+        }
+        .trust-strip-text {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+        .trust-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .trust-logo {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            opacity: 0.6;
+            transition: opacity var(--transition);
+        }
+        .trust-logo:hover { opacity: 1; }
+        .trust-dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-faint);
+            opacity: 0.3;
+        }
+        .trust-compat {
+            color: var(--text-faint);
+            font-size: 0.75rem;
+            margin-top: 12px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 480px) {
+            .trust-logos { gap: 20px; }
+            .trust-dot { display: none; }
+        }
+
+        /* ============================================================
+           SECTION 3: HOW IT WORKS — SECURITY PIPELINE
+           ============================================================ */
+        .pipeline-section {
+            background: var(--bg-panel);
+        }
+
+        .pipeline-track {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin-top: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pipeline-stage {
+            flex: 1;
+            position: relative;
+            padding: 32px 20px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all var(--transition);
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 20px 50%);
+            margin-left: -10px;
+        }
+        .pipeline-stage:first-child {
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 0 50%);
+            margin-left: 0;
+            border-radius: 12px 0 0 12px;
+        }
+        .pipeline-stage:last-child {
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 0 100%, 20px 50%);
+            border-radius: 0 12px 12px 0;
+        }
+        .pipeline-stage:hover {
+            background: rgba(37,99,235,0.08);
+            border-color: var(--border-strong);
+        }
+
+        .pipeline-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(37,99,235,0.1);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 1.2rem;
+        }
+
+        .pipeline-label {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--shield-blue);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .pipeline-desc {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        /* Flowing dots */
+        .pipeline-flow-dots {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .flow-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--emerald-bright);
+            box-shadow: 0 0 8px var(--emerald-glow);
+            top: -2px;
+            animation: flow-across 3s linear infinite;
+        }
+        .flow-dot:nth-child(2) { animation-delay: -1s; }
+        .flow-dot:nth-child(3) { animation-delay: -2s; }
+
+        @keyframes flow-across {
+            0% { left: -2%; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 102%; opacity: 0; }
+        }
+
+        @media (max-width: 800px) {
+            .pipeline-track {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .pipeline-stage {
+                clip-path: none !important;
+                margin-left: 0 !important;
+                border-radius: 12px !important;
+            }
+            .pipeline-flow-dots { display: none; }
+        }
+
+        /* ============================================================
+           SECTION 4: LIVE DASHBOARD (FILM FRAME)
+           ============================================================ */
+        .dashboard-section {
+            background: var(--bg-dark);
+        }
+
+        .film-frame {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-strong);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 40px rgba(37,99,235,0.08);
+            max-width: 960px;
+            margin: 48px auto 0;
+        }
+
+        .film-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(7,17,31,0.6);
+            border-bottom: 1px solid var(--border);
+        }
+        .film-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .film-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .film-dots span:nth-child(1) { background: var(--threat-red); }
+        .film-dots span:nth-child(2) { background: var(--amber); }
+        .film-dots span:nth-child(3) { background: var(--emerald); }
+        .film-titlebar-text {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+        }
+
+        .film-body {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr 1fr;
+            gap: 0;
+            min-height: 320px;
+        }
+
+        .film-col {
+            padding: 24px;
+            border-right: 1px solid var(--border);
+        }
+        .film-col:last-child { border-right: none; }
+
+        .film-col-title {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Left: Active Tokens */
+        .token-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            transition: background var(--transition);
+            cursor: default;
+        }
+        .token-item:hover { background: rgba(37,99,235,0.06); }
+        .token-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald-glow);
+        }
+        .token-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            flex: 1;
+        }
+        .token-time {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            color: var(--text-faint);
+        }
+
+        /* Center: Big OTP */
+        .film-otp-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .film-otp-issuer {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--shield-blue);
+            margin-bottom: 16px;
+        }
+        .film-otp-ring {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 16px;
+        }
+        .film-otp-ring svg {
+            width: 140px;
+            height: 140px;
+            transform: rotate(-90deg);
+        }
+        .film-otp-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.04);
+            stroke-width: 4;
+        }
+        .film-otp-ring .ring-progress {
+            fill: none;
+            stroke: var(--emerald);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .film-otp-code {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--text-main);
+        }
+        .film-otp-timer {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Right: Security Status */
+        .status-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .status-item:last-child { border-bottom: none; }
+        .status-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .status-value {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .status-dot.green {
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald-glow);
+        }
+        .status-dot.red {
+            background: var(--threat-red);
+            box-shadow: 0 0 6px rgba(239,68,68,0.4);
+        }
+        .status-dot.amber {
+            background: var(--amber);
+            box-shadow: 0 0 6px rgba(245,158,11,0.4);
+        }
+
+        /* Bottom bar */
+        .film-bottom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(16,185,129,0.04);
+        }
+        .film-bottom-stripe {
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+            background: var(--emerald);
+        }
+        .film-bottom-text {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .film-bottom-text strong {
+            color: var(--emerald);
+            font-weight: 600;
+        }
+
+        @media (max-width: 800px) {
+            .film-body {
+                grid-template-columns: 1fr;
+            }
+            .film-col { border-right: none; border-bottom: 1px solid var(--border); }
+            .film-col:last-child { border-bottom: none; }
+        }
+
+        /* ============================================================
+           SECTION 5: THREAT HEATMAP
+           ============================================================ */
+        .heatmap-section {
+            background: var(--bg-panel);
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 48px;
+        }
+
+        .heatmap-header {
+            padding: 16px 20px;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            background: rgba(7,17,31,0.5);
+            border-radius: 8px;
+        }
+
+        .heatmap-category {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .heatmap-cell {
+            padding: 16px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            border-left: 3px solid transparent;
+            transition: all var(--transition);
+        }
+        .heatmap-cell:hover {
+            transform: translateX(2px);
+        }
+
+        .heatmap-cell.red {
+            background: rgba(239,68,68,0.1);
+            border-left-color: var(--threat-red);
+            color: var(--threat-red);
+        }
+        .heatmap-cell.amber {
+            background: rgba(245,158,11,0.1);
+            border-left-color: var(--amber);
+            color: var(--amber);
+        }
+        .heatmap-cell.green {
+            background: rgba(16,185,129,0.1);
+            border-left-color: var(--emerald);
+            color: var(--emerald);
+            box-shadow: inset 0 0 20px rgba(16,185,129,0.05);
+        }
+
+        .heatmap-cell-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .heatmap-cell.red .heatmap-cell-dot {
+            background: var(--threat-red);
+            box-shadow: 0 0 6px rgba(239,68,68,0.4);
+        }
+        .heatmap-cell.amber .heatmap-cell-dot {
+            background: var(--amber);
+            box-shadow: 0 0 6px rgba(245,158,11,0.4);
+        }
+        .heatmap-cell.green .heatmap-cell-dot {
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald-glow);
+        }
+
+        @media (max-width: 800px) {
+            .heatmap-grid {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                font-size: 0.7rem;
+            }
+            .heatmap-header, .heatmap-category, .heatmap-cell {
+                padding: 10px 10px;
+                font-size: 0.55rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .heatmap-grid {
+                grid-template-columns: 1.2fr 1fr 1fr 1fr;
+            }
+            .heatmap-cell-dot { display: none; }
+            .heatmap-header, .heatmap-category, .heatmap-cell {
+                padding: 8px 6px;
+                font-size: 0.5rem;
+                letter-spacing: 0;
+            }
+        }
+
+        /* Differentiator cards */
+        .diff-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 56px;
+        }
+
+        .diff-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 24px;
+            text-align: center;
+            transition: all var(--transition);
+        }
+        .diff-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+        .diff-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(37,99,235,0.1);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.4rem;
+        }
+        .diff-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .diff-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .diff-question {
+            text-align: center;
+            margin-top: 56px;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 800px) {
+            .diff-cards { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .diff-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================================
+           SECTION 6: RECOVERY & BACKUP
+           ============================================================ */
+        .recovery-section {
+            background: var(--bg-dark);
+        }
+
+        .recovery-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .recovery-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .recovery-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--shield-blue), var(--emerald));
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .recovery-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+        .recovery-card:hover::before { opacity: 1; }
+
+        .recovery-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(37,99,235,0.08);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.6rem;
+        }
+
+        .recovery-card h3 {
+            margin-bottom: 10px;
+        }
+        .recovery-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .recovery-callout {
+            margin-top: 48px;
+            padding: 28px 36px;
+            background: rgba(37,99,235,0.05);
+            border-left: 3px solid var(--shield-blue);
+            border-radius: 0 12px 12px 0;
+            text-align: center;
+        }
+        .recovery-callout p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            font-style: italic;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 800px) {
+            .recovery-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================================
+           SECTION 7: ECOSYSTEM
+           ============================================================ */
+        .ecosystem-section {
+            background: var(--bg-panel);
+        }
+
+        .ecosystem-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .eco-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 24px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .eco-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .eco-accent {
+            width: 40px;
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        .eco-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .eco-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .eco-link {
+            color: var(--shield-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap var(--transition);
+        }
+        .eco-link:hover { gap: 8px; }
+
+        @media (max-width: 800px) {
+            .ecosystem-cards { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .ecosystem-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================================
+           SECTION 8: FINAL CTA
+           ============================================================ */
+        .cta-section {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at center, rgba(37,99,235,0.15) 0%, transparent 60%),
+                linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-dark) 100%);
+            pointer-events: none;
+        }
+        .cta-section .container { position: relative; z-index: 2; }
+        .cta-section h2 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 16px;
+        }
+        .cta-subtitle {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            margin-bottom: 40px;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all var(--transition);
+        }
+        .btn-cta.primary {
+            background: var(--shield-blue);
+            color: #fff;
+        }
+        .btn-cta.primary:hover {
+            background: var(--shield-blue-dark);
+            box-shadow: 0 0 40px var(--shield-glow);
+            transform: translateY(-2px);
+        }
+        .btn-cta.secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-strong);
+        }
+        .btn-cta.secondary:hover {
+            border-color: var(--shield-blue);
+            background: rgba(37,99,235,0.08);
+            transform: translateY(-2px);
+        }
+        .cta-note {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
+            padding: 64px 0 0;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 48px;
+        }
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+        .footer-col h4 {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col li {
+            margin-bottom: 10px;
+        }
+        .footer-col a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color var(--transition);
+        }
+        .footer-col a:hover { color: var(--text-main); }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-copy {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+        }
+        .footer-badges {
+            display: flex;
+            gap: 8px;
+        }
+        .footer-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(37,99,235,0.08);
+            border: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 1px;
+            color: var(--text-faint);
+        }
+
+        @media (max-width: 800px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { justify-content: center; text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav id="navbar">
-    <div class="container nav-inner">
-        <a href="https://veilo.tr" class="nav-logo">
-            <span class="icon-box"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></span>
-            VEILO
-        </a>
-        <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#security">Security</a>
-            <a href="#compare">Compare</a>
-            <a href="#ecosystem">Ecosystem</a>
-            <button class="lang-toggle" onclick="toggleLang()">TR / EN</button>
-            <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-nav">Get App</a>
+    <!-- ============================================================
+         NAVIGATION
+         ============================================================ -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-brand">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M16 2L4 8v8c0 7.73 5.12 14.96 12 16 6.88-1.04 12-8.27 12-16V8L16 2z" fill="none" stroke="var(--shield-blue)" stroke-width="1.5"/>
+                    <path d="M16 6L8 10v6c0 5.55 3.4 10.74 8 11.5 4.6-.76 8-5.95 8-11.5v-6L16 6z" fill="rgba(37,99,235,0.12)" stroke="var(--shield-blue)" stroke-width="1"/>
+                    <path d="M13 16l2 2 4-4" stroke="var(--emerald-bright)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>VEILO</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features"><span class="lang-en">Features</span><span class="lang-tr">Ozellikler</span></a></li>
+                <li><a href="#security"><span class="lang-en">Security</span><span class="lang-tr">Guvenlik</span></a></li>
+                <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karsilastir</span></a></li>
+                <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
+                <li><a href="#ecosystem"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle">TR / EN</button>
+                <a href="https://github.com/AhmetSuleymanElbir/authenticator" class="btn-nav" target="_blank">
+                    <span class="lang-en">GitHub</span>
+                    <span class="lang-tr">GitHub</span>
+                </a>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#features" class="mobile-link"><span class="lang-en">Features</span><span class="lang-tr">Ozellikler</span></a>
+        <a href="#security" class="mobile-link"><span class="lang-en">Security</span><span class="lang-tr">Guvenlik</span></a>
+        <a href="#compare" class="mobile-link"><span class="lang-en">Compare</span><span class="lang-tr">Karsilastir</span></a>
+        <a href="#recovery" class="mobile-link"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a>
+        <a href="#ecosystem" class="mobile-link"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a>
+        <button class="lang-toggle" onclick="toggleLanguage()">TR / EN</button>
     </div>
-</nav>
 
-<!-- ===== ENGLISH ===== -->
-<div class="lang active" id="lang-en">
+    <!-- ============================================================
+         SECTION 1: HERO
+         ============================================================ -->
+    <section class="hero" id="hero">
+        <canvas id="shield-canvas"></canvas>
+        <div class="hero-bg-glow"></div>
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <div class="pulse-dot"></div>
+                        <span class="lang-en">NEXT-GEN 2FA</span>
+                        <span class="lang-tr">YENI NESIL 2FA</span>
+                    </div>
 
-<!-- HERO -->
-<section class="hero">
-    <div class="container hero-inner">
-        <div>
-            <div class="hero-badge"><span class="dot"></span> HARDWARE-BACKED 2FA</div>
-            <h1>Your codes.<br><span class="accent">Your hardware.</span><br>Zero tracking.</h1>
-            <p class="hero-sub">Offline two-factor authentication that stores secrets in your device's security chip. No internet, no account, no data ever leaves your phone.</p>
-            <div class="hero-buttons">
-                <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-primary">&#9654; Google Play</a>
-                <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-secondary">&#10100; Source Code</a>
-            </div>
-            <div class="hero-metrics">
-                <div class="metric"><div class="num">0</div><div class="label">Network calls</div></div>
-                <div class="metric"><div class="num">3</div><div class="label">Languages</div></div>
-                <div class="metric"><div class="num">11</div><div class="label">Security layers</div></div>
-                <div class="metric"><div class="num">100%</div><div class="label">Open source</div></div>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="otp-device" id="otp-device">
-                <div class="otp-notch"></div>
-                <div class="otp-header">VEILO AUTH</div>
-                <div class="otp-account active" id="otp-row-0">
-                    <div class="otp-issuer"><span class="pin">&#128204;</span> GitHub</div>
-                    <div class="otp-code"><span class="digits" id="otp-code-0">482 159</span><div class="otp-timer"><svg width="36" height="36"><circle class="bg" /><circle class="progress" id="otp-prog-0" /></svg><span class="otp-timer-text" id="otp-sec-0">27</span></div></div>
+                    <h1 class="lang-en">Next-Generation<span class="accent">Authentication</span></h1>
+                    <h1 class="lang-tr">Yeni Nesil<span class="accent">Kimlik Dogrulama</span></h1>
+
+                    <p class="hero-subtitle lang-en">Secure every login with military-grade 2FA protection. Hardware-backed keys, zero tracking, fully offline.</p>
+                    <p class="hero-subtitle lang-tr">Her girisini askeri seviye 2FA korumasiyla guvence altina al. Donanim destekli anahtarlar, sifir izleme, tamamen cevrimdisi.</p>
+
+                    <div class="hero-buttons">
+                        <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-primary" target="_blank">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.3 2.3-8.636-8.632z"/></svg>
+                            <span class="lang-en">Get Started</span>
+                            <span class="lang-tr">Basla</span>
+                        </a>
+                        <a href="https://github.com/AhmetSuleymanElbir/authenticator" class="btn-outline" target="_blank">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            <span class="lang-en">View Source</span>
+                            <span class="lang-tr">Kaynak Kodu</span>
+                        </a>
+                    </div>
+
+                    <p class="hero-trust">
+                        <span class="lang-en">Open source &middot; 11 security layers &middot; 3 languages</span>
+                        <span class="lang-tr">Acik kaynak &middot; 11 guvenlik katmani &middot; 3 dil destegi</span>
+                    </p>
                 </div>
-                <div class="otp-account" id="otp-row-1">
-                    <div class="otp-issuer">Google</div>
-                    <div class="otp-code"><span class="digits" id="otp-code-1">739 024</span><div class="otp-timer"><svg width="36" height="36"><circle class="bg" /><circle class="progress" id="otp-prog-1" /></svg><span class="otp-timer-text" id="otp-sec-1">27</span></div></div>
+
+                <div class="phone-mockup">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-header">
+                            <span class="phone-header-title">VEILO AUTH</span>
+                            <div class="phone-header-icon"></div>
+                        </div>
+
+                        <!-- OTP Card 1: GitHub -->
+                        <div class="otp-card" id="otpCard0">
+                            <div class="otp-card-header">
+                                <div class="otp-issuer">
+                                    <div class="otp-issuer-icon" style="background:#333">GH</div>
+                                    <span class="otp-issuer-name">GitHub</span>
+                                    <span class="otp-pin-badge">&#9733;</span>
+                                </div>
+                                <div class="otp-timer-ring" id="ring0">
+                                    <svg viewBox="0 0 32 32">
+                                        <circle class="ring-bg" cx="16" cy="16" r="13"/>
+                                        <circle class="ring-progress" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <span class="otp-timer-text">14s</span>
+                                </div>
+                            </div>
+                            <div class="otp-code" id="otpCode0">
+                                <span class="digit">6</span><span class="digit">5</span><span class="digit">4</span>
+                                <span style="letter-spacing:8px"> </span>
+                                <span class="digit">2</span><span class="digit">8</span><span class="digit">1</span>
+                            </div>
+                        </div>
+
+                        <!-- OTP Card 2: Google -->
+                        <div class="otp-card" id="otpCard1">
+                            <div class="otp-card-header">
+                                <div class="otp-issuer">
+                                    <div class="otp-issuer-icon" style="background:#4285f4">G</div>
+                                    <span class="otp-issuer-name">Google</span>
+                                </div>
+                                <div class="otp-timer-ring" id="ring1">
+                                    <svg viewBox="0 0 32 32">
+                                        <circle class="ring-bg" cx="16" cy="16" r="13"/>
+                                        <circle class="ring-progress" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <span class="otp-timer-text">47s</span>
+                                </div>
+                            </div>
+                            <div class="otp-code" id="otpCode1">
+                                <span class="digit">9</span><span class="digit">8</span><span class="digit">1</span>
+                                <span style="letter-spacing:8px"> </span>
+                                <span class="digit">5</span><span class="digit">5</span><span class="digit">2</span>
+                            </div>
+                        </div>
+
+                        <!-- OTP Card 3: AWS -->
+                        <div class="otp-card" id="otpCard2">
+                            <div class="otp-card-header">
+                                <div class="otp-issuer">
+                                    <div class="otp-issuer-icon" style="background:#ff9900">A</div>
+                                    <span class="otp-issuer-name">AWS</span>
+                                </div>
+                                <div class="otp-timer-ring" id="ring2">
+                                    <svg viewBox="0 0 32 32">
+                                        <circle class="ring-bg" cx="16" cy="16" r="13"/>
+                                        <circle class="ring-progress" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <span class="otp-timer-text">22s</span>
+                                </div>
+                            </div>
+                            <div class="otp-code" id="otpCode2">
+                                <span class="digit">4</span><span class="digit">3</span><span class="digit">8</span>
+                                <span style="letter-spacing:8px"> </span>
+                                <span class="digit">7</span><span class="digit">1</span><span class="digit">9</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="otp-account" id="otp-row-2">
-                    <div class="otp-issuer">AWS</div>
-                    <div class="otp-code"><span class="digits" id="otp-code-2">156 843</span><div class="otp-timer"><svg width="36" height="36"><circle class="bg" /><circle class="progress" id="otp-prog-2" /></svg><span class="otp-timer-text" id="otp-sec-2">27</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: TRUST STRIP
+         ============================================================ -->
+    <section class="trust-strip">
+        <div class="container">
+            <p class="trust-strip-text">
+                <span class="lang-en">Trusted by developers, traders and security professionals</span>
+                <span class="lang-tr">Gelistiriciler, traderlar ve guvenlik uzmanlari tarafindan tercih ediliyor</span>
+            </p>
+            <div class="trust-logos">
+                <span class="trust-logo">LINUX</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">GITHUB</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">AZURE</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">AWS</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">DOCKER</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">CLOUDFLARE</span>
+            </div>
+            <p class="trust-compat">
+                <span class="lang-en">Compatible with every service that supports TOTP</span>
+                <span class="lang-tr">TOTP destekleyen tum servislerle uyumlu</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: HOW IT WORKS — SECURITY PIPELINE
+         ============================================================ -->
+    <section class="pipeline-section" id="features">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">HOW IT WORKS</span>
+                    <span class="lang-tr">NASIL CALISIR</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">How Veilo Protects You</span>
+                    <span class="lang-tr">Veilo Sizi Nasil Koruyor</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">From scan to verification — every step is encrypted, isolated, and air-gapped.</span>
+                    <span class="lang-tr">Taramadan dogrulamaya kadar her adim sifrelenmis, izole ve ag baglantisiz.</span>
+                </p>
+            </div>
+
+            <div class="pipeline-track reveal" style="transition-delay: 0.2s">
+                <div class="pipeline-flow-dots">
+                    <div class="flow-dot"></div>
+                    <div class="flow-dot"></div>
+                    <div class="flow-dot"></div>
                 </div>
-                <div class="otp-fab">+</div>
-                <div class="otp-home"><span></span><span class="active"></span><span></span></div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128247;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">SCAN</span>
+                        <span class="lang-tr">TARA</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">QR code or manual entry</span>
+                        <span class="lang-tr">QR kod veya manuel giris</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128273;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">STORE</span>
+                        <span class="lang-tr">DEPOLA</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">Android Keystore / StrongBox chip</span>
+                        <span class="lang-tr">Android Keystore / StrongBox cip</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128274;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">ENCRYPT</span>
+                        <span class="lang-tr">SIFRELE</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">AES-256-GCM wrapping</span>
+                        <span class="lang-tr">AES-256-GCM sifreleme</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#9881;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">GENERATE</span>
+                        <span class="lang-tr">URET</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">HMAC computed in secure hardware</span>
+                        <span class="lang-tr">HMAC guvenli donanim icinde hesaplanir</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128737;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">PROTECT</span>
+                        <span class="lang-tr">KORU</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">FLAG_SECURE, biometric gate</span>
+                        <span class="lang-tr">FLAG_SECURE, biyometrik kapisi</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128465;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">CLEAR</span>
+                        <span class="lang-tr">TEMIZLE</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">Memory zeroed, clipboard cleared</span>
+                        <span class="lang-tr">Bellek sifirlandi, pano temizlendi</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- FEATURES -->
-<section id="features">
-    <div class="container section-center">
-        <div class="section-badge">&#9878; Features</div>
-        <h2 class="section-title reveal">Everything you need. <span class="accent">Nothing you don't.</span></h2>
-        <p class="section-sub reveal reveal-d1">No bloated features, no unnecessary permissions. Just secure, reliable two-factor authentication.</p>
-        <div class="features-grid">
-            <div class="feature-card reveal"><div class="feature-icon">&#128737;</div><h3>Hardware-Backed Keys</h3><p>Secrets stored in Android Keystore with StrongBox security chip. Keys never return to app memory — computed inside secure hardware.</p><span class="feature-tag">StrongBox</span></div>
-            <div class="feature-card reveal reveal-d1"><div class="feature-icon">&#128225;</div><h3>Smart QR Scanner</h3><p>Scans otpauth:// QR codes and automatically detects algorithm, digit count, and period. No manual configuration needed.</p></div>
-            <div class="feature-card reveal reveal-d2"><div class="feature-icon">&#128274;</div><h3>Biometric Lock</h3><p>Fingerprint, face, or device PIN required. Auto-locks when you leave the app. Screen capture blocked at OS level.</p></div>
-            <div class="feature-card reveal"><div class="feature-icon">&#128230;</div><h3>Encrypted Backup</h3><p>Export to a passphrase-protected file using Argon2id key derivation and AES-256-GCM encryption. Military-grade protection.</p><span class="feature-tag">Argon2id</span></div>
-            <div class="feature-card reveal reveal-d1"><div class="feature-icon">&#128196;</div><h3>Printable PDF Backup</h3><p>Generate a PDF with QR codes for every account. Print it, store it in a safe — the ultimate offline backup.</p></div>
-            <div class="feature-card reveal reveal-d2"><div class="feature-icon">&#128259;</div><h3>One-Tap Migration</h3><p>Import all your accounts from Google Authenticator, Microsoft Authenticator, or Aegis. One scan, done.</p></div>
-            <div class="feature-card reveal"><div class="feature-icon">&#11088;</div><h3>Favorites &amp; Groups</h3><p>Pin frequently used accounts to the top. Organize with custom groups. Search instantly across all accounts.</p></div>
-            <div class="feature-card reveal reveal-d1"><div class="feature-icon">&#127760;</div><h3>Fully Offline</h3><p>INTERNET permission explicitly removed from the app. No analytics, no tracking, no cloud. Air-gapped by design.</p><span class="feature-tag">Zero Network</span></div>
-            <div class="feature-card reveal reveal-d2"><div class="feature-icon">&#127463;&#127479;</div><h3>Multilingual</h3><p>English, Turkish, and Arabic with full RTL support. Every string translated, every screen localized.</p></div>
-        </div>
-    </div>
-</section>
-
-<!-- COMPARISON -->
-<section id="compare" style="background: var(--bg-secondary);">
-    <div class="container section-center">
-        <div class="section-badge">&#9878; Comparison</div>
-        <h2 class="section-title reveal">How we <span class="accent">stand apart</span></h2>
-        <p class="section-sub reveal reveal-d1">A transparent comparison with common authenticator approaches — no names, just facts.</p>
-        <table class="compare-table reveal reveal-d2">
-            <thead>
-                <tr>
-                    <th>Feature</th>
-                    <th class="veilo-col">Veilo</th>
-                    <th>Typical App A</th>
-                    <th>Typical App B</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td class="feature-name">Hardware-backed keys (StrongBox)</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-no">&#10007;</td></tr>
-                <tr><td class="feature-name">Fully offline (no INTERNET permission)</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-                <tr><td class="feature-name">Zero analytics &amp; tracking</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Encrypted backup (Argon2id + AES-256)</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Printable PDF backup</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-no">&#10007;</td></tr>
-                <tr><td class="feature-name">Screen capture blocked</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Clipboard auto-clear</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-                <tr><td class="feature-name">Root &amp; debugger detection</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-no">&#10007;</td></tr>
-                <tr><td class="feature-name">Secret zeroed in memory</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-                <tr><td class="feature-name">Open source</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">SHA-256 / SHA-512 / 8-digit codes</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Favorites &amp; groups</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<!-- SECURITY -->
-<section id="security">
-    <div class="container section-center">
-        <div class="section-badge">&#128737; Security</div>
-        <h2 class="section-title reveal">11 layers of <span class="accent">defense</span></h2>
-        <p class="section-sub reveal reveal-d1">Not a checklist — a deeply integrated security architecture built from the ground up.</p>
-        <div class="security-grid">
-            <div class="security-item reveal"><span class="check">&#10003;</span><span>Hardware-backed Android Keystore with StrongBox</span></div>
-            <div class="security-item reveal reveal-d1"><span class="check">&#10003;</span><span>Biometric or device credential required to unlock</span></div>
-            <div class="security-item reveal reveal-d2"><span class="check">&#10003;</span><span>Screen capture &amp; app-switcher preview blocked</span></div>
-            <div class="security-item reveal"><span class="check">&#10003;</span><span>Clipboard auto-cleared in 30 seconds</span></div>
-            <div class="security-item reveal reveal-d1"><span class="check">&#10003;</span><span>Secret key material zeroed after use</span></div>
-            <div class="security-item reveal reveal-d2"><span class="check">&#10003;</span><span>Root and debugger detection at launch</span></div>
-            <div class="security-item reveal"><span class="check">&#10003;</span><span>No INTERNET permission — fully air-gapped</span></div>
-            <div class="security-item reveal reveal-d1"><span class="check">&#10003;</span><span>Zero analytics, tracking, or third-party SDKs</span></div>
-            <div class="security-item reveal reveal-d2"><span class="check">&#10003;</span><span>Encrypted backup: Argon2id + AES-256-GCM</span></div>
-            <div class="security-item reveal"><span class="check">&#10003;</span><span>ProGuard/R8 code obfuscation</span></div>
-            <div class="security-item reveal reveal-d1"><span class="check">&#10003;</span><span>Cloud backup &amp; device transfer disabled</span></div>
-            <div class="security-item reveal reveal-d2"><span class="check">&#10003;</span><span>Open source — fully auditable code</span></div>
-        </div>
-    </div>
-</section>
-
-<!-- ECOSYSTEM -->
-<section id="ecosystem" style="background: var(--bg-secondary);">
-    <div class="container section-center">
-        <div class="section-badge">&#9878; Ecosystem</div>
-        <h2 class="section-title reveal">Part of the <span class="accent">Veilo</span> suite</h2>
-        <p class="section-sub reveal reveal-d1">A complete enterprise security ecosystem — self-hosted, zero-trust, built for sovereignty.</p>
-        <div class="eco-grid">
-            <a href="https://veilo.tr/" class="eco-card reveal"><h4>Veilo Messenger</h4><p>End-to-end encrypted corporate messaging for closed networks. Signal Protocol. Zero-Trust mesh VPN.</p></a>
-            <a href="https://axon.veilo.tr/" class="eco-card reveal reveal-d1"><h4>Axon</h4><p>Smart backbone for enterprise infrastructure. Terminal, file transfer, Docker, monitoring — one panel.</p></a>
-            <a href="https://radar.veilo.tr/" class="eco-card reveal reveal-d2"><h4>Radar</h4><p>Real-time attack detection and automated response. Sigma rules, MITRE ATT&amp;CK, SOAR playbooks.</p></a>
-            <a href="https://volt.veilo.tr/" class="eco-card reveal reveal-d3"><h4>Voltbox</h4><p>Zero-knowledge password vault. Master password never reaches the server. Argon2id + AES-256-GCM.</p></a>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<div class="cta-section">
-    <div class="container">
-        <h2>Ready to <span style="color: var(--emerald)">own</span> your 2FA?</h2>
-        <p>Download Veilo Authenticator — free, open source, and built for security.</p>
-        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-            <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-primary">&#9654; Get it on Google Play</a>
-            <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-secondary">View on GitHub</a>
-        </div>
-    </div>
-</div>
-
-</div><!-- /lang-en -->
-
-<!-- ===== TURKISH ===== -->
-<div class="lang" id="lang-tr">
-
-<section class="hero">
-    <div class="container hero-inner">
-        <div>
-            <div class="hero-badge"><span class="dot"></span> DONANIM DESTEKLi 2FA</div>
-            <h1>Kodlariniz.<br><span class="accent">Donanimiz.</span><br>Sifir izleme.</h1>
-            <p class="hero-sub">Gizli anahtarlarinizi cihazinizin guvenlik cipinde saklayan cevrimdisi iki faktorlu dogrulama. Internet yok, hesap yok, veri asla disariya cikmaz.</p>
-            <div class="hero-buttons">
-                <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-primary">&#9654; Google Play</a>
-                <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-secondary">&#10100; Kaynak Kod</a>
+    <!-- ============================================================
+         SECTION 4: LIVE DASHBOARD (FILM FRAME)
+         ============================================================ -->
+    <section class="dashboard-section" id="security">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">LIVE PREVIEW</span>
+                    <span class="lang-tr">CANLI ONIZLEME</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Security at a Glance</span>
+                    <span class="lang-tr">Bir Bakista Guvenlik</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">Real-time monitoring of your authentication status and security posture.</span>
+                    <span class="lang-tr">Kimlik dogrulama durumunuzun ve guvenlik yapilanmanizin gercek zamanli izlenmesi.</span>
+                </p>
             </div>
-            <div class="hero-metrics">
-                <div class="metric"><div class="num">0</div><div class="label">Ag baglantisi</div></div>
-                <div class="metric"><div class="num">3</div><div class="label">Dil destegi</div></div>
-                <div class="metric"><div class="num">11</div><div class="label">Guvenlik katmani</div></div>
-                <div class="metric"><div class="num">%100</div><div class="label">Acik kaynak</div></div>
+
+            <div class="film-frame reveal" style="transition-delay: 0.2s">
+                <div class="film-titlebar">
+                    <div class="film-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="film-titlebar-text">VEILO AUTHENTICATOR v0.2.0</span>
+                </div>
+
+                <div class="film-body">
+                    <!-- Left Column: Active Tokens -->
+                    <div class="film-col">
+                        <div class="film-col-title">
+                            <span class="lang-en">ACTIVE TOKENS</span>
+                            <span class="lang-tr">AKTIF TOKENLAR</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">GitHub</span>
+                            <span class="token-time">14s</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">Google</span>
+                            <span class="token-time">47s</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">AWS Console</span>
+                            <span class="token-time">22s</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">Cloudflare</span>
+                            <span class="token-time">08s</span>
+                        </div>
+                    </div>
+
+                    <!-- Center Column: Big OTP -->
+                    <div class="film-col film-otp-center">
+                        <div class="film-otp-issuer">GITHUB</div>
+                        <div class="film-otp-ring" id="dashRing">
+                            <svg viewBox="0 0 140 140">
+                                <circle class="ring-bg" cx="70" cy="70" r="62"/>
+                                <circle class="ring-progress" cx="70" cy="70" r="62" stroke-dasharray="389.56" stroke-dashoffset="0"/>
+                            </svg>
+                            <div class="film-otp-code" id="dashOtp">483 291</div>
+                        </div>
+                        <div class="film-otp-timer" id="dashTimer">
+                            <span class="lang-en">Refreshes in 14s</span>
+                            <span class="lang-tr">14 saniye icinde yenilenir</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Security Status -->
+                    <div class="film-col">
+                        <div class="film-col-title">
+                            <span class="lang-en">SECURITY STATUS</span>
+                            <span class="lang-tr">GUVENLIK DURUMU</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">StrongBox</span>
+                            <span class="status-value"><span class="status-dot green"></span> ACTIVE</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Root Detection</span>
+                            <span class="status-label lang-tr">Root Tespiti</span>
+                            <span class="status-value"><span class="status-dot green"></span> CLEAR</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Debugger</span>
+                            <span class="status-value"><span class="status-dot green"></span> CLEAR</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Network Access</span>
+                            <span class="status-label lang-tr">Ag Erisimi</span>
+                            <span class="status-value"><span class="status-dot red"></span> BLOCKED</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Last Backup</span>
+                            <span class="status-label lang-tr">Son Yedekleme</span>
+                            <span class="status-value"><span class="status-dot amber"></span> 2h ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="film-bottom">
+                    <div class="film-bottom-stripe"></div>
+                    <div class="film-bottom-text">
+                        <span class="lang-en">Code copied &middot; clipboard will auto-clear in <strong>28s</strong></span>
+                        <span class="lang-tr">Kod kopyalandi &middot; pano <strong>28 saniye</strong> icinde otomatik temizlenecek</span>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="hero-visual">
-            <div class="otp-device">
-                <div class="otp-notch"></div>
-                <div class="otp-header">VEILO AUTH</div>
-                <div class="otp-account active"><div class="otp-issuer"><span class="pin">&#128204;</span> GitHub</div><div class="otp-code"><span class="digits">482 159</span></div></div>
-                <div class="otp-account"><div class="otp-issuer">Google</div><div class="otp-code"><span class="digits">739 024</span></div></div>
-                <div class="otp-account"><div class="otp-issuer">AWS</div><div class="otp-code"><span class="digits">156 843</span></div></div>
-                <div class="otp-fab">+</div>
-                <div class="otp-home"><span></span><span class="active"></span><span></span></div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: THREAT HEATMAP
+         ============================================================ -->
+    <section class="heatmap-section" id="compare">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">THREAT ANALYSIS</span>
+                    <span class="lang-tr">TEHDIT ANALIZI</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Why Authenticator Apps Win</span>
+                    <span class="lang-tr">Neden Dogrulama Uygulamalari Kazanir</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">SMS and email codes are fundamentally broken. See why hardware-backed TOTP is the only secure option.</span>
+                    <span class="lang-tr">SMS ve e-posta kodlari temelden kusurlu. Donanim destekli TOTP'nin neden tek guvenli secenek oldugunu gorun.</span>
+                </p>
+            </div>
+
+            <!-- Heatmap Grid -->
+            <div class="heatmap-grid reveal" style="transition-delay: 0.2s">
+                <!-- Header Row -->
+                <div class="heatmap-header">
+                    <span class="lang-en">CATEGORY</span>
+                    <span class="lang-tr">KATEGORI</span>
+                </div>
+                <div class="heatmap-header text-center">SMS 2FA</div>
+                <div class="heatmap-header text-center">EMAIL 2FA</div>
+                <div class="heatmap-header text-center">VEILO AUTH</div>
+
+                <!-- Row 1: Phishing Risk -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Phishing Risk</span>
+                    <span class="lang-tr">Oltalama Riski</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> HIGH</div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> HIGH</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> NONE</div>
+
+                <!-- Row 2: SIM Swap -->
+                <div class="heatmap-category">
+                    <span class="lang-en">SIM Swap Attack</span>
+                    <span class="lang-tr">SIM Degistirme Saldirisi</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> HIGH</div>
+                <div class="heatmap-cell amber"><span class="heatmap-cell-dot"></span> NONE</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> NONE</div>
+
+                <!-- Row 3: Offline Access -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Offline Access</span>
+                    <span class="lang-tr">Cevrimdisi Erisim</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> NO</div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> NO</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> YES</div>
+
+                <!-- Row 4: Token Security -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Token Security</span>
+                    <span class="lang-tr">Token Guvenligi</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> LOW</div>
+                <div class="heatmap-cell amber"><span class="heatmap-cell-dot"></span> MEDIUM</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> MAXIMUM</div>
+
+                <!-- Row 5: Data Sovereignty -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Data Sovereignty</span>
+                    <span class="lang-tr">Veri Egemenligi</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> NONE</div>
+                <div class="heatmap-cell amber"><span class="heatmap-cell-dot"></span> PARTIAL</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> FULL</div>
+            </div>
+
+            <!-- Differentiator Question -->
+            <p class="diff-question reveal" style="transition-delay: 0.3s">
+                <span class="lang-en">What makes Veilo different from other authenticators?</span>
+                <span class="lang-tr">Veilo'yu diger dogrulayicilardan farkli kilan ne?</span>
+            </p>
+
+            <!-- Differentiator Cards -->
+            <div class="diff-cards reveal" style="transition-delay: 0.4s">
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#128187;</div>
+                    <h3>
+                        <span class="lang-en">Hardware-Backed</span>
+                        <span class="lang-tr">Donanim Destekli</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Keys stored in StrongBox secure chip, never accessible by any app or process.</span>
+                        <span class="lang-tr">Anahtarlar StrongBox guvenli cipte saklanir, hicbir uygulama veya islem tarafindan erisilemez.</span>
+                    </p>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#9889;</div>
+                    <h3>
+                        <span class="lang-en">Truly Offline</span>
+                        <span class="lang-tr">Tamamen Cevrimdisi</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">INTERNET permission completely removed. Your secrets never touch a network.</span>
+                        <span class="lang-tr">INTERNET izni tamamen kaldirildi. Sirlariniz asla bir aga dokunmaz.</span>
+                    </p>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#128165;</div>
+                    <h3>
+                        <span class="lang-en">Memory Zeroing</span>
+                        <span class="lang-tr">Bellek Sifirlama</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Secret key material is zeroed from memory immediately after use. No residual traces.</span>
+                        <span class="lang-tr">Gizli anahtar materyali kullanimdan hemen sonra bellekten sifirlenir. Kalinti iz yok.</span>
+                    </p>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#128270;</div>
+                    <h3>
+                        <span class="lang-en">Open Source</span>
+                        <span class="lang-tr">Acik Kaynak</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Full source code on GitHub. Audit it yourself, verify every claim we make.</span>
+                        <span class="lang-tr">Tam kaynak kodu GitHub'da. Kendiniz denetleyin, yaptigimiz her iddiaya dogrulayin.</span>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section id="features-tr">
-    <div class="container section-center">
-        <div class="section-badge">&#9878; Ozellikler</div>
-        <h2 class="section-title">Ihtiyaciniz olan her sey. <span class="accent">Fazlasi degil.</span></h2>
-        <p class="section-sub">Gereksiz ozellik yok, gereksiz izin yok. Sadece guvenli, guvenilir iki faktorlu dogrulama.</p>
-        <div class="features-grid">
-            <div class="feature-card"><div class="feature-icon">&#128737;</div><h3>Donanim Destekli Anahtarlar</h3><p>Gizli anahtarlar StrongBox guvenlik cipi destekli Android Keystore'da saklanir. Anahtarlar asla uygulama bellegine donmez.</p><span class="feature-tag">StrongBox</span></div>
-            <div class="feature-card"><div class="feature-icon">&#128225;</div><h3>Akilli QR Tarayici</h3><p>otpauth:// QR kodlarini tarar, algoritma, hane sayisi ve periyodu otomatik algilar. Manuel ayar gerektirmez.</p></div>
-            <div class="feature-card"><div class="feature-icon">&#128274;</div><h3>Biyometrik Kilit</h3><p>Parmak izi, yuz veya cihaz PIN'i gerekli. Uygulamadan ayrilinca otomatik kilitlenir. Ekran goruntusu isletim sistemi duzeyinde engellenir.</p></div>
-            <div class="feature-card"><div class="feature-icon">&#128230;</div><h3>Sifreli Yedekleme</h3><p>Argon2id anahtar turetme ve AES-256-GCM sifreleme ile parola korumalı dosyaya aktarim. Askeri duzey koruma.</p><span class="feature-tag">Argon2id</span></div>
-            <div class="feature-card"><div class="feature-icon">&#128196;</div><h3>Yazdirilabilir PDF Yedek</h3><p>Her hesap icin QR kodlu PDF olusturun. Yazdirin, kasaya koyun — en guclu cevrimdisi yedek.</p></div>
-            <div class="feature-card"><div class="feature-icon">&#128259;</div><h3>Tek Dokunusla Goc</h3><p>Google Authenticator, Microsoft Authenticator veya Aegis'ten tum hesaplarinizi aktarin. Tek tarama, bitti.</p></div>
-            <div class="feature-card"><div class="feature-icon">&#11088;</div><h3>Favoriler ve Gruplar</h3><p>Sik kullanilan hesaplari uste sabitleyin. Ozel gruplarla duzenleyin. Tum hesaplarda aninda arama.</p></div>
-            <div class="feature-card"><div class="feature-icon">&#127760;</div><h3>Tamamen Cevrimdisi</h3><p>INTERNET izni uygulamadan acikca kaldirilmis. Analitik, izleme, bulut yok. Tasarim geregi hava boslukludi.</p><span class="feature-tag">Sifir Ag</span></div>
-            <div class="feature-card"><div class="feature-icon">&#127463;&#127479;</div><h3>Cok Dilli</h3><p>Ingilizce, Turkce ve Arapca, tam RTL destegi. Her metin cevirilmis, her ekran yerellestirilmis.</p></div>
+    <!-- ============================================================
+         SECTION 6: RECOVERY & BACKUP
+         ============================================================ -->
+    <section class="recovery-section" id="recovery">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">RECOVERY</span>
+                    <span class="lang-tr">KURTARMA</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Lose Your Phone? Recover in Minutes.</span>
+                    <span class="lang-tr">Telefonunuzu mu Kaybettiniz? Dakikalar Icinde Kurtarin.</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">The #1 fear with authenticator apps — solved.</span>
+                    <span class="lang-tr">Dogrulama uygulamalarinin bir numarali korkusu — cozuldu.</span>
+                </p>
+            </div>
+
+            <div class="recovery-cards reveal" style="transition-delay: 0.2s">
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128272;</div>
+                    <h3>
+                        <span class="lang-en">Encrypted Backup</span>
+                        <span class="lang-tr">Sifrelenmis Yedekleme</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Argon2id + AES-256-GCM encrypted file. Export once, import on any new device with your password.</span>
+                        <span class="lang-tr">Argon2id + AES-256-GCM sifrelenmis dosya. Bir kez disari aktarin, sifrenizle herhangi bir yeni cihaza iceri aktarin.</span>
+                    </p>
+                </div>
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128196;</div>
+                    <h3>
+                        <span class="lang-en">Printable PDF</span>
+                        <span class="lang-tr">Yazdirilabilir PDF</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">QR codes on paper. Store in a safe, scan to restore. Works even if you lose access to all digital devices.</span>
+                        <span class="lang-tr">Kagit uzerinde QR kodlari. Kasada saklayin, tarayarak geri yukleyin. Tum dijital cihazlara erisinizi kaybetseniz bile calisir.</span>
+                    </p>
+                </div>
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128260;</div>
+                    <h3>
+                        <span class="lang-en">Easy Migration</span>
+                        <span class="lang-tr">Kolay Gecis</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Import from Google Authenticator, Microsoft Authenticator, or Aegis with a single scan. Switch in seconds.</span>
+                        <span class="lang-tr">Google Authenticator, Microsoft Authenticator veya Aegis'ten tek bir taramayla iceri aktarin. Saniyeler icinde gecis yapin.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="recovery-callout reveal" style="transition-delay: 0.3s">
+                <p>
+                    <span class="lang-en">"Your codes are always recoverable. Your security is never compromised."</span>
+                    <span class="lang-tr">"Kodlariniz her zaman kurtarilabilir. Guvenliginiz asla tehlikeye girmez."</span>
+                </p>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section style="background: var(--bg-secondary);">
-    <div class="container section-center">
-        <div class="section-badge">&#9878; Karsilastirma</div>
-        <h2 class="section-title">Farkimiz <span class="accent">ortada</span></h2>
-        <p class="section-sub">Yaygin dogrulama yaklasimlariyla seffaf bir karsilastirma — isim yok, sadece gercekler.</p>
-        <table class="compare-table">
-            <thead><tr><th>Ozellik</th><th class="veilo-col">Veilo</th><th>Tipik A</th><th>Tipik B</th></tr></thead>
-            <tbody>
-                <tr><td class="feature-name">Donanim destekli anahtarlar (StrongBox)</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-no">&#10007;</td></tr>
-                <tr><td class="feature-name">Tamamen cevrimdisi (INTERNET izni yok)</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-                <tr><td class="feature-name">Sifir analitik ve izleme</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Sifreli yedekleme (Argon2id + AES-256)</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Yazdirilabilir PDF yedek</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-no">&#10007;</td></tr>
-                <tr><td class="feature-name">Ekran goruntusu engeli</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-                <tr><td class="feature-name">Pano otomatik temizleme</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-                <tr><td class="feature-name">Root ve debugger tespiti</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-no">&#10007;</td></tr>
-                <tr><td class="feature-name">Gizli anahtar bellekte sifirlama</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-partial">~</td></tr>
-                <tr><td class="feature-name">Acik kaynak</td><td class="tbl-yes">&#10003;</td><td class="tbl-no">&#10007;</td><td class="tbl-yes">&#10003;</td></tr>
-            </tbody>
-        </table>
-    </div>
-</section>
+    <!-- ============================================================
+         SECTION 7: ECOSYSTEM
+         ============================================================ -->
+    <section class="ecosystem-section" id="ecosystem">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">ECOSYSTEM</span>
+                    <span class="lang-tr">EKOSISTEM</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Part of the Veilo Security Suite</span>
+                    <span class="lang-tr">Veilo Guvenlik Paketinin Parcasi</span>
+                </h2>
+            </div>
 
-<section>
-    <div class="container section-center">
-        <div class="section-badge">&#128737; Guvenlik</div>
-        <h2 class="section-title">11 katmanli <span class="accent">savunma</span></h2>
-        <p class="section-sub">Bir kontrol listesi degil — temelinden insa edilmis butunlesik guvenlik mimarisi.</p>
-        <div class="security-grid">
-            <div class="security-item"><span class="check">&#10003;</span><span>StrongBox destekli donanim tabanli Android Keystore</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Kilit acmak icin biyometrik veya cihaz kimlik bilgisi</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Ekran goruntusu ve uygulama degistirici engelli</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Pano 30 saniyede otomatik temizlenir</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Gizli anahtar kullanim sonrasi sifirlanir</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Baslatmada root ve hata ayiklayici tespiti</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Internet izni yok — tamamen hava boslukludi</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Sifir analitik, izleme veya ucuncu taraf SDK</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Sifreli yedekleme: Argon2id + AES-256-GCM</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>ProGuard/R8 kod karartma</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Bulut yedekleme ve cihaz aktarimi devre disi</span></div>
-            <div class="security-item"><span class="check">&#10003;</span><span>Acik kaynak — tamamen denetlenebilir kod</span></div>
+            <div class="ecosystem-cards reveal" style="transition-delay: 0.2s">
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--shield-blue);"></div>
+                    <h3>Veilo Messenger</h3>
+                    <p>
+                        <span class="lang-en">End-to-end encrypted messaging. Signal protocol, zero metadata leakage, self-destructing messages.</span>
+                        <span class="lang-tr">Uctan uca sifrelenmis mesajlasma. Signal protokolu, sifir metadata sizintisi, kendini imha eden mesajlar.</span>
+                    </p>
+                    <a href="#" class="eco-link">
+                        <span class="lang-en">Learn more</span>
+                        <span class="lang-tr">Daha fazla</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--emerald);"></div>
+                    <h3>Axon</h3>
+                    <p>
+                        <span class="lang-en">Secure password manager with hardware-backed encryption. Generate, store, and autofill credentials.</span>
+                        <span class="lang-tr">Donanim destekli sifreleme ile guvenli sifre yoneticisi. Kimlik bilgilerini olusturun, saklayin ve otomatik doldurun.</span>
+                    </p>
+                    <a href="#" class="eco-link">
+                        <span class="lang-en">Learn more</span>
+                        <span class="lang-tr">Daha fazla</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--amber);"></div>
+                    <h3>Radar</h3>
+                    <p>
+                        <span class="lang-en">Network security monitor. Detect threats, analyze traffic, and protect your digital perimeter in real-time.</span>
+                        <span class="lang-tr">Ag guvenlik izleyicisi. Tehditleri tespit edin, trafigi analiz edin ve dijital cevre guvenliginizi gercek zamanli koruyun.</span>
+                    </p>
+                    <a href="#" class="eco-link">
+                        <span class="lang-en">Learn more</span>
+                        <span class="lang-tr">Daha fazla</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--threat-red);"></div>
+                    <h3>Voltbox</h3>
+                    <p>
+                        <span class="lang-en">Encrypted file vault. Store sensitive documents with military-grade encryption. Access anywhere, anytime.</span>
+                        <span class="lang-tr">Sifrelenmis dosya kasasi. Hassas belgeleri askeri seviye sifrelemeyle saklayin. Her yerden, her zaman erisin.</span>
+                    </p>
+                    <a href="#" class="eco-link">
+                        <span class="lang-en">Learn more</span>
+                        <span class="lang-tr">Daha fazla</span>
+                        &rarr;
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<section style="background: var(--bg-secondary);">
-    <div class="container section-center">
-        <div class="section-badge">&#9878; Ekosistem</div>
-        <h2 class="section-title"><span class="accent">Veilo</span> ailesinin parcasi</h2>
-        <p class="section-sub">Tam bir kurumsal guvenlik ekosistemi — self-hosted, sifir guven, veri egemenligi icin insa edildi.</p>
-        <div class="eco-grid">
-            <a href="https://veilo.tr/" class="eco-card"><h4>Veilo Messenger</h4><p>Kapali aglar icin uctan uca sifreli kurumsal mesajlasma. Signal Protocol. Zero-Trust mesh VPN.</p></a>
-            <a href="https://axon.veilo.tr/" class="eco-card"><h4>Axon</h4><p>Kurumsal altyapinin akilli omurgasi. Terminal, dosya transferi, Docker, izleme — tek panel.</p></a>
-            <a href="https://radar.veilo.tr/" class="eco-card"><h4>Radar</h4><p>Gercek zamanli saldiri tespit ve otomatik mudahale. Sigma kurallari, MITRE ATT&CK, SOAR playbook'lari.</p></a>
-            <a href="https://volt.veilo.tr/" class="eco-card"><h4>Voltbox</h4><p>Sifir bilgi mimarili sifre kasasi. Ana parola asla sunucuya ulasmaz. Argon2id + AES-256-GCM.</p></a>
+    <!-- ============================================================
+         SECTION 8: FINAL CTA
+         ============================================================ -->
+    <section class="cta-section">
+        <div class="cta-bg"></div>
+        <div class="container">
+            <div class="reveal">
+                <h2>
+                    <span class="lang-en">Protect Your Digital Identity Today</span>
+                    <span class="lang-tr">Dijital Kimliginizi Bugun Koruyun</span>
+                </h2>
+                <p class="cta-subtitle">
+                    <span class="lang-en">Free. Open source. Built for security.</span>
+                    <span class="lang-tr">Ucretsiz. Acik kaynak. Guvenlik icin insa edildi.</span>
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-cta primary" target="_blank">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.3 2.3-8.636-8.632z"/></svg>
+                        <span class="lang-en">Google Play</span>
+                        <span class="lang-tr">Google Play</span>
+                    </a>
+                    <a href="https://github.com/AhmetSuleymanElbir/authenticator" class="btn-cta secondary" target="_blank">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        <span class="lang-en">GitHub</span>
+                        <span class="lang-tr">GitHub</span>
+                    </a>
+                </div>
+                <p class="cta-note">
+                    <span class="lang-en">No account required &middot; No data collected &middot; No internet needed</span>
+                    <span class="lang-tr">Hesap gerekmez &middot; Veri toplanmaz &middot; Internet gerekmez</span>
+                </p>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<div class="cta-section">
-    <div class="container">
-        <h2>2FA'niza <span style="color: var(--emerald)">sahip cikin</span></h2>
-        <p>Veilo Authenticator'i indirin — ucretsiz, acik kaynak ve guvenlik icin insa edildi.</p>
-        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-            <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-primary">&#9654; Google Play'den Indir</a>
-            <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-secondary">GitHub'da Goruntule</a>
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-brand">
+                        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+                            <path d="M16 2L4 8v8c0 7.73 5.12 14.96 12 16 6.88-1.04 12-8.27 12-16V8L16 2z" fill="none" stroke="var(--shield-blue)" stroke-width="1.5"/>
+                            <path d="M13 16l2 2 4-4" stroke="var(--emerald-bright)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>VEILO</span>
+                    </a>
+                    <p>
+                        <span class="lang-en">Next-generation authentication for the security-conscious. Open source, offline, hardware-backed.</span>
+                        <span class="lang-tr">Guvenlik bilincine sahip kullanicilar icin yeni nesil kimlik dogrulama. Acik kaynak, cevrimdisi, donanim destekli.</span>
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>
+                        <span class="lang-en">PRODUCT</span>
+                        <span class="lang-tr">URUN</span>
+                    </h4>
+                    <ul>
+                        <li><a href="#features"><span class="lang-en">Features</span><span class="lang-tr">Ozellikler</span></a></li>
+                        <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karsilastir</span></a></li>
+                        <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
+                        <li><a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" target="_blank">Google Play</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>
+                        <span class="lang-en">SECURITY</span>
+                        <span class="lang-tr">GUVENLIK</span>
+                    </h4>
+                    <ul>
+                        <li><a href="#security"><span class="lang-en">Dashboard</span><span class="lang-tr">Kontrol Paneli</span></a></li>
+                        <li><a href="#">StrongBox</a></li>
+                        <li><a href="#">AES-256-GCM</a></li>
+                        <li><a href="#">Argon2id</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>
+                        <span class="lang-en">LEGAL</span>
+                        <span class="lang-tr">YASAL</span>
+                    </h4>
+                    <ul>
+                        <li><a href="privacy.html"><span class="lang-en">Privacy Policy</span><span class="lang-tr">Gizlilik Politikasi</span></a></li>
+                        <li><a href="https://github.com/AhmetSuleymanElbir/authenticator/blob/main/LICENSE" target="_blank"><span class="lang-en">License (GPL-3.0)</span><span class="lang-tr">Lisans (GPL-3.0)</span></a></li>
+                        <li><a href="https://github.com/AhmetSuleymanElbir/authenticator" target="_blank"><span class="lang-en">Source Code</span><span class="lang-tr">Kaynak Kodu</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span class="footer-copy">&copy; 2024 Veilo Security. <span class="lang-en">All rights reserved.</span><span class="lang-tr">Tum haklari saklidir.</span></span>
+                <div class="footer-badges">
+                    <span class="footer-badge">TOTP</span>
+                    <span class="footer-badge">HOTP</span>
+                    <span class="footer-badge">OPEN SOURCE</span>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    </footer>
 
-</div><!-- /lang-tr -->
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
+    <script>
+    (function() {
+        'use strict';
 
-<!-- FOOTER -->
-<footer>
-    <div class="container footer-inner">
-        <span class="footer-copy">&copy; 2026 <a href="https://veilo.tr" style="color: var(--emerald); text-decoration: none;">Veilo Technology</a>. All rights reserved.</span>
-        <div class="footer-links">
-            <a href="privacy.html">Privacy Policy</a>
-            <a href="https://github.com/suleymanelbir/veilo-authenticator">GitHub</a>
-            <a href="https://veilo.tr">veilo.tr</a>
-        </div>
-    </div>
-</footer>
+        /* ---- LANGUAGE TOGGLE ---- */
+        function detectLang() {
+            var saved = localStorage.getItem('veilo-lang');
+            if (saved) return saved;
+            var nav = navigator.language || navigator.userLanguage || 'en';
+            return nav.toLowerCase().startsWith('tr') ? 'tr' : 'en';
+        }
 
-<script>
-// Language toggle
-let currentLang = (navigator.language && navigator.language.startsWith('tr')) ? 'tr' : 'en';
-function toggleLang() {
-    currentLang = currentLang === 'en' ? 'tr' : 'en';
-    document.querySelectorAll('.lang').forEach(el => el.classList.remove('active'));
-    document.getElementById('lang-' + currentLang).classList.add('active');
-}
-(function() {
-    document.querySelectorAll('.lang').forEach(el => el.classList.remove('active'));
-    document.getElementById('lang-' + currentLang).classList.add('active');
-})();
+        function setLang(lang) {
+            if (lang === 'tr') {
+                document.body.classList.add('tr');
+            } else {
+                document.body.classList.remove('tr');
+            }
+            localStorage.setItem('veilo-lang', lang);
+        }
 
-// Nav scroll effect
-window.addEventListener('scroll', () => {
-    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
-});
+        var currentLang = detectLang();
+        setLang(currentLang);
 
-// Reveal on scroll
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        window.toggleLanguage = function() {
+            currentLang = currentLang === 'en' ? 'tr' : 'en';
+            setLang(currentLang);
+        };
 
-// OTP Animation
-(function() {
-    const PERIOD = 30;
-    const CIRCUM = 94.2;
-    let countdown = 27;
+        document.getElementById('langToggle').addEventListener('click', window.toggleLanguage);
 
-    function randomDigits() {
-        const n = Math.floor(100000 + Math.random() * 900000);
-        const s = n.toString();
-        return s.slice(0,3) + ' ' + s.slice(3);
-    }
+        /* ---- NAV SCROLL ---- */
+        var nav = document.getElementById('nav');
+        var lastScroll = 0;
+        window.addEventListener('scroll', function() {
+            var st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > 60) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            lastScroll = st;
+        }, { passive: true });
 
-    function updateOtp() {
-        countdown--;
-        if (countdown < 0) {
-            countdown = PERIOD - 1;
-            for (let i = 0; i < 3; i++) {
-                const el = document.getElementById('otp-code-' + i);
-                if (el) { el.style.animation = 'none'; el.offsetHeight; el.textContent = randomDigits(); el.style.animation = 'digit-change 0.3s ease'; }
+        /* ---- HAMBURGER MENU ---- */
+        var hamburger = document.getElementById('hamburger');
+        var mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+        document.querySelectorAll('.mobile-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        /* ---- INTERSECTION OBSERVER (reveal) ---- */
+        var reveals = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            reveals.forEach(function(el) { observer.observe(el); });
+        } else {
+            reveals.forEach(function(el) { el.classList.add('visible'); });
+        }
+
+        /* ---- OTP ANIMATION (Phone Mockup) ---- */
+        var otpAccounts = [
+            { timer: 14, code: [6,5,4,2,8,1] },
+            { timer: 47, code: [9,8,1,5,5,2] },
+            { timer: 22, code: [4,3,8,7,1,9] }
+        ];
+
+        function randomDigit() { return Math.floor(Math.random() * 10); }
+
+        function generateNewCode() {
+            return [randomDigit(), randomDigit(), randomDigit(), randomDigit(), randomDigit(), randomDigit()];
+        }
+
+        function getTimerColor(seconds) {
+            if (seconds <= 5) return 'var(--threat-red)';
+            if (seconds <= 10) return 'var(--amber)';
+            return 'var(--emerald)';
+        }
+
+        function updateOtpCards() {
+            var circumference = 2 * Math.PI * 13; // r=13 for the small rings
+            otpAccounts.forEach(function(acc, i) {
+                acc.timer--;
+                if (acc.timer <= 0) {
+                    acc.timer = 30;
+                    acc.code = generateNewCode();
+                    // Animate digit change
+                    var codeEl = document.getElementById('otpCode' + i);
+                    if (codeEl) {
+                        var digits = codeEl.querySelectorAll('.digit');
+                        digits.forEach(function(d, di) {
+                            d.classList.add('changing');
+                            setTimeout(function() {
+                                d.textContent = acc.code[di];
+                                d.classList.remove('changing');
+                            }, 200);
+                        });
+                    }
+                }
+
+                // Update ring
+                var ring = document.getElementById('ring' + i);
+                if (ring) {
+                    var progress = ring.querySelector('.ring-progress');
+                    var timerText = ring.querySelector('.otp-timer-text');
+                    var offset = circumference * (1 - acc.timer / 30);
+                    progress.style.strokeDashoffset = offset;
+                    progress.style.stroke = getTimerColor(acc.timer);
+                    timerText.textContent = acc.timer + 's';
+                }
+            });
+        }
+
+        setInterval(updateOtpCards, 1000);
+
+        /* ---- DASHBOARD OTP ANIMATION ---- */
+        var dashTimer = 14;
+        var dashCode = '483 291';
+        var dashCircumference = 2 * Math.PI * 62;
+
+        function updateDashOtp() {
+            dashTimer--;
+            if (dashTimer <= 0) {
+                dashTimer = 30;
+                var c = generateNewCode();
+                dashCode = c[0] + '' + c[1] + '' + c[2] + ' ' + c[3] + '' + c[4] + '' + c[5];
+                var otpEl = document.getElementById('dashOtp');
+                if (otpEl) otpEl.textContent = dashCode;
+            }
+
+            var ringEl = document.getElementById('dashRing');
+            if (ringEl) {
+                var progress = ringEl.querySelector('.ring-progress');
+                var offset = dashCircumference * (1 - dashTimer / 30);
+                progress.style.strokeDashoffset = offset;
+                progress.style.stroke = getTimerColor(dashTimer);
+            }
+
+            var timerEl = document.getElementById('dashTimer');
+            if (timerEl) {
+                var enSpan = timerEl.querySelector('.lang-en');
+                var trSpan = timerEl.querySelector('.lang-tr');
+                if (enSpan) enSpan.textContent = 'Refreshes in ' + dashTimer + 's';
+                if (trSpan) trSpan.textContent = dashTimer + ' saniye icinde yenilenir';
             }
         }
-        for (let i = 0; i < 3; i++) {
-            const prog = document.getElementById('otp-prog-' + i);
-            const sec = document.getElementById('otp-sec-' + i);
-            if (prog && sec) {
-                const offset = CIRCUM * (1 - countdown / PERIOD);
-                prog.style.strokeDashoffset = offset;
-                sec.textContent = countdown;
-                prog.classList.remove('warn', 'danger');
-                if (countdown <= 5) prog.classList.add('danger');
-                else if (countdown <= 10) prog.classList.add('warn');
-                sec.style.color = countdown <= 5 ? 'var(--red)' : countdown <= 10 ? 'var(--gold)' : 'var(--text)';
-            }
+
+        setInterval(updateDashOtp, 1000);
+
+        /* ---- SHIELD CANVAS ANIMATION ---- */
+        var canvas = document.getElementById('shield-canvas');
+        var ctx = canvas.getContext('2d');
+        var mouseX = 0, mouseY = 0;
+        var particles = [];
+        var scanAngle = 0;
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function resizeCanvas() {
+            var hero = document.getElementById('hero');
+            canvas.width = hero.offsetWidth;
+            canvas.height = hero.offsetHeight;
         }
-    }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-    setInterval(updateOtp, 1000);
-})();
-</script>
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
 
+        // Shield shape points
+        function getShieldPoints(cx, cy, size) {
+            var points = [];
+            var steps = 60;
+            for (var i = 0; i <= steps; i++) {
+                var t = i / steps;
+                var x, y;
+                if (t <= 0.15) {
+                    // top-left to top-center
+                    var p = t / 0.15;
+                    x = cx - size * 0.5 * (1 - p);
+                    y = cy - size * 0.6 + size * 0.15 * (1 - p);
+                } else if (t <= 0.35) {
+                    // top-center to top-right
+                    var p = (t - 0.15) / 0.2;
+                    x = cx + size * 0.5 * p;
+                    y = cy - size * 0.6 + size * 0.15 * p;
+                } else if (t <= 0.65) {
+                    // right side curve down
+                    var p = (t - 0.35) / 0.3;
+                    x = cx + size * 0.5 * (1 - p * 0.7);
+                    y = cy - size * 0.45 + size * 1.1 * p;
+                } else if (t <= 0.85) {
+                    // bottom curve to point
+                    var p = (t - 0.65) / 0.2;
+                    x = cx + size * 0.15 * (1 - p);
+                    y = cy + size * 0.65 + size * 0.15 * p;
+                } else {
+                    // point back up left side
+                    var p = (t - 0.85) / 0.15;
+                    x = cx - size * 0.5 * p;
+                    y = cy + size * 0.8 * (1 - p) - size * 0.6 * p;
+                }
+                points.push({ x: x, y: y });
+            }
+            return points;
+        }
+
+        // Particles
+        var numParticles = 40;
+        for (var i = 0; i < numParticles; i++) {
+            particles.push({
+                angle: Math.random() * Math.PI * 2,
+                radius: 80 + Math.random() * 160,
+                speed: 0.002 + Math.random() * 0.008,
+                size: 1 + Math.random() * 2.5,
+                isThreat: Math.random() < 0.15,
+                opacity: 0.3 + Math.random() * 0.5
+            });
+        }
+
+        function drawShield() {
+            if (prefersReducedMotion) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var cx = canvas.width * 0.5;
+            var cy = canvas.height * 0.5;
+            var size = Math.min(canvas.width, canvas.height) * 0.22;
+
+            // Shield outline
+            var points = getShieldPoints(cx, cy, size);
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (var i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'rgba(37,99,235,0.12)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Scan line
+            scanAngle += 0.012;
+            var scanX = cx + Math.cos(scanAngle) * size * 1.5;
+            var scanY = cy + Math.sin(scanAngle) * size * 1.5;
+            var grad = ctx.createLinearGradient(cx, cy, scanX, scanY);
+            grad.addColorStop(0, 'rgba(37,99,235,0.08)');
+            grad.addColorStop(1, 'rgba(37,99,235,0)');
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(scanX, scanY);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Particles
+            particles.forEach(function(p) {
+                p.angle += p.speed;
+
+                var px = cx + Math.cos(p.angle) * p.radius;
+                var py = cy + Math.sin(p.angle) * p.radius;
+
+                // Mouse repulsion
+                var dx = px - mouseX;
+                var dy = py - mouseY;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120 && dist > 0) {
+                    var force = (120 - dist) / 120 * 30;
+                    px += (dx / dist) * force;
+                    py += (dy / dist) * force;
+                }
+
+                ctx.beginPath();
+                ctx.arc(px, py, p.size, 0, Math.PI * 2);
+                if (p.isThreat) {
+                    ctx.fillStyle = 'rgba(239,68,68,' + (p.opacity * 0.7) + ')';
+                    ctx.shadowColor = 'rgba(239,68,68,0.3)';
+                } else {
+                    ctx.fillStyle = 'rgba(16,185,129,' + (p.opacity * 0.6) + ')';
+                    ctx.shadowColor = 'rgba(16,185,129,0.2)';
+                }
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            requestAnimationFrame(drawShield);
+        }
+
+        if (!prefersReducedMotion) {
+            requestAnimationFrame(drawShield);
+        }
+
+    })();
+    </script>
 </body>
 </html>
