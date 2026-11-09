@@ -1282,7 +1282,7 @@
 
         .recovery-cards {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             margin-top: 48px;
         }
@@ -1355,6 +1355,9 @@
             line-height: 1.7;
         }
 
+        @media (max-width: 1100px) {
+            .recovery-cards { grid-template-columns: repeat(2, 1fr); }
+        }
         @media (max-width: 800px) {
             .recovery-cards { grid-template-columns: 1fr; }
         }
@@ -1362,6 +1365,130 @@
         /* ============================================================
            SECTION 7: ECOSYSTEM
            ============================================================ */
+        /* ---- ENTERPRISE ---- */
+        .enterprise-section {
+            background:
+                radial-gradient(circle at 75% 30%, rgba(59,130,246,0.08), transparent 55%),
+                var(--bg-panel);
+            border-top: 1px solid var(--border);
+        }
+        .enterprise-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+            align-items: center;
+            margin-top: 48px;
+        }
+        .policy-list { display: flex; flex-direction: column; gap: 14px; }
+        .policy-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 18px 20px;
+            background: rgba(22,34,64,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 14px;
+            transition: all var(--transition);
+        }
+        .policy-item:hover { border-color: var(--border-strong); transform: translateX(4px); }
+        .policy-item-icon {
+            flex: 0 0 42px;
+            width: 42px; height: 42px;
+            border-radius: 11px;
+            background: rgba(37,99,235,0.1);
+            border: 1px solid var(--border-strong);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem;
+        }
+        .policy-item h4 { font-size: 1rem; margin-bottom: 4px; }
+        .policy-item p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; }
+
+        /* MDM console mockup */
+        .mdm-panel {
+            background: rgba(17,30,51,0.9);
+            border: 1px solid var(--border-strong);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.08);
+        }
+        .mdm-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px;
+            background: rgba(11,22,40,0.8);
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+        .mdm-head .mdm-badge {
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--emerald-glow);
+            color: var(--emerald-bright);
+            font-size: 0.62rem;
+        }
+        .mdm-body { padding: 10px 18px 18px; }
+        .mdm-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(96,165,250,0.08);
+            font-size: 0.88rem;
+        }
+        .mdm-row:last-child { border-bottom: none; }
+        .mdm-row .mdm-key { color: var(--text-main); }
+        .mdm-row .mdm-key small { display: block; color: var(--text-faint); font-size: 0.72rem; font-family: var(--font-display); letter-spacing: 0.05em; margin-top: 2px; }
+        .mdm-val {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-strong);
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .mdm-val.on { color: var(--emerald-bright); border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+        .mdm-val.off { color: var(--threat-red); border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.08); }
+        .mdm-foot {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(37,99,235,0.08);
+            border-left: 3px solid var(--shield-blue);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .mdm-foot strong { color: var(--text-main); }
+        .enterprise-logos {
+            display: flex; flex-wrap: wrap; gap: 10px 22px;
+            justify-content: center;
+            margin-top: 40px;
+            color: var(--text-faint);
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+        }
+        .enterprise-logos span { padding: 6px 0; }
+        .enterprise-cta { text-align: center; margin-top: 36px; }
+        .enterprise-cta a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all var(--transition);
+        }
+        .enterprise-cta a:hover { border-color: var(--shield-blue); background: rgba(59,130,246,0.1); }
+        .enterprise-cta small { display: block; margin-top: 12px; color: var(--text-faint); font-size: 0.8rem; }
+        @media (max-width: 960px) {
+            .enterprise-grid { grid-template-columns: 1fr; gap: 32px; }
+        }
+
         .ecosystem-section {
             background:
                 radial-gradient(circle at 30% 60%, rgba(59,130,246,0.06), transparent 50%),
@@ -1597,11 +1724,12 @@
                 <li><a href="#security"><span class="lang-en">Security</span><span class="lang-tr">Güvenlik</span></a></li>
                 <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a></li>
                 <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
+                <li><a href="#enterprise"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a></li>
                 <li><a href="#ecosystem"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a></li>
             </ul>
             <div class="nav-actions">
                 <button class="lang-toggle" id="langToggle">TR / EN</button>
-                <a href="https://github.com/suleymanelbir/authenticator" class="btn-nav" target="_blank">
+                <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-nav" target="_blank">
                     <span class="lang-en">GitHub</span>
                     <span class="lang-tr">GitHub</span>
                 </a>
@@ -1620,6 +1748,7 @@
         <a href="#security" class="mobile-link"><span class="lang-en">Security</span><span class="lang-tr">Güvenlik</span></a>
         <a href="#compare" class="mobile-link"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a>
         <a href="#recovery" class="mobile-link"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a>
+        <a href="#enterprise" class="mobile-link"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a>
         <a href="#ecosystem" class="mobile-link"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a>
         <button class="lang-toggle" onclick="toggleLanguage()">TR / EN</button>
     </div>
@@ -1651,7 +1780,7 @@
                             <span class="lang-en">Get Started</span>
                             <span class="lang-tr">Başla</span>
                         </a>
-                        <a href="https://github.com/suleymanelbir/authenticator" class="btn-outline" target="_blank">
+                        <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-outline" target="_blank">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                             <span class="lang-en">View Source</span>
                             <span class="lang-tr">Kaynak Kodu</span>
@@ -1819,8 +1948,8 @@
                         <span class="lang-tr">DEPOLA</span>
                     </div>
                     <div class="pipeline-desc">
-                        <span class="lang-en">Android Keystore / StrongBox chip</span>
-                        <span class="lang-tr">Android Keystore / StrongBox cip</span>
+                        <span class="lang-en">Keystore / StrongBox chip + encrypted vault</span>
+                        <span class="lang-tr">Keystore / StrongBox çipi + şifreli kasa</span>
                     </div>
                 </div>
 
@@ -2272,6 +2401,42 @@
                             <td><span class="cmp-no">&#10007;</span></td>
                             <td><span class="cmp-partial">~</span></td>
                         </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Account Names Encrypted at Rest</span>
+                                <span class="lang-tr">Hesap Adları Diskte Şifreli</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Phone-to-Phone Transfer Without Cloud</span>
+                                <span class="lang-tr">Bulutsuz Telefondan Telefona Aktarım</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">MDM Policy Control (Android Enterprise)</span>
+                                <span class="lang-tr">MDM Politika Kontrolü (Android Enterprise)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Reproducible Builds (Verify the APK Yourself)</span>
+                                <span class="lang-tr">Tekrarlanabilir Derleme (APK'yı Kendiniz Doğrulayın)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -2337,6 +2502,17 @@
                         <span class="lang-tr">Google Authenticator, Microsoft Authenticator veya Aegis'ten tek bir taramayla içeri aktarın. Saniyeler içinde geçiş yapın.</span>
                     </p>
                 </div>
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128241;</div>
+                    <h3>
+                        <span class="lang-en">Phone-to-Phone Transfer</span>
+                        <span class="lang-tr">Telefondan Telefona Aktarım</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">New phone? Point the cameras at each other. ECDH key exchange + AES-256-GCM, animated QR frames, no cloud, no cable, no file.</span>
+                        <span class="lang-tr">Yeni telefon mu? Kameraları birbirine tutun. ECDH anahtar değişimi + AES-256-GCM, hareketli QR kareleri; bulut yok, kablo yok, dosya yok.</span>
+                    </p>
+                </div>
             </div>
 
             <div class="recovery-callout reveal" style="transition-delay: 0.3s">
@@ -2344,6 +2520,172 @@
                     <span class="lang-en">"Your codes are always recoverable. Your security is never compromised."</span>
                     <span class="lang-tr">"Kodlarınız her zaman kurtarılabilir. Güvenliğiniz asla tehlikeye girmez."</span>
                 </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6b: ENTERPRISE
+         ============================================================ -->
+    <section class="enterprise-section section-padding" id="enterprise">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">ENTERPRISE</span>
+                    <span class="lang-tr">KURUMSAL</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Managed by Your IT. Trusted by Your People.</span>
+                    <span class="lang-tr">BT'niz Yönetir. Çalışanlarınız Güvenir.</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">Veilo speaks Android Enterprise. Push policy from Intune, Google Workspace, Knox or any MDM — no custom build, no server, no account.</span>
+                    <span class="lang-tr">Veilo Android Enterprise dilini konuşur. Intune, Google Workspace, Knox veya herhangi bir MDM'den politika gönderin; özel derleme, sunucu ve hesap gerekmez.</span>
+                </p>
+            </div>
+
+            <div class="enterprise-grid">
+                <div class="policy-list reveal">
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128737;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Hardware-only enforcement</span>
+                                <span class="lang-tr">Yalnızca donanım anahtarı zorlaması</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">One switch and every secret must live in the secure chip. Existing software-backed accounts are moved on next unlock; the software option disappears from the app.</span>
+                                <span class="lang-tr">Tek anahtarla tüm sırlar güvenli çipte tutulur. Mevcut yazılım anahtarlı hesaplar bir sonraki kilit açılışında taşınır; yazılım seçeneği uygulamadan kalkar.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128274;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Seal every exit</span>
+                                <span class="lang-tr">Her çıkışı mühürleyin</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">Disable encrypted export, import, PDF backup, and phone-to-phone transfer independently. Secrets enrolled on a corporate device stay on that device.</span>
+                                <span class="lang-tr">Şifreli dışa aktarma, içe aktarma, PDF yedek ve telefondan telefona aktarımı ayrı ayrı kapatın. Kurum cihazına kaydedilen sırlar o cihazda kalır.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#9888;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Risk-based blocking</span>
+                                <span class="lang-tr">Risk tabanlı engelleme</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">Refuse to generate codes on rooted devices or when a debugger is attached. Users see a clear screen with your support contact, not a silent failure.</span>
+                                <span class="lang-tr">Root'lu cihazda veya debugger bağlıyken kod üretmeyi reddedin. Kullanıcı sessiz bir hata değil, destek iletişiminizi gösteren net bir ekran görür.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#127970;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Your name, your support line</span>
+                                <span class="lang-tr">Sizin adınız, sizin destek hattınız</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">"Managed by Acme Corp." under the title, your help desk in About. Policy is subtractive only — Veilo can never gain a capability the public edition lacks.</span>
+                                <span class="lang-tr">Başlığın altında "Acme A.Ş. tarafından yönetiliyor", Hakkında'da destek hattınız. Politika yalnızca kısıtlar; Veilo herkese açık sürümde olmayan bir yetenek asla kazanmaz.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdm-panel reveal" style="transition-delay: 0.15s">
+                    <div class="mdm-head">
+                        <span>
+                            <span class="lang-en">MANAGED CONFIGURATION</span>
+                            <span class="lang-tr">YÖNETİLEN YAPILANDIRMA</span>
+                        </span>
+                        <span class="mdm-badge">
+                            <span class="lang-en">APPLIED</span>
+                            <span class="lang-tr">UYGULANDI</span>
+                        </span>
+                    </div>
+                    <div class="mdm-body">
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Organization name</span>
+                                <span class="lang-tr">Kurum adı</span>
+                                <small>organization_name</small>
+                            </div>
+                            <span class="mdm-val">Acme Corp.</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Hardware-bound keys only</span>
+                                <span class="lang-tr">Yalnızca donanım anahtarı</span>
+                                <small>hardware_bound_only</small>
+                            </div>
+                            <span class="mdm-val on">ON</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Backup export</span>
+                                <span class="lang-tr">Yedek dışa aktarma</span>
+                                <small>allow_backup_export</small>
+                            </div>
+                            <span class="mdm-val off">OFF</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">PDF backup</span>
+                                <span class="lang-tr">PDF yedek</span>
+                                <small>allow_pdf_export</small>
+                            </div>
+                            <span class="mdm-val off">OFF</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Phone-to-phone transfer</span>
+                                <span class="lang-tr">Telefondan telefona aktarım</span>
+                                <small>allow_transfer_send</small>
+                            </div>
+                            <span class="mdm-val off">OFF</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Block on rooted device</span>
+                                <span class="lang-tr">Root'lu cihazda engelle</span>
+                                <small>block_on_rooted_device</small>
+                            </div>
+                            <span class="mdm-val on">ON</span>
+                        </div>
+                        <div class="mdm-foot">
+                            <span class="lang-en"><strong>10 policy keys</strong>, standard Android <em>RestrictionsManager</em>. Rendered as a form by your MDM, applied on the device within seconds, reverted the moment you clear it.</span>
+                            <span class="lang-tr"><strong>10 politika anahtarı</strong>, standart Android <em>RestrictionsManager</em>. MDM'iniz form olarak gösterir, cihazda saniyeler içinde uygulanır, kaldırdığınız anda geri alınır.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="enterprise-logos reveal">
+                <span>MICROSOFT INTUNE</span>
+                <span>GOOGLE WORKSPACE</span>
+                <span>SAMSUNG KNOX</span>
+                <span>WORKSPACE ONE</span>
+                <span>MOBILEIRON / IVANTI</span>
+                <span>SOTI MOBICONTROL</span>
+            </div>
+
+            <div class="enterprise-cta reveal">
+                <a href="ADMIN-GUIDE.md">
+                    <span class="lang-en">Read the Administrator Guide &rarr;</span>
+                    <span class="lang-tr">Yönetici Kılavuzunu Okuyun &rarr;</span>
+                </a>
+                <small>
+                    <span class="lang-en">Verified end-to-end with Google's Test DPC on a work profile. Managed Google Play listing follows the production release.</span>
+                    <span class="lang-tr">Google Test DPC ile iş profilinde uçtan uca doğrulandı. Managed Google Play listesi üretim sürümünün ardından geliyor.</span>
+                </small>
             </div>
         </div>
     </section>
@@ -2445,7 +2787,7 @@
                         <span class="lang-en">Google Play</span>
                         <span class="lang-tr">Google Play</span>
                     </a>
-                    <a href="https://github.com/suleymanelbir/authenticator" class="btn-cta secondary" target="_blank">
+                    <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-cta secondary" target="_blank">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                         <span class="lang-en">GitHub</span>
                         <span class="lang-tr">GitHub</span>
@@ -2488,6 +2830,7 @@
                         <li><a href="#features"><span class="lang-en">Features</span><span class="lang-tr">Özellikler</span></a></li>
                         <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a></li>
                         <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
+                        <li><a href="#enterprise"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a></li>
                         <li><a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" target="_blank">Google Play</a></li>
                     </ul>
                 </div>
@@ -2499,9 +2842,9 @@
                     </h4>
                     <ul>
                         <li><a href="#security"><span class="lang-en">Dashboard</span><span class="lang-tr">Kontrol Paneli</span></a></li>
-                        <li><a href="#">StrongBox</a></li>
-                        <li><a href="#">AES-256-GCM</a></li>
-                        <li><a href="#">Argon2id</a></li>
+                        <li><a href="ADMIN-GUIDE.md"><span class="lang-en">Admin Guide (MDM)</span><span class="lang-tr">Yönetici Kılavuzu (MDM)</span></a></li>
+                        <li><a href="REPRODUCIBLE-BUILDS.md"><span class="lang-en">Reproducible Builds</span><span class="lang-tr">Tekrarlanabilir Derleme</span></a></li>
+                        <li><a href="https://github.com/suleymanelbir/veilo-authenticator/releases" target="_blank"><span class="lang-en">Releases</span><span class="lang-tr">Sürümler</span></a></li>
                     </ul>
                 </div>
 
@@ -2513,8 +2856,8 @@
                     <ul>
                         <li><a href="privacy.html"><span class="lang-en">Privacy Policy</span><span class="lang-tr">Gizlilik Politikası</span></a></li>
                         <li><a href="SECURITY-ASSESSMENT.md"><span class="lang-en">Security Report</span><span class="lang-tr">Güvenlik Raporu</span></a></li>
-                        <li><a href="https://github.com/suleymanelbir/authenticator/blob/main/LICENSE" target="_blank"><span class="lang-en">License (GPL-3.0)</span><span class="lang-tr">Lisans (GPL-3.0)</span></a></li>
-                        <li><a href="https://github.com/suleymanelbir/authenticator" target="_blank"><span class="lang-en">Source Code</span><span class="lang-tr">Kaynak Kodu</span></a></li>
+                        <li><a href="https://github.com/suleymanelbir/veilo-authenticator/blob/main/LICENSE" target="_blank"><span class="lang-en">License (GPL-3.0)</span><span class="lang-tr">Lisans (GPL-3.0)</span></a></li>
+                        <li><a href="https://github.com/suleymanelbir/veilo-authenticator" target="_blank"><span class="lang-en">Source Code</span><span class="lang-tr">Kaynak Kodu</span></a></li>
                     </ul>
                 </div>
             </div>
