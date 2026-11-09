@@ -65,6 +65,7 @@
     <string name="protection_hardware_title">Bu cihaza bağlı</string>
     <string name="protection_hardware_body">Anahtar güvenli donanıma taşınır; bir daha okunamaz ve yedeklenemez. Bu telefonu kaybederseniz yeniden kayıt olmanız gerekir.</string>
 
+    <string name="add_duplicate">Bu hesap zaten bu telefonda ekli. Yeni kayıt oluşturulmadı.</string>
     <string name="add_failed">Hesap eklenemedi.</string>
     <string name="add_failed_hardware_hint">Bu anahtar cihaz donanımına bağlanamadı. Yedeklenebilir seçeneğini deneyin.</string>
 

@@ -69,6 +69,7 @@
     <string name="protection_hardware_title">Bound to this device</string>
     <string name="protection_hardware_body">The key is moved into secure hardware and can never be read back or backed up. If you lose this phone you will have to enrol again.</string>
 
+    <string name="add_duplicate">This account is already on this phone. Nothing was added.</string>
     <string name="add_failed">The account could not be added.</string>
     <string name="add_failed_hardware_hint">This key could not be bound to the device hardware. Try the option that can be backed up.</string>
 

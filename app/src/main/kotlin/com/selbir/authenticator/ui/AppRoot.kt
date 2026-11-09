@@ -79,7 +79,8 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
                             val group = form.group
                             val result = withAuthRetry(viewModel, promptOnce) { viewModel.addAccount(spec, protection, group) }
                             form.saving = false
-                            if (result == OpResult.Failed) {
+                            // A duplicate has already set its own, more specific message.
+                            if (result == OpResult.Failed && form.errorRes == null) {
                                 form.errorRes = if (protection == Protection.HARDWARE_BOUND) {
                                     R.string.add_failed_hardware_hint
                                 } else {

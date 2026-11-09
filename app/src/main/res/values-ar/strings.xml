@@ -65,6 +65,7 @@
     <string name="protection_hardware_title">مرتبط بهذا الجهاز</string>
     <string name="protection_hardware_body">يتم نقل المفتاح إلى العتاد الآمن ولا يمكن قراءته أو نسخه احتياطياً أبداً. إذا فقدت هذا الهاتف، ستحتاج إلى التسجيل مجدداً.</string>
 
+    <string name="add_duplicate">هذا الحساب موجود بالفعل على هذا الهاتف. لم تتم إضافة شيء.</string>
     <string name="add_failed">تعذّرت إضافة الحساب.</string>
     <string name="add_failed_hardware_hint">تعذّر ربط هذا المفتاح بعتاد الجهاز. جرّب الخيار القابل للنسخ الاحتياطي.</string>
 

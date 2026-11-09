@@ -25,6 +25,7 @@ import com.selbir.authenticator.core.OtpType
 import com.selbir.authenticator.core.Transfer
 import com.selbir.authenticator.core.TransferException
 import com.selbir.authenticator.data.Account
+import com.selbir.authenticator.data.DuplicateAccountException
 import com.selbir.authenticator.export.PdfExport
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.DeviceIntegrity
@@ -306,6 +307,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 OpResult.Success
             } catch (e: UserNotAuthenticatedException) {
                 OpResult.NeedsAuth
+            } catch (e: DuplicateAccountException) {
+                addForm.errorRes = R.string.add_duplicate
+                OpResult.Failed
             } catch (e: Exception) {
                 OpResult.Failed
             }

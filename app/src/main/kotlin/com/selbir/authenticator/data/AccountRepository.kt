@@ -12,6 +12,9 @@ import java.util.UUID
 
 class ImportResult(val added: Int, val alreadyPresent: Int)
 
+/** An account with the same key and parameters is already enrolled. */
+class DuplicateAccountException : Exception("Account already enrolled")
+
 /**
  * Enrolled accounts and code generation.
  *
@@ -28,8 +31,13 @@ class AccountRepository(
     @Synchronized
     fun all(): List<Account> = accounts ?: store.load().also { accounts = it }
 
+    /**
+     * @throws DuplicateAccountException if an account here already holds the same key, so that
+     * re-scanning a QR code (for example from the printed PDF backup) does not add a copy.
+     */
     @Synchronized
     fun add(spec: OtpSpec, protection: Protection, group: String = ""): Account {
+        if (fingerprintOf(spec) in all().mapNotNullTo(HashSet(), ::fingerprint)) throw DuplicateAccountException()
         val id = UUID.randomUUID().toString()
         if (protection == Protection.HARDWARE_BOUND) secrets.importHmacKey(keyAlias(id), spec.secret, spec.algorithm)
         val account = Account(
@@ -98,8 +106,7 @@ class AccountRepository(
         val known = all().mapNotNullTo(HashSet(), ::fingerprint)
         val added = mutableListOf<Account>()
         for (spec in specs) {
-            val probe = Otp.hotp(Otp.softwareHmac(spec.secret, spec.algorithm), PROBE_COUNTER, Otp.MAX_DIGITS)
-            if (!known.add(KeyFingerprint(spec.type, spec.algorithm, spec.digits, spec.periodIfTimeBased(), probe))) continue
+            if (!known.add(fingerprintOf(spec))) continue
             added += Account(
                 id = UUID.randomUUID().toString(),
                 type = spec.type,
@@ -203,6 +210,11 @@ class AccountRepository(
         val period: Int,
         val probe: String,
     )
+
+    private fun fingerprintOf(spec: OtpSpec): KeyFingerprint {
+        val probe = Otp.hotp(Otp.softwareHmac(spec.secret, spec.algorithm), PROBE_COUNTER, Otp.MAX_DIGITS)
+        return KeyFingerprint(spec.type, spec.algorithm, spec.digits, spec.periodIfTimeBased(), probe)
+    }
 
     private fun OtpSpec.periodIfTimeBased() = if (type == OtpType.TOTP) period else 0
 

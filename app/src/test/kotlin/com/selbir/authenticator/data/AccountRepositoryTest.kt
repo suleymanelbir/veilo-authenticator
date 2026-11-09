@@ -105,6 +105,22 @@ class AccountRepositoryTest {
     }
 
     @Test
+    fun scanningAnEnrolledAccountAgainAddsNothing() {
+        repository.add(totp(1), Protection.EXPORTABLE)
+        repository.add(totp(2), Protection.HARDWARE_BOUND)
+
+        assertFailsWith<DuplicateAccountException> { repository.add(totp(1, issuer = "Other label"), Protection.EXPORTABLE) }
+        assertFailsWith<DuplicateAccountException> { repository.add(totp(2), Protection.EXPORTABLE) }
+        assertFailsWith<DuplicateAccountException> { repository.add(totp(1), Protection.HARDWARE_BOUND) }
+
+        assertEquals(2, repository.all().size)
+        assertEquals(1, secrets.hardwareKeys.size) // no stray hardware key was left behind
+        // Same secret with other parameters is a different account and still goes in.
+        repository.add(OtpSpec(OtpType.TOTP, "Service 1", "user@example.com", secret(1), digits = 8), Protection.EXPORTABLE)
+        assertEquals(3, repository.all().size)
+    }
+
+    @Test
     fun hardwareBoundAccountsAreNeverExported() {
         repository.add(totp(1), Protection.HARDWARE_BOUND)
         repository.add(totp(2), Protection.EXPORTABLE)
