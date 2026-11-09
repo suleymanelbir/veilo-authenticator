@@ -1,11 +1,11 @@
 # Security Assessment Report
 
-**Product:** Veilo Authenticator v0.2.0 (Android)  
+**Product:** Veilo Authenticator v0.3.0 (Android)  
 **Package:** `tr.veilo.authenticator`  
 **Assessment Date:** November 2026  
 **Assessor:** Veilo Security Team  
 **Classification:** Public  
-**Report Version:** 1.0
+**Report Version:** 1.1 (updated for v0.3.0: metadata encryption, device-to-device transfer)
 
 ---
 
@@ -22,7 +22,7 @@ The application implements defense-in-depth across 11 security layers. No critic
 | Critical | 0 |
 | High | 0 |
 | Medium | 0 |
-| Low | 2 (accepted risks, documented below) |
+| Low | 1 (accepted risk, documented below) + 1 resolved in v0.3.0 |
 | Informational | 4 |
 
 ---
@@ -69,10 +69,11 @@ Two-factor authentication code generator supporting TOTP (RFC 6238) and HOTP (RF
 | Asset | Sensitivity | Storage |
 |-------|-------------|---------|
 | OTP shared secrets | CRITICAL | Android Keystore (HW-bound) or AES-256-GCM encrypted (exportable) |
-| Account metadata (issuer, name) | LOW | App-private JSON file, unencrypted |
+| Account metadata (issuer, name) | LOW | App-private file, AES-256-GCM under a Keystore key (v0.3.0; unencrypted JSON before) |
 | Generated OTP codes | HIGH (short-lived) | Memory only, auto-zeroed |
 | Backup passphrase | HIGH (transient) | Memory only during export/import |
 | Backup file | CRITICAL | User-chosen external storage, Argon2id + AES-256-GCM |
+| Transfer frames (QR) | CRITICAL (transient) | Shown on screen only; AES-256-GCM under an ECDH-agreed key that exists on the two phones for the duration of the transfer |
 
 ### 2.2 Threat Actors
 
@@ -260,6 +261,18 @@ android:dataExtractionRules="@xml/data_extraction_rules"
 - Generates `otpauth://` QR codes using Android's built-in `PdfDocument` API.
 - **Warning:** PDF contains secrets in plain form. Physical security of the printed document is the user's responsibility. Red warning displayed prominently in UI.
 
+### 4.4 Device-to-Device Transfer (v0.3.0)
+
+Moves accounts between two phones with QR codes only; no file, no network, no cloud.
+
+- **Key agreement:** the receiving phone generates an ephemeral P-256 key pair and shows its public key as a QR code. The sending phone scans it, generates its own ephemeral pair and derives a 256-bit key with ECDH followed by HKDF-SHA-256 (salt = both public keys, fixed info string).
+- **Encryption:** the backup payload is encrypted with AES-256-GCM; both public keys are bound in as associated data. The ciphertext is cut into numbered frames tagged with a hash of the whole, so frames from a restarted or different transfer cannot be mixed in.
+- **Curve validation:** a scanned public key is accepted only if it is a point on P-256, which blocks invalid-curve attempts from a hostile QR code.
+- **What an observer gets:** someone filming the sender's screen obtains ciphertext only. The receiver's private key never leaves its process memory and is discarded when the screen is left or the app locks. `FLAG_SECURE` additionally blocks screenshots and casting of the sender's frames.
+- **Residual risk:** a person who controls both phones at that moment can run the transfer, which is the same as controlling the unlocked phone. There is no sender authentication: the receiver imports whatever decrypts under its key, which requires the sender to have scanned the receiver's screen in person. Hardware-bound accounts are excluded, as with every export.
+
+---
+
 ---
 
 ## 5. Dependency Analysis
@@ -280,10 +293,10 @@ No dependencies with known CVEs at time of assessment. No dependencies require n
 
 ### 6.1 Low Severity
 
-**L-01: Account metadata stored unencrypted**
-- **Description:** Service names and account labels are stored in plaintext JSON in app-private storage.
-- **Impact:** An attacker with root access could learn which services a user has enrolled, even without accessing the secrets.
-- **Recommendation:** Consider encrypting the account list file. Accepted risk for v0.2.0 — secrets themselves are always encrypted or hardware-bound.
+**L-01: Account metadata stored unencrypted** — *Resolved in v0.3.0*
+- **Description:** Up to v0.2.0, service names and account labels were stored in plaintext JSON in app-private storage.
+- **Impact:** An attacker with root access could learn which services a user had enrolled, even without accessing the secrets.
+- **Resolution:** The account list is now one file encrypted with AES-256-GCM under a dedicated Android Keystore key (`vault.v1`), with a format header authenticated as associated data. The key does not require user authentication, by design: the list is read on every unlock, and the secrets inside stay wrapped under the authentication-bound key regardless. On the first start after the update the plaintext file is re-encrypted, overwritten and deleted. Writes are atomic (temporary file + rename).
 
 **L-02: JVM memory copy limitation**
 - **Description:** The JVM does not guarantee that a `ByteArray.fill(0)` call erases all copies of the data in memory.
@@ -321,17 +334,16 @@ No dependencies with known CVEs at time of assessment. No dependencies require n
 |----------|---------------|--------|
 | HIGH | Independent third-party penetration test | v0.3 |
 | MEDIUM | Hardware key attestation for enterprise | v0.4 |
-| MEDIUM | Encrypt account metadata file | v0.3 |
-| LOW | Certificate transparency / reproducible builds | v0.5 |
+| LOW | Publish reproducible-build attestations with each release (procedure in place since v0.3.0) | v0.5 |
 | LOW | FIDO2/Passkey support (phishing resistance) | v0.5 |
 
 ---
 
 ## 9. Conclusion
 
-Veilo Authenticator v0.2.0 demonstrates a strong security posture for a mobile authenticator application. The combination of hardware-backed key storage, zero network access, authenticated encryption for backups, and defense-in-depth across 11 layers places it significantly above the security baseline of typical authenticator apps.
+Veilo Authenticator v0.3.0 demonstrates a strong security posture for a mobile authenticator application. The combination of hardware-backed key storage, zero network access, authenticated encryption for backups, and defense-in-depth across 11 layers places it significantly above the security baseline of typical authenticator apps.
 
-The two low-severity findings are accepted risks with documented mitigations. The four informational findings are either platform limitations or planned improvements for future versions.
+One low-severity finding was resolved in v0.3.0; the remaining one is an accepted JVM limitation with documented mitigations. The four informational findings are either platform limitations or planned improvements for future versions.
 
 **The application is assessed as suitable for production use.**
 

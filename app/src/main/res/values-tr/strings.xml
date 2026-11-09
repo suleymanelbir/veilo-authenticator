@@ -109,7 +109,7 @@
     <string name="about_description">Veilo Authenticator, iki adımlı doğrulama için zamana dayalı (TOTP) ve sayaca dayalı (HOTP) tek kullanımlık parolalar üretir. Tamamen çevrimdışı çalışır — internet bağlantısı, hesap veya izleme yoktur.</string>
 
     <string name="about_howto_title">Nasıl kullanılır</string>
-    <string name="about_howto_body">1. Hesap ekle: + düğmesine dokunup QR kodu tarayın veya gizli anahtarı elle girin.\n\n2. Kodları gör: tek kullanımlık kodlarınız ana ekranda görünür. Görmek ve kopyalamak için dokunun. Kod 30 saniye sonra panodan silinir.\n\n3. Favoriler: bir hesabı listenin en üstüne sabitlemek için uzun basın.\n\n4. Gruplar: hesapları düzenleme ekranından gruplara ayırın (İş, Kişisel, Finans vb.).\n\n5. Yedekleme: hesaplarınızı bir parolayla korunan şifreli dosyaya kaydedin. QR kodlu yazdırılabilir PDF de oluşturabilirsiniz.\n\n6. Göç: Google Authenticator, Microsoft Authenticator veya Aegis\'ten aktarım menüsüyle hesaplarınızı taşıyın.\n\n7. Kilit: uygulama arka plana geçtiğinde otomatik kilitlenir. Biyometrik veya cihaz PIN\'i ile açın.</string>
+    <string name="about_howto_body">1. Hesap ekle: + düğmesine dokunup QR kodu tarayın veya gizli anahtarı elle girin.\n\n2. Kodları gör: tek kullanımlık kodlarınız ana ekranda görünür. Görmek ve kopyalamak için dokunun. Kod 30 saniye sonra panodan silinir.\n\n3. Favoriler: bir hesabı listenin en üstüne sabitlemek için uzun basın.\n\n4. Gruplar: hesapları düzenleme ekranından gruplara ayırın (İş, Kişisel, Finans vb.).\n\n5. Yedekleme: hesaplarınızı bir parolayla korunan şifreli dosyaya kaydedin. QR kodlu yazdırılabilir PDF de oluşturabilirsiniz.\n\n6. Göç: Google Authenticator, Microsoft Authenticator veya Aegis\'ten aktarım menüsüyle hesaplarınızı taşıyın.\n\n7. Yeni telefon: iki telefonda da Menü > Başka telefona aktar\'ı açın. Hesaplar dosya ya da internet olmadan, şifreli QR kodlarla doğrudan taşınır.\n\n8. Kilit: uygulama arka plana geçtiğinde otomatik kilitlenir. Biyometrik veya cihaz PIN\'i ile açın.</string>
 
     <string name="about_security_title">Güvenlik</string>
     <string name="about_security_body">• Anahtarlar donanım destekli Android Keystore\'da saklanır (varsa StrongBox)\n• Kilit açmak için biyometrik veya cihaz kimlik bilgisi gerekir\n• Ekran görüntüsü ve uygulama değiştirici önizlemesi engellenir\n• Kopyalanan kodlar 30 saniyede panodan silinir\n• Gizli anahtar verileri kullanımdan sonra bellekte sıfırlanır\n• Başlatmada root ve hata ayıklayıcı tespiti\n• İnternet izni yok — tasarım gereği tamamen hava boşluklu\n• Analitik yok, izleme yok, üçüncü taraf hizmeti yok\n• Parola tabanlı anahtar türetmeli şifreli yedekleme\n• Yayın derlemelerinde ProGuard/R8 kod karartma\n• Bulut yedekleme ve cihaz aktarımı açıkça devre dışı</string>
@@ -157,4 +157,30 @@
     <string name="pdf_export_warning">Bu PDF, gizli anahtarlarınızı açık biçimde içerir. Bu belgeye sahip herkes 2FA kodlarınızı üretebilir. Fiziksel olarak güvenli bir yerde saklayın.</string>
     <string name="pdf_export_save">PDF kaydet</string>
     <string name="pdf_export_done">PDF yedek kaydedildi.</string>
+
+    <!-- Cihazdan cihaza aktarım -->
+    <string name="transfer_title">Başka telefona aktar</string>
+    <string name="transfer_body">Hesaplarınızı QR kodlarla doğrudan bir telefondan diğerine taşır. Hiçbir şey dosyaya yazılmaz ya da internete gönderilmez; ekrandaki kodlar yalnızca alıcı telefon için şifrelenir.</string>
+    <string name="transfer_send_title">Bu eski telefon</string>
+    <string name="transfer_send_body">Hesaplarınız burada da kalır. Yeni telefon zaten sahip olduklarını atlar.</string>
+    <string name="transfer_send_action">Bu telefondan hesapları gönder</string>
+    <string name="transfer_receive_title">Bu yeni telefon</string>
+    <string name="transfer_receive_body">Önce bu telefona Veilo Authenticator\'ı kurun, sonra bu ekranı iki telefonda da açın.</string>
+    <string name="transfer_receive_action">Bu telefonda hesapları al</string>
+    <string name="transfer_send_step1">Yeni telefonda \"Hesapları al\" seçeneğini seçin, sonra gösterdiği kodu tarayın.</string>
+    <string name="transfer_scan_receiver">Yeni telefonun kodunu tara</string>
+    <string name="transfer_scan_receiver_prompt">Kamerayı yeni telefondaki koda doğrultun</string>
+    <string name="transfer_send_step2">Yeni telefon tüm karelerin geldiğini bildirene kadar bu ekranı onun kamerasının önünde tutun. Hesap: %1$d</string>
+    <string name="transfer_frame_counter">Kare %1$d / %2$d</string>
+    <string name="transfer_send_hint">Kareler kendiliğinden tekrar eder. İki telefonu sabit ve yaklaşık 20 cm arayla tutun.</string>
+    <string name="transfer_finish">Bitti</string>
+    <string name="transfer_receive_step1">Eski telefonun bu kodu taramasını sağlayın. Kod bu telefonu tanımlar; eski telefonun gönderdiğini yalnızca bu telefon açabilir.</string>
+    <string name="transfer_receive_next">Eski telefon taradı — devam et</string>
+    <string name="transfer_receive_step2">Kamerayı eski telefonun ekranına doğrultun ve kareler toplanırken sabit tutun.</string>
+    <string name="transfer_progress">Alınan kare: %1$d / %2$d</string>
+    <string name="transfer_code_invalid">Bu, Veilo Authenticator\'ın alma ekranındaki bir kod değil.</string>
+    <string name="transfer_data_invalid">Alınan kareler açılamadı. Geri dönüp iki telefonda da yeniden başlayın.</string>
+    <string name="transfer_failed">Aktarım tamamlanamadı.</string>
+    <string name="transfer_camera_denied">Diğer telefondaki kodları okumak için kamera izni gerekir.</string>
+    <string name="transfer_done">Aktarım tamamlandı. Eklenen: %1$d, zaten mevcut: %2$d</string>
 </resources>

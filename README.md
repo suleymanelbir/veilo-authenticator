@@ -93,7 +93,7 @@ require "strong biometric or device credential".
 - [x] Edit, search, account groups, advanced manual entry
 - [x] Release signing, Google Play closed testing
 
-**v0.2 — Migration & polish** ✅ *Released — in Play Store review*
+**v0.2 — Migration & polish** ✅ *Released*
 
 - [x] Import from Google Authenticator, Microsoft Authenticator, Aegis
 - [x] Printable PDF backup with QR codes
@@ -104,12 +104,12 @@ require "strong biometric or device credential".
 - [x] Security Assessment Report v1.0
 - [x] Product landing page (auth.veilo.tr)
 
-**v0.3 — Cloud-less encrypted sync** *(next)*
+**v0.3 — Cloud-less encrypted sync** *(in closed testing)*
 
-- [ ] Device-to-device transfer via encrypted QR chain (no cloud)
-- [ ] Encrypt account metadata file (issuer/name)
+- [x] Device-to-device transfer via encrypted QR chain (no cloud) — P-256 ECDH + HKDF-SHA-256 + AES-256-GCM, key lives only on the two phones
+- [x] Encrypt account metadata file (issuer/name) — AES-256-GCM under a Keystore key, plaintext file migrated and wiped on first start
+- [x] Reproducible builds — see [docs/REPRODUCIBLE-BUILDS.md](docs/REPRODUCIBLE-BUILDS.md)
 - [ ] Independent third-party penetration test
-- [ ] Reproducible builds
 
 **v0.4 — Wear OS**
 

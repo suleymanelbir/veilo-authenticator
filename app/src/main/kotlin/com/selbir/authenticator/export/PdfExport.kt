@@ -1,15 +1,11 @@
 package com.selbir.authenticator.export
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.EncodeHintType
-import com.google.zxing.qrcode.QRCodeWriter
 import com.selbir.authenticator.core.Base32
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpSpec
@@ -97,7 +93,7 @@ object PdfExport {
             for (spec in accounts) {
                 val c = ensurePage()
                 val uri = buildOtpAuthUri(spec)
-                val qrBitmap = generateQr(uri, QR_SIZE)
+                val qrBitmap = QrCodes.bitmap(uri, QR_SIZE)
 
                 // Draw QR
                 c.drawBitmap(qrBitmap, MARGIN.toFloat(), y, null)
@@ -154,17 +150,5 @@ object PdfExport {
         if (spec.type == OtpType.TOTP && spec.period != 30) sb.append("&period=${spec.period}")
         if (spec.type == OtpType.HOTP) sb.append("&counter=${spec.counter}")
         return sb.toString()
-    }
-
-    private fun generateQr(content: String, size: Int): Bitmap {
-        val hints = mapOf(EncodeHintType.MARGIN to 1)
-        val matrix = QRCodeWriter().encode(content, BarcodeFormat.QR_CODE, size, size, hints)
-        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565)
-        for (x in 0 until size) {
-            for (y in 0 until size) {
-                bitmap.setPixel(x, y, if (matrix[x, y]) Color.BLACK else Color.WHITE)
-            }
-        }
-        return bitmap
     }
 }

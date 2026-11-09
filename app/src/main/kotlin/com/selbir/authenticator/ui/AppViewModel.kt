@@ -22,6 +22,8 @@ import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
+import com.selbir.authenticator.core.Transfer
+import com.selbir.authenticator.core.TransferException
 import com.selbir.authenticator.data.Account
 import com.selbir.authenticator.export.PdfExport
 import com.selbir.authenticator.data.Protection
@@ -40,9 +42,10 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.security.KeyPair
 import java.util.concurrent.ConcurrentHashMap
 
-enum class Screen { List, Add, Export, Import, About, Migrate, PdfExport }
+enum class Screen { List, Add, Export, Import, About, Migrate, PdfExport, Transfer }
 
 data class AccountRow(
     val id: String,
@@ -169,6 +172,50 @@ class BackupFormState {
     }
 }
 
+enum class TransferRole { Send, Receive }
+
+/**
+ * The device-to-device transfer screen. Held by the ViewModel like [BackupFormState]; the
+ * receiver's private key and the sender's frames live only here and go with [clear].
+ */
+class TransferFormState {
+    var role by mutableStateOf<TransferRole?>(null)
+    var busy by mutableStateOf(false)
+    var errorRes by mutableStateOf<Int?>(null)
+
+    /** Sender: the QR texts to cycle through, once the receiver's code has been scanned. */
+    var frames by mutableStateOf<List<String>>(emptyList())
+    var sentCount by mutableStateOf(0)
+
+    /** Receiver: the QR text that identifies this device to the sender. */
+    var receiverCode by mutableStateOf<String?>(null)
+    var scanning by mutableStateOf(false)
+    var framesReceived by mutableStateOf(0)
+    var framesTotal by mutableStateOf(0)
+    var result by mutableStateOf<MigrationResult?>(null)
+
+    internal var keyPair: KeyPair? = null
+    internal val collector = Transfer.FrameCollector()
+    internal var assembled by mutableStateOf<ByteArray?>(null)
+
+    fun clear() {
+        role = null
+        busy = false
+        errorRes = null
+        frames = emptyList()
+        sentCount = 0
+        receiverCode = null
+        scanning = false
+        framesReceived = 0
+        framesTotal = 0
+        result = null
+        keyPair = null
+        collector.reset()
+        assembled?.fill(0)
+        assembled = null
+    }
+}
+
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as AuthenticatorApp
     private val repository = app.repository
@@ -181,6 +228,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     val addForm = AddFormState()
     val backupForm = BackupFormState()
+    val transferForm = TransferFormState()
     var migrationResult by mutableStateOf<MigrationResult?>(null)
 
     /**
@@ -222,6 +270,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         addForm.clear()
         backupForm.clear()
+        transferForm.clear()
         // Taking the mutex waits out any refresh still in flight, so it cannot repopulate the caches.
         viewModelScope.launch { refreshMutex.withLock { clearCodes() } }
     }
@@ -233,6 +282,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun navigate(screen: Screen) {
         addForm.clear()
         backupForm.clear()
+        transferForm.clear()
         migrationResult = null
         _state.update { it.copy(screen = screen) }
         if (screen == Screen.List) viewModelScope.launch { refresh() }
@@ -648,6 +698,154 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             navigate(Screen.List)
         }
         return written
+    }
+
+    // --- Device-to-device transfer ---
+
+    fun chooseTransferRole(role: TransferRole) {
+        val form = transferForm
+        form.clear()
+        form.role = role
+        if (role == TransferRole.Receive) {
+            form.busy = true
+            viewModelScope.launch {
+                val keyPair = withContext(Dispatchers.Default) { Transfer.newKeyPair() }
+                form.keyPair = keyPair
+                form.receiverCode = Transfer.receiverCode(keyPair.public)
+                form.busy = false
+            }
+        }
+    }
+
+    /**
+     * Sender: encrypts every backup-capable account for the device whose code was just scanned
+     * and prepares the QR frames. Failure reasons land in [transferForm].
+     */
+    suspend fun prepareTransfer(receiverCodeText: String): OpResult {
+        val form = transferForm
+        val receiver = try {
+            Transfer.parseReceiverCode(receiverCodeText)
+        } catch (e: TransferException) {
+            form.errorRes = R.string.transfer_code_invalid
+            return OpResult.Failed
+        }
+        var frames: List<String> = emptyList()
+        var count = 0
+        val result = withContext(Dispatchers.Default) {
+            var specs = emptyList<OtpSpec>()
+            try {
+                specs = repository.exportableSpecs()
+                if (specs.isEmpty()) return@withContext OpResult.Failed
+                val payload = BackupPayload.encode(specs)
+                try {
+                    frames = Transfer.frames(Transfer.encrypt(payload, receiver))
+                } finally {
+                    payload.fill(0)
+                }
+                count = specs.size
+                OpResult.Success
+            } catch (e: UserNotAuthenticatedException) {
+                OpResult.NeedsAuth
+            } catch (e: Exception) {
+                OpResult.Failed
+            } finally {
+                specs.forEach { it.secret.fill(0) }
+            }
+        }
+        when (result) {
+            OpResult.Success -> {
+                form.frames = frames
+                form.sentCount = count
+            }
+            OpResult.Failed -> form.errorRes = R.string.transfer_failed
+            OpResult.NeedsAuth -> Unit
+        }
+        return result
+    }
+
+    fun startTransferScanning() {
+        transferForm.scanning = true
+    }
+
+    /**
+     * Receiver: takes one scanned QR text. Returns true when the last frame has just arrived
+     * and [importTransfer] should be called.
+     */
+    fun acceptTransferFrame(text: String): Boolean {
+        val form = transferForm
+        if (!form.scanning || form.assembled != null) return false
+        if (!form.collector.accept(text)) return false
+        form.framesReceived = form.collector.received
+        form.framesTotal = form.collector.total
+        val blob = try {
+            form.collector.assembled()
+        } catch (e: TransferException) {
+            form.collector.reset()
+            form.framesReceived = 0
+            form.framesTotal = 0
+            form.errorRes = R.string.transfer_data_invalid
+            return false
+        } ?: return false
+        form.assembled = blob
+        form.scanning = false
+        return true
+    }
+
+    /** Receiver: decrypts the assembled frames with this device's key and adds the accounts. */
+    suspend fun importTransfer(): OpResult {
+        val form = transferForm
+        val blob = form.assembled ?: return OpResult.Failed
+        val keyPair = form.keyPair ?: return OpResult.Failed
+        var added = 0
+        var alreadyPresent = 0
+        var errorRes: Int? = null
+        val result = withContext(Dispatchers.Default) {
+            var specs: List<OtpSpec> = emptyList()
+            try {
+                val payload = Transfer.decrypt(blob, keyPair)
+                try {
+                    specs = BackupPayload.decode(payload)
+                } finally {
+                    payload.fill(0)
+                }
+                val imported = repository.importAll(specs)
+                added = imported.added
+                alreadyPresent = imported.alreadyPresent
+                OpResult.Success
+            } catch (e: UserNotAuthenticatedException) {
+                OpResult.NeedsAuth
+            } catch (e: TransferException) {
+                errorRes = R.string.transfer_data_invalid
+                OpResult.Failed
+            } catch (e: BackupException) {
+                errorRes = R.string.transfer_data_invalid
+                OpResult.Failed
+            } catch (e: Exception) {
+                errorRes = R.string.transfer_failed
+                OpResult.Failed
+            } finally {
+                specs.forEach { it.secret.fill(0) }
+            }
+        }
+        when (result) {
+            OpResult.Success -> {
+                blob.fill(0)
+                form.result = MigrationResult(added, alreadyPresent)
+                toast(R.string.transfer_done, added, alreadyPresent)
+                refresh()
+            }
+            OpResult.Failed -> {
+                form.errorRes = errorRes
+                // Let the user try again without starting over on the sender.
+                form.assembled = null
+                form.collector.reset()
+                form.framesReceived = 0
+                form.framesTotal = 0
+                form.scanning = true
+            }
+            OpResult.NeedsAuth -> Unit
+        }
+        return result
     }
 
     private companion object {

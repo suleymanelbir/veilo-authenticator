@@ -192,6 +192,36 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             )
         }
 
+        state.screen == Screen.Transfer -> {
+            val rows = state.rows.orEmpty()
+            BackHandler { viewModel.navigate(Screen.List) }
+            TransferScreen(
+                form = viewModel.transferForm,
+                exportableCount = rows.count { !it.hardwareBound },
+                hardwareBoundCount = rows.count { it.hardwareBound },
+                onBack = { viewModel.navigate(Screen.List) },
+                onChooseRole = viewModel::chooseTransferRole,
+                onChildVisible = { viewModel.childActivityInFront = it },
+                onReceiverCodeScanned = { code ->
+                    scope.launch {
+                        val form = viewModel.transferForm
+                        form.busy = true
+                        try {
+                            withAuthRetry(viewModel, promptOnce) { viewModel.prepareTransfer(code) }
+                        } finally {
+                            form.busy = false
+                        }
+                    }
+                },
+                onStartScanning = viewModel::startTransferScanning,
+                onFrameScanned = { text ->
+                    if (viewModel.acceptTransferFrame(text)) {
+                        scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.importTransfer() } }
+                    }
+                },
+            )
+        }
+
         else -> AccountListScreen(
             state = state,
             onAdd = { viewModel.navigate(Screen.Add) },
@@ -200,6 +230,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onAbout = { viewModel.navigate(Screen.About) },
             onMigrate = { viewModel.navigate(Screen.Migrate) },
             onPdfExport = { viewModel.navigate(Screen.PdfExport) },
+            onTransfer = { viewModel.navigate(Screen.Transfer) },
             onLock = viewModel::lock,
             onDelete = viewModel::delete,
             onRename = viewModel::rename,

@@ -65,6 +65,7 @@ fun AccountListScreen(
     onAbout: () -> Unit,
     onMigrate: () -> Unit,
     onPdfExport: () -> Unit,
+    onTransfer: () -> Unit,
     onLock: () -> Unit,
     onDelete: (String) -> Unit,
     onRename: (String, String, String) -> Unit,
@@ -147,6 +148,13 @@ fun AccountListScreen(
                                 onClick = {
                                     menuOpen = false
                                     onMigrate()
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.transfer_title)) },
+                                onClick = {
+                                    menuOpen = false
+                                    onTransfer()
                                 },
                             )
                             DropdownMenuItem(
