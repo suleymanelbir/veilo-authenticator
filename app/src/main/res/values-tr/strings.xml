@@ -184,4 +184,54 @@
     <string name="transfer_failed">Aktarım tamamlanamadı.</string>
     <string name="transfer_camera_denied">Diğer telefondaki kodları okumak için kamera izni gerekir.</string>
     <string name="transfer_done">Aktarım tamamlandı. Eklenen: %1$d, zaten mevcut: %2$d</string>
+
+    <!-- Kurum politikası (yönetilen yapılandırma) -->
+    <string name="policy_organization_name_title">Kurum adı</string>
+    <string name="policy_organization_name_desc">Uygulamada, uygulamayı yöneten kurum olarak gösterilir.</string>
+    <string name="policy_support_contact_title">Destek iletişimi</string>
+    <string name="policy_support_contact_desc">Hakkında ekranında gösterilen e-posta veya telefon.</string>
+    <string name="policy_hardware_bound_only_title">Yalnızca güvenlik çipi</string>
+    <string name="policy_hardware_bound_only_desc">Yeni ve içe aktarılan hesaplar yalnızca cihazın güvenlik donanımında, dışa aktarılamayan anahtar olarak saklanabilir. Mevcut yedeklenebilir hesaplar için çipe taşıma önerilir.</string>
+    <string name="policy_allow_backup_export_title">Şifreli yedek dosyasına izin ver</string>
+    <string name="policy_allow_backup_export_desc">Kapalıyken parola korumalı yedek dışa aktarma gizlenir.</string>
+    <string name="policy_allow_backup_import_title">Yedek içe aktarma ve başka uygulamadan göçe izin ver</string>
+    <string name="policy_allow_backup_import_desc">Kapalıyken yedek içe aktarma ile Google, Microsoft veya Aegis\'ten göç gizlenir.</string>
+    <string name="policy_allow_pdf_export_title">Yazdırılabilir PDF yedeğe izin ver</string>
+    <string name="policy_allow_pdf_export_desc">Kapalıyken QR kodlu PDF dışa aktarma gizlenir.</string>
+    <string name="policy_allow_transfer_send_title">Başka telefona hesap göndermeye izin ver</string>
+    <string name="policy_allow_transfer_send_desc">Kapalıyken bu telefon cihazdan cihaza aktarımda gönderen olamaz.</string>
+    <string name="policy_allow_transfer_receive_title">Başka telefondan hesap almaya izin ver</string>
+    <string name="policy_allow_transfer_receive_desc">Kapalıyken bu telefon cihazdan cihaza aktarımda alıcı olamaz.</string>
+    <string name="policy_block_on_rooted_device_title">Köklü cihazlarda kodları engelle</string>
+    <string name="policy_block_on_rooted_device_desc">Açıkken cihaz köklü veya değiştirilmiş görünüyorsa uygulama yalnızca uyarmak yerine kod göstermeyi reddeder.</string>
+    <string name="policy_block_on_debugger_title">Hata ayıklayıcı bağlıyken kodları engelle</string>
+    <string name="policy_block_on_debugger_desc">Açıkken uygulamaya hata ayıklayıcı veya izleyici bağlıyken kod göstermeyi reddeder.</string>
+
+    <string name="policy_org_fallback">kurumunuz</string>
+    <string name="managed_by">%1$s tarafından yönetiliyor</string>
+    <string name="managed_by_unknown">Kurumunuz tarafından yönetiliyor</string>
+    <string name="about_policy_title">Kurum politikası</string>
+    <string name="about_policy_body">Bu kurulum %1$s tarafından yönetiliyor. Yürürlükteki kurallar:</string>
+    <string name="about_policy_none">Yürürlükte kısıtlama yok.</string>
+    <string name="about_policy_support">Destek: %1$s</string>
+    <string name="about_policy_fixed_note">Kilit ve anahtar ayarları (2 dakikada bir kimlik doğrulama, biyometrik veya cihaz kilidi) sabittir ve yapılandırılamaz.</string>
+    <string name="restriction_hardware_bound_only">Hesaplar yalnızca güvenlik çipinde saklanabilir</string>
+    <string name="restriction_no_backup_export">Şifreli yedek dışa aktarma kapalı</string>
+    <string name="restriction_no_backup_import">Yedek içe aktarma ve göç kapalı</string>
+    <string name="restriction_no_pdf_export">PDF yedek kapalı</string>
+    <string name="restriction_no_transfer_send">Başka telefona hesap gönderme kapalı</string>
+    <string name="restriction_no_transfer_receive">Başka telefondan hesap alma kapalı</string>
+    <string name="restriction_block_rooted">Köklü cihazda kodlar engellenir</string>
+    <string name="restriction_block_debugger">Hata ayıklayıcı bağlıyken kodlar engellenir</string>
+    <string name="add_rejected_by_policy">Kurumunuz hesapların güvenlik çipinde saklanmasını zorunlu kılıyor ve bu hesabın anahtarı bunun için çok kısa. Servisten yeni anahtar isteyin veya destekle görüşün.</string>
+    <string name="import_rejected_by_policy">Kurum kuralı güvenlik çipi gerektirdiği ve bu anahtarlar çok kısa olduğu için saklanmayan: %1$d</string>
+    <string name="move_to_chip_title">Hesapları güvenlik çipine taşı</string>
+    <string name="move_to_chip_body">Kurumunuz hesapların cihazın güvenlik çipinde saklanmasını zorunlu kılıyor. %1$d hesap hâlâ yedeklenebilir anahtar olarak duruyor. Taşındıklarında dışa aktarılamaz olurlar; kodlar çalışmaya devam eder.</string>
+    <string name="move_to_chip_action">Şimdi taşı</string>
+    <string name="move_to_chip_later">Sonra</string>
+    <string name="move_to_chip_done">Güvenlik çipine taşınan: %1$d. Yeniden kayıt gereken (anahtar çok kısa): %2$d</string>
+    <string name="blocked_title">Bu cihazda kodlar kullanılamıyor</string>
+    <string name="blocked_rooted">Kurumunuz köklü veya değiştirilmiş cihazda tek kullanımlık koda izin vermiyor.</string>
+    <string name="blocked_debugger">Kurumunuz uygulamaya hata ayıklayıcı bağlıyken tek kullanımlık koda izin vermiyor.</string>
+    <string name="blocked_contact">BT desteğinize başvurun: %1$s</string>
 </resources>

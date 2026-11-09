@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Managed configuration schema. An MDM (Intune, Google Workspace, Knox, ...) renders this as
+    a form for the administrator; Android delivers the chosen values to the app through
+    RestrictionsManager. Every entry can only remove a capability of the public edition.
+    Keys and defaults are mirrored in policy/Policy.kt.
+-->
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+    <restriction
+        android:key="organization_name"
+        android:restrictionType="string"
+        android:title="@string/policy_organization_name_title"
+        android:description="@string/policy_organization_name_desc" />
+    <restriction
+        android:key="support_contact"
+        android:restrictionType="string"
+        android:title="@string/policy_support_contact_title"
+        android:description="@string/policy_support_contact_desc" />
+    <restriction
+        android:key="hardware_bound_only"
+        android:restrictionType="bool"
+        android:defaultValue="false"
+        android:title="@string/policy_hardware_bound_only_title"
+        android:description="@string/policy_hardware_bound_only_desc" />
+    <restriction
+        android:key="allow_backup_export"
+        android:restrictionType="bool"
+        android:defaultValue="true"
+        android:title="@string/policy_allow_backup_export_title"
+        android:description="@string/policy_allow_backup_export_desc" />
+    <restriction
+        android:key="allow_backup_import"
+        android:restrictionType="bool"
+        android:defaultValue="true"
+        android:title="@string/policy_allow_backup_import_title"
+        android:description="@string/policy_allow_backup_import_desc" />
+    <restriction
+        android:key="allow_pdf_export"
+        android:restrictionType="bool"
+        android:defaultValue="true"
+        android:title="@string/policy_allow_pdf_export_title"
+        android:description="@string/policy_allow_pdf_export_desc" />
+    <restriction
+        android:key="allow_transfer_send"
+        android:restrictionType="bool"
+        android:defaultValue="true"
+        android:title="@string/policy_allow_transfer_send_title"
+        android:description="@string/policy_allow_transfer_send_desc" />
+    <restriction
+        android:key="allow_transfer_receive"
+        android:restrictionType="bool"
+        android:defaultValue="true"
+        android:title="@string/policy_allow_transfer_receive_title"
+        android:description="@string/policy_allow_transfer_receive_desc" />
+    <restriction
+        android:key="block_on_rooted_device"
+        android:restrictionType="bool"
+        android:defaultValue="false"
+        android:title="@string/policy_block_on_rooted_device_title"
+        android:description="@string/policy_block_on_rooted_device_desc" />
+    <restriction
+        android:key="block_on_debugger"
+        android:restrictionType="bool"
+        android:defaultValue="false"
+        android:title="@string/policy_block_on_debugger_title"
+        android:description="@string/policy_block_on_debugger_desc" />
+</restrictions>

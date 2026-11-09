@@ -56,6 +56,7 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.selbir.authenticator.R
 import com.selbir.authenticator.export.QrCodes
+import com.selbir.authenticator.policy.Policy
 import kotlinx.coroutines.delay
 
 /** Pixels per QR image. Scaled by Compose to the available width; more pixels only cost memory. */
@@ -75,6 +76,7 @@ private const val FRAME_INTERVAL_MS = 1500L
 @Composable
 fun TransferScreen(
     form: TransferFormState,
+    policy: Policy,
     exportableCount: Int,
     hardwareBoundCount: Int,
     onBack: () -> Unit,
@@ -86,7 +88,7 @@ fun TransferScreen(
 ) {
     TransferScaffold(title = stringResource(R.string.transfer_title), onBack = onBack) {
         when (form.role) {
-            null -> RoleChoice(exportableCount, hardwareBoundCount, onChooseRole)
+            null -> RoleChoice(policy, exportableCount, hardwareBoundCount, onChooseRole)
             TransferRole.Send -> SendStage(form, exportableCount, hardwareBoundCount, onChildVisible, onReceiverCodeScanned, onBack)
             TransferRole.Receive -> ReceiveStage(form, onChildVisible, onStartScanning, onFrameScanned, onBack)
         }
@@ -94,8 +96,15 @@ fun TransferScreen(
 }
 
 @Composable
-private fun ColumnScope.RoleChoice(exportableCount: Int, hardwareBoundCount: Int, onChooseRole: (TransferRole) -> Unit) {
+private fun ColumnScope.RoleChoice(policy: Policy, exportableCount: Int, hardwareBoundCount: Int, onChooseRole: (TransferRole) -> Unit) {
     Text(stringResource(R.string.transfer_body))
+
+    if (policy.allowTransferSend) SendChoice(exportableCount, hardwareBoundCount, onChooseRole)
+    if (policy.allowTransferReceive) ReceiveChoice(onChooseRole)
+}
+
+@Composable
+private fun ColumnScope.SendChoice(exportableCount: Int, hardwareBoundCount: Int, onChooseRole: (TransferRole) -> Unit) {
 
     Text(stringResource(R.string.transfer_send_title), style = MaterialTheme.typography.titleMedium)
     Text(
@@ -118,7 +127,10 @@ private fun ColumnScope.RoleChoice(exportableCount: Int, hardwareBoundCount: Int
     ) {
         Text(stringResource(R.string.transfer_send_action))
     }
+}
 
+@Composable
+private fun ColumnScope.ReceiveChoice(onChooseRole: (TransferRole) -> Unit) {
     Text(stringResource(R.string.transfer_receive_title), style = MaterialTheme.typography.titleMedium)
     Text(
         text = stringResource(R.string.transfer_receive_body),

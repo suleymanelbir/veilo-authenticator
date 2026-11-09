@@ -1,11 +1,11 @@
 # Security Assessment Report
 
-**Product:** Veilo Authenticator v0.3.0 (Android)  
+**Product:** Veilo Authenticator v0.4.0 (Android)  
 **Package:** `tr.veilo.authenticator`  
 **Assessment Date:** November 2026  
 **Assessor:** Veilo Security Team  
 **Classification:** Public  
-**Report Version:** 1.1 (updated for v0.3.0: metadata encryption, device-to-device transfer)
+**Report Version:** 1.2 (v0.3.0: metadata encryption, device-to-device transfer; v0.4.0: organisation policy via managed configuration)
 
 ---
 
@@ -273,6 +273,32 @@ Moves accounts between two phones with QR codes only; no file, no network, no cl
 
 ---
 
+### 4.5 Organisation Policy (v0.4.0)
+
+On devices enrolled in Android Enterprise, an MDM can push rules through Android's managed
+configuration (`RestrictionsManager`). The app reads them locally; no network permission is
+added and the public edition's behaviour is unchanged when no configuration is present.
+
+- **Only subtractive.** Every rule removes a capability (exports, imports, transfer directions,
+  exportable storage) or raises a response (root / debugger detection from warning to block).
+  No rule can enable anything the public edition lacks. Unknown keys and malformed values fall
+  back to the permissive default, so a console typo cannot weaken the device.
+- **Enforced below the UI.** Menu items are hidden and, independently, the navigation layer
+  refuses disabled screens; the repository applies the storage rule to every enrolment path
+  (manual, QR, backup import, migration, device-to-device transfer).
+- **Hardware-only storage.** Under the rule, imported secrets are placed directly into the
+  Keystore as non-exportable HMAC keys; on a failed save the created keys are deleted. Existing
+  exportable accounts are moved into the chip on the user's confirmation; the plaintext secret
+  exists in memory only for the duration of the move and is zeroed afterwards.
+- **Trust boundary.** The configuration comes from the device's policy controller, which
+  Android authenticates; the app does not verify the organisation's identity itself. On an
+  unmanaged device nothing can set a policy, since only a device policy controller may write
+  application restrictions.
+- **Out of scope for v0.4.0:** proving enforcement to the administrator (the app is offline).
+  Attestation and reporting are planned for the connected enterprise edition.
+
+---
+
 ---
 
 ## 5. Dependency Analysis
@@ -341,7 +367,7 @@ No dependencies with known CVEs at time of assessment. No dependencies require n
 
 ## 9. Conclusion
 
-Veilo Authenticator v0.3.0 demonstrates a strong security posture for a mobile authenticator application. The combination of hardware-backed key storage, zero network access, authenticated encryption for backups, and defense-in-depth across 11 layers places it significantly above the security baseline of typical authenticator apps.
+Veilo Authenticator v0.4.0 demonstrates a strong security posture for a mobile authenticator application. The combination of hardware-backed key storage, zero network access, authenticated encryption for backups, and defense-in-depth across 11 layers places it significantly above the security baseline of typical authenticator apps.
 
 One low-severity finding was resolved in v0.3.0; the remaining one is an accepted JVM limitation with documented mitigations. The four informational findings are either platform limitations or planned improvements for future versions.
 

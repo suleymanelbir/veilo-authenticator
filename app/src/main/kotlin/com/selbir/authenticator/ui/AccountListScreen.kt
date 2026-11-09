@@ -52,6 +52,7 @@ import com.selbir.authenticator.R
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpType
 import com.selbir.authenticator.security.DeviceRisk
+import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.security.KeyLevel
 import com.selbir.authenticator.security.SensitiveClipboard
 
@@ -59,6 +60,7 @@ import com.selbir.authenticator.security.SensitiveClipboard
 @Composable
 fun AccountListScreen(
     state: UiState,
+    policy: Policy,
     onAdd: () -> Unit,
     onExport: () -> Unit,
     onImport: () -> Unit,
@@ -98,7 +100,17 @@ fun AccountListScreen(
                             modifier = Modifier.fillMaxWidth(),
                         )
                     } else {
-                        Text(stringResource(R.string.app_name))
+                        Column {
+                            Text(stringResource(R.string.app_name))
+                            if (policy.managed) {
+                                Text(
+                                    text = policy.organizationName?.let { stringResource(R.string.managed_by, it) }
+                                        ?: stringResource(R.string.managed_by_unknown),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
                     }
                 },
                 actions = {
@@ -122,35 +134,35 @@ fun AccountListScreen(
                             Icon(painterResource(R.drawable.ic_more), stringResource(R.string.action_more))
                         }
                         DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
-                            DropdownMenuItem(
+                            if (policy.allowBackupExport) DropdownMenuItem(
                                 text = { Text(stringResource(R.string.export_title)) },
                                 onClick = {
                                     menuOpen = false
                                     onExport()
                                 },
                             )
-                            DropdownMenuItem(
+                            if (policy.allowBackupImport) DropdownMenuItem(
                                 text = { Text(stringResource(R.string.import_title)) },
                                 onClick = {
                                     menuOpen = false
                                     onImport()
                                 },
                             )
-                            DropdownMenuItem(
+                            if (policy.allowPdfExport) DropdownMenuItem(
                                 text = { Text(stringResource(R.string.pdf_export_title)) },
                                 onClick = {
                                     menuOpen = false
                                     onPdfExport()
                                 },
                             )
-                            DropdownMenuItem(
+                            if (policy.allowBackupImport) DropdownMenuItem(
                                 text = { Text(stringResource(R.string.migration_title)) },
                                 onClick = {
                                     menuOpen = false
                                     onMigrate()
                                 },
                             )
-                            DropdownMenuItem(
+                            if (policy.allowTransfer) DropdownMenuItem(
                                 text = { Text(stringResource(R.string.transfer_title)) },
                                 onClick = {
                                     menuOpen = false

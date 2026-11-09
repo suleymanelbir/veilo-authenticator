@@ -192,4 +192,54 @@
     <string name="transfer_failed">The transfer could not be completed.</string>
     <string name="transfer_camera_denied">Camera access is needed to read the codes on the other phone.</string>
     <string name="transfer_done">Transfer complete. Added: %1$d, already present: %2$d</string>
+
+    <!-- Organisation policy (managed configuration) -->
+    <string name="policy_organization_name_title">Organisation name</string>
+    <string name="policy_organization_name_desc">Shown in the app as the organisation that manages it.</string>
+    <string name="policy_support_contact_title">Support contact</string>
+    <string name="policy_support_contact_desc">E-mail or phone number shown on the About screen.</string>
+    <string name="policy_hardware_bound_only_title">Security chip only</string>
+    <string name="policy_hardware_bound_only_desc">New and imported accounts may only be stored as non-exportable keys in the device\'s security hardware. Existing exportable accounts are offered a move into the chip.</string>
+    <string name="policy_allow_backup_export_title">Allow encrypted backup files</string>
+    <string name="policy_allow_backup_export_desc">When off, the passphrase-protected backup export is hidden.</string>
+    <string name="policy_allow_backup_import_title">Allow importing backups and migrating from other apps</string>
+    <string name="policy_allow_backup_import_desc">When off, backup import and migration from Google, Microsoft or Aegis are hidden.</string>
+    <string name="policy_allow_pdf_export_title">Allow printable PDF backup</string>
+    <string name="policy_allow_pdf_export_desc">When off, the PDF export with QR codes is hidden.</string>
+    <string name="policy_allow_transfer_send_title">Allow sending accounts to another phone</string>
+    <string name="policy_allow_transfer_send_desc">When off, this phone cannot act as the sender in a device-to-device transfer.</string>
+    <string name="policy_allow_transfer_receive_title">Allow receiving accounts from another phone</string>
+    <string name="policy_allow_transfer_receive_desc">When off, this phone cannot act as the receiver in a device-to-device transfer.</string>
+    <string name="policy_block_on_rooted_device_title">Block codes on rooted devices</string>
+    <string name="policy_block_on_rooted_device_desc">When on, the app refuses to show codes if the device looks rooted or modified, instead of only warning.</string>
+    <string name="policy_block_on_debugger_title">Block codes while a debugger is attached</string>
+    <string name="policy_block_on_debugger_desc">When on, the app refuses to show codes while a debugger or tracer is attached to it.</string>
+
+    <string name="policy_org_fallback">your organisation</string>
+    <string name="managed_by">Managed by %1$s</string>
+    <string name="managed_by_unknown">Managed by your organisation</string>
+    <string name="about_policy_title">Organisation policy</string>
+    <string name="about_policy_body">This installation is managed by %1$s. The following rules are in force:</string>
+    <string name="about_policy_none">No restrictions are in force.</string>
+    <string name="about_policy_support">Support: %1$s</string>
+    <string name="about_policy_fixed_note">Lock and key settings (authentication every 2 minutes, biometric or device credential) are fixed and not configurable.</string>
+    <string name="restriction_hardware_bound_only">Accounts may only be stored in the security chip</string>
+    <string name="restriction_no_backup_export">Encrypted backup export is disabled</string>
+    <string name="restriction_no_backup_import">Backup import and migration are disabled</string>
+    <string name="restriction_no_pdf_export">PDF backup is disabled</string>
+    <string name="restriction_no_transfer_send">Sending accounts to another phone is disabled</string>
+    <string name="restriction_no_transfer_receive">Receiving accounts from another phone is disabled</string>
+    <string name="restriction_block_rooted">Codes are blocked on a rooted device</string>
+    <string name="restriction_block_debugger">Codes are blocked while a debugger is attached</string>
+    <string name="add_rejected_by_policy">Your organisation requires accounts to be stored in the security chip, and this account\'s key is too short for it. Ask the service for a new key or contact support.</string>
+    <string name="import_rejected_by_policy">Not stored, because your organisation\'s rules require the security chip and these keys are too short for it: %1$d</string>
+    <string name="move_to_chip_title">Move accounts into the security chip</string>
+    <string name="move_to_chip_body">Your organisation requires accounts to be stored in the device\'s security chip. %1$d account(s) are still stored as exportable keys. Moving them makes them non-exportable; codes keep working.</string>
+    <string name="move_to_chip_action">Move now</string>
+    <string name="move_to_chip_later">Later</string>
+    <string name="move_to_chip_done">Moved into the security chip: %1$d. Need re-enrolment (key too short): %2$d</string>
+    <string name="blocked_title">Codes are not available on this device</string>
+    <string name="blocked_rooted">Your organisation does not allow one-time codes on a rooted or modified device.</string>
+    <string name="blocked_debugger">Your organisation does not allow one-time codes while a debugger is attached to the app.</string>
+    <string name="blocked_contact">Contact your IT support: %1$s</string>
 </resources>

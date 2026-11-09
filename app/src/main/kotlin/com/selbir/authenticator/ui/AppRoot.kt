@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val policy by viewModel.policy.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -59,11 +60,14 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onUnlock = { scope.launch { if (promptOnce()) viewModel.onAuthenticated() } },
         )
 
+        policy.blocks(state.risks) -> PolicyBlockedScreen(policy = policy, risks = state.risks, onLock = viewModel::lock)
+
         state.screen == Screen.Add -> {
             val form = viewModel.addForm
             BackHandler { viewModel.navigate(Screen.List) }
             AddAccountScreen(
                 form = form,
+                hardwareBoundOnly = policy.hardwareBoundOnly,
                 groups = state.groups,
                 onBack = { viewModel.navigate(Screen.List) },
                 onScannerVisible = { viewModel.childActivityInFront = it },
@@ -75,13 +79,15 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
                         scope.launch {
                             form.saving = true
                             form.errorRes = null
-                            val protection = form.protection
+                            val protection = if (policy.hardwareBoundOnly) Protection.HARDWARE_BOUND else form.protection
                             val group = form.group
                             val result = withAuthRetry(viewModel, promptOnce) { viewModel.addAccount(spec, protection, group) }
                             form.saving = false
                             // A duplicate has already set its own, more specific message.
                             if (result == OpResult.Failed && form.errorRes == null) {
-                                form.errorRes = if (protection == Protection.HARDWARE_BOUND) {
+                                form.errorRes = if (policy.hardwareBoundOnly) {
+                                    R.string.add_rejected_by_policy
+                                } else if (protection == Protection.HARDWARE_BOUND) {
                                     R.string.add_failed_hardware_hint
                                 } else {
                                     R.string.add_failed
@@ -162,7 +168,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
 
         state.screen == Screen.About -> {
             BackHandler { viewModel.navigate(Screen.List) }
-            AboutScreen(onBack = { viewModel.navigate(Screen.List) })
+            AboutScreen(policy = policy, onBack = { viewModel.navigate(Screen.List) })
         }
 
         state.screen == Screen.Migrate -> {
@@ -198,6 +204,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             BackHandler { viewModel.navigate(Screen.List) }
             TransferScreen(
                 form = viewModel.transferForm,
+                policy = policy,
                 exportableCount = rows.count { !it.hardwareBound },
                 hardwareBoundCount = rows.count { it.hardwareBound },
                 onBack = { viewModel.navigate(Screen.List) },
@@ -225,6 +232,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
 
         else -> AccountListScreen(
             state = state,
+            policy = policy,
             onAdd = { viewModel.navigate(Screen.Add) },
             onExport = { viewModel.navigate(Screen.Export) },
             onImport = { viewModel.navigate(Screen.Import) },
@@ -239,6 +247,24 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onSetGroup = viewModel::setGroup,
             onTogglePin = viewModel::togglePin,
             onNextHotp = { id -> scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.generateHotp(id) } } },
+        )
+    }
+
+    if (viewModel.showMoveToChipPrompt && !state.locked) {
+        AlertDialog(
+            onDismissRequest = viewModel::dismissMoveToChipPrompt,
+            title = { Text(stringResource(R.string.move_to_chip_title)) },
+            text = { Text(stringResource(R.string.move_to_chip_body, state.exportableUnderPolicy)) },
+            confirmButton = {
+                TextButton(onClick = { scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.moveAllToHardware() } } }) {
+                    Text(stringResource(R.string.move_to_chip_action))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = viewModel::dismissMoveToChipPrompt) {
+                    Text(stringResource(R.string.move_to_chip_later))
+                }
+            },
         )
     }
 

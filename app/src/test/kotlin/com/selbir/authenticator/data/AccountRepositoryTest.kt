@@ -9,6 +9,7 @@ import com.selbir.authenticator.security.KeyLevel
 import com.selbir.authenticator.security.SecretStore
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -34,6 +35,8 @@ class AccountRepositoryTest {
         private var wrapped = false
 
         override fun importHmacKey(alias: String, secret: ByteArray, algorithm: OtpAlgorithm) {
+            // The real Keystore rejects HMAC keys shorter than 64 bits.
+            if (secret.size < 8) throw java.security.InvalidKeyException("Key too short")
             hardwareKeys[alias] = secret.copyOf()
         }
 
@@ -168,6 +171,59 @@ class AccountRepositoryTest {
         val sixtySeconds = OtpSpec(OtpType.TOTP, "Service 1", "user@example.com", secret(1), period = 60)
 
         assertEquals(1, repository.importAll(listOf(sixtySeconds)).added)
+    }
+
+    @Test
+    fun policyImportStoresEveryKeyInHardwareAndReportsRefusals() {
+        val tiny = OtpSpec(OtpType.TOTP, "Tiny", "user", ByteArray(5) { 1 })
+
+        val result = repository.importAll(listOf(totp(1), hotp(2, counter = 3), tiny, totp(1)), Protection.HARDWARE_BOUND)
+
+        assertEquals(2, result.added)
+        assertEquals(1, result.alreadyPresent)
+        assertEquals(1, result.rejected)
+        val stored = repository.all()
+        assertTrue(stored.all { it.protection == Protection.HARDWARE_BOUND && it.wrappedSecret == null })
+        assertEquals(2, secrets.hardwareKeys.size)
+        assertTrue(repository.exportableSpecs().isEmpty())
+        assertEquals(Otp.hotp(Otp.softwareHmac(secret(2), OtpAlgorithm.SHA256), 3, 8), repository.nextHotpCode(stored[1].id))
+    }
+
+    @Test
+    fun policyImportLeavesNoHardwareKeyBehindWhenTheSaveFails() {
+        store.failNextSave = true
+
+        assertFailsWith<IllegalStateException> { repository.importAll(listOf(totp(1), totp(2)), Protection.HARDWARE_BOUND) }
+
+        assertTrue(secrets.hardwareKeys.isEmpty())
+        assertTrue(repository.all().isEmpty())
+    }
+
+    @Test
+    fun movingAnAccountIntoHardwareKeepsItsCodesAndDropsTheWrappedSecret() {
+        val account = repository.add(totp(1), Protection.EXPORTABLE)
+        val before = repository.code(account, 55_555_555)
+
+        assertTrue(repository.moveToHardware(account.id))
+
+        val moved = repository.all().single()
+        assertEquals(Protection.HARDWARE_BOUND, moved.protection)
+        assertNull(moved.wrappedSecret)
+        assertEquals(before, repository.code(moved, 55_555_555))
+        assertEquals(KeyLevel.STRONGBOX, repository.keyLevel(moved))
+        assertTrue(repository.moveToHardware(account.id)) // already there: nothing to do
+    }
+
+    @Test
+    fun movingATooShortKeyIsRefusedAndLeavesTheAccountUsable() {
+        val tiny = repository.add(OtpSpec(OtpType.TOTP, "Tiny", "user", ByteArray(5) { 1 }), Protection.EXPORTABLE)
+
+        assertFalse(repository.moveToHardware(tiny.id))
+
+        val still = repository.all().single()
+        assertEquals(Protection.EXPORTABLE, still.protection)
+        assertEquals(repository.code(tiny, 7), repository.code(still, 7))
+        assertTrue(secrets.hardwareKeys.isEmpty())
     }
 
     @Test

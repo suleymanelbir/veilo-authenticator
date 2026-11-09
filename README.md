@@ -111,11 +111,11 @@ require "strong biometric or device credential".
 - [x] Reproducible builds — see [docs/REPRODUCIBLE-BUILDS.md](docs/REPRODUCIBLE-BUILDS.md)
 - [ ] Independent third-party penetration test
 
-**v0.4 — Enterprise foundation (still offline)**
+**v0.4 — Enterprise foundation (still offline)** *(built, in testing)*
 
-- [ ] Managed Google Play listing for MDM distribution (Intune, Workspace, Knox and others)
-- [ ] Managed configuration (app restrictions) pushed by the MDM: hardware-bound keys only, exports / PDF / transfer disabled, enforced lock timeout
-- [ ] Policy status visible in the app and in the About screen
+- [x] Managed configuration (app restrictions) pushed by the MDM: hardware-bound keys only, exports / imports / PDF / transfer disabled, root or debugger blocking — see [docs/ADMIN-GUIDE.md](docs/ADMIN-GUIDE.md)
+- [x] Policy status visible under the app title and in the About screen; existing exportable accounts can be moved into the security chip
+- [ ] Managed Google Play availability for MDM distribution (requires the production release on Play)
 - [ ] Independent third-party penetration test (carried over from v0.3)
 
 **v0.5 — Enterprise connected**

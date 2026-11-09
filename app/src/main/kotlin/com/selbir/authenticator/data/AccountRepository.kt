@@ -10,7 +10,8 @@ import com.selbir.authenticator.security.SecretStore
 import java.util.Base64
 import java.util.UUID
 
-class ImportResult(val added: Int, val alreadyPresent: Int)
+/** @param rejected entries the Keystore refused to hold hardware-bound (key too short) under a policy that requires it. */
+class ImportResult(val added: Int, val alreadyPresent: Int, val rejected: Int = 0)
 
 /** An account with the same key and parameters is already enrolled. */
 class DuplicateAccountException : Exception("Account already enrolled")
@@ -98,30 +99,79 @@ class AccountRepository(
     }
 
     /**
-     * Adds [specs] as backup-capable accounts, all or nothing. An entry is skipped when an
-     * account here (of either storage kind) or an earlier entry already holds the same key.
+     * Adds [specs], all or nothing. An entry is skipped when an account here (of either storage
+     * kind) or an earlier entry already holds the same key. With [protection] hardware-bound,
+     * an entry whose key the Keystore refuses is counted as rejected and left out.
      */
     @Synchronized
-    fun importAll(specs: List<OtpSpec>): ImportResult {
+    fun importAll(specs: List<OtpSpec>, protection: Protection = Protection.EXPORTABLE): ImportResult {
         val known = all().mapNotNullTo(HashSet(), ::fingerprint)
         val added = mutableListOf<Account>()
-        for (spec in specs) {
-            if (!known.add(fingerprintOf(spec))) continue
-            added += Account(
-                id = UUID.randomUUID().toString(),
-                type = spec.type,
-                issuer = spec.issuer,
-                name = spec.accountName,
-                algorithm = spec.algorithm,
-                digits = spec.digits,
-                period = spec.period,
-                counter = spec.counter,
-                protection = Protection.EXPORTABLE,
-                wrappedSecret = wrapSecret(spec.secret),
-            )
+        var rejected = 0
+        try {
+            for (spec in specs) {
+                if (!known.add(fingerprintOf(spec))) continue
+                val id = UUID.randomUUID().toString()
+                if (protection == Protection.HARDWARE_BOUND) {
+                    try {
+                        secrets.importHmacKey(keyAlias(id), spec.secret, spec.algorithm)
+                    } catch (e: UserNotAuthenticatedException) {
+                        throw e
+                    } catch (e: Exception) {
+                        known.remove(fingerprintOf(spec))
+                        rejected++
+                        continue
+                    }
+                }
+                added += Account(
+                    id = id,
+                    type = spec.type,
+                    issuer = spec.issuer,
+                    name = spec.accountName,
+                    algorithm = spec.algorithm,
+                    digits = spec.digits,
+                    period = spec.period,
+                    counter = spec.counter,
+                    protection = protection,
+                    wrappedSecret = if (protection == Protection.EXPORTABLE) wrapSecret(spec.secret) else null,
+                )
+            }
+            if (added.isNotEmpty()) persist(all() + added)
+        } catch (e: Exception) {
+            added.filter { it.protection == Protection.HARDWARE_BOUND }.forEach { secrets.delete(keyAlias(it.id)) }
+            throw e
         }
-        if (added.isNotEmpty()) persist(all() + added)
-        return ImportResult(added = added.size, alreadyPresent = specs.size - added.size)
+        return ImportResult(added = added.size, alreadyPresent = specs.size - added.size - rejected, rejected = rejected)
+    }
+
+    /**
+     * Re-stores an exportable account's secret as a non-exportable Keystore key, for a policy
+     * that requires hardware-bound storage. Returns false if the Keystore refuses the key (too
+     * short); the account is then left as it was. Codes are unaffected either way.
+     */
+    @Synchronized
+    fun moveToHardware(id: String): Boolean {
+        val account = all().find { it.id == id } ?: return false
+        if (account.protection != Protection.EXPORTABLE) return true
+        val secret = unwrapSecret(account)
+        try {
+            try {
+                secrets.importHmacKey(keyAlias(id), secret, account.algorithm)
+            } catch (e: UserNotAuthenticatedException) {
+                throw e
+            } catch (e: Exception) {
+                return false
+            }
+            try {
+                persist(all().map { if (it.id == id) it.copy(protection = Protection.HARDWARE_BOUND, wrappedSecret = null) else it })
+            } catch (e: Exception) {
+                secrets.delete(keyAlias(id))
+                throw e
+            }
+            return true
+        } finally {
+            secret.fill(0)
+        }
     }
 
     @Synchronized

@@ -59,6 +59,8 @@ import com.selbir.authenticator.data.Protection
 @Composable
 fun AddAccountScreen(
     form: AddFormState,
+    /** Organisation policy: storage is fixed to the security chip and the choice is not shown. */
+    hardwareBoundOnly: Boolean,
     groups: List<String> = emptyList(),
     onBack: () -> Unit,
     onScannerVisible: (Boolean) -> Unit,
@@ -207,7 +209,13 @@ fun AddAccountScreen(
             }
 
             Text(stringResource(R.string.protection_title), style = MaterialTheme.typography.titleSmall)
-            Column(modifier = Modifier.selectableGroup()) {
+            if (hardwareBoundOnly) {
+                Text(
+                    text = stringResource(R.string.restriction_hardware_bound_only),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else Column(modifier = Modifier.selectableGroup()) {
                 ProtectionOption(
                     selected = form.protection == Protection.EXPORTABLE,
                     title = stringResource(R.string.protection_exportable_title),

@@ -184,4 +184,54 @@
     <string name="transfer_failed">تعذر إكمال النقل.</string>
     <string name="transfer_camera_denied">يلزم إذن الكاميرا لقراءة الرموز على الهاتف الآخر.</string>
     <string name="transfer_done">اكتمل النقل. المضافة: %1$d، الموجودة مسبقًا: %2$d</string>
+
+    <!-- سياسة المؤسسة (الإعداد المُدار) -->
+    <string name="policy_organization_name_title">اسم المؤسسة</string>
+    <string name="policy_organization_name_desc">يظهر في التطبيق كالمؤسسة التي تديره.</string>
+    <string name="policy_support_contact_title">جهة اتصال الدعم</string>
+    <string name="policy_support_contact_desc">بريد إلكتروني أو رقم هاتف يظهر في شاشة حول التطبيق.</string>
+    <string name="policy_hardware_bound_only_title">شريحة الأمان فقط</string>
+    <string name="policy_hardware_bound_only_desc">لا يمكن تخزين الحسابات الجديدة والمستوردة إلا كمفاتيح غير قابلة للتصدير في عتاد الأمان بالجهاز. يُعرض نقل الحسابات القابلة للتصدير الحالية إلى الشريحة.</string>
+    <string name="policy_allow_backup_export_title">السماح بملفات النسخ الاحتياطي المشفرة</string>
+    <string name="policy_allow_backup_export_desc">عند الإيقاف، يُخفى تصدير النسخة الاحتياطية المحمية بعبارة مرور.</string>
+    <string name="policy_allow_backup_import_title">السماح باستيراد النسخ الاحتياطية والنقل من تطبيقات أخرى</string>
+    <string name="policy_allow_backup_import_desc">عند الإيقاف، يُخفى استيراد النسخ الاحتياطية والنقل من Google أو Microsoft أو Aegis.</string>
+    <string name="policy_allow_pdf_export_title">السماح بنسخة PDF قابلة للطباعة</string>
+    <string name="policy_allow_pdf_export_desc">عند الإيقاف، يُخفى تصدير PDF برموز QR.</string>
+    <string name="policy_allow_transfer_send_title">السماح بإرسال الحسابات إلى هاتف آخر</string>
+    <string name="policy_allow_transfer_send_desc">عند الإيقاف، لا يمكن لهذا الهاتف أن يكون المرسل في النقل بين الأجهزة.</string>
+    <string name="policy_allow_transfer_receive_title">السماح باستقبال الحسابات من هاتف آخر</string>
+    <string name="policy_allow_transfer_receive_desc">عند الإيقاف، لا يمكن لهذا الهاتف أن يكون المستقبِل في النقل بين الأجهزة.</string>
+    <string name="policy_block_on_rooted_device_title">حظر الرموز على الأجهزة المجذّرة</string>
+    <string name="policy_block_on_rooted_device_desc">عند التفعيل، يرفض التطبيق عرض الرموز إذا بدا الجهاز مجذّرًا أو معدّلًا، بدلًا من التحذير فقط.</string>
+    <string name="policy_block_on_debugger_title">حظر الرموز أثناء اتصال مصحح أخطاء</string>
+    <string name="policy_block_on_debugger_desc">عند التفعيل، يرفض التطبيق عرض الرموز أثناء اتصال مصحح أخطاء أو متتبع به.</string>
+
+    <string name="policy_org_fallback">مؤسستك</string>
+    <string name="managed_by">يديره %1$s</string>
+    <string name="managed_by_unknown">تديره مؤسستك</string>
+    <string name="about_policy_title">سياسة المؤسسة</string>
+    <string name="about_policy_body">هذا التثبيت تديره %1$s. القواعد السارية:</string>
+    <string name="about_policy_none">لا توجد قيود سارية.</string>
+    <string name="about_policy_support">الدعم: %1$s</string>
+    <string name="about_policy_fixed_note">إعدادات القفل والمفاتيح (مصادقة كل دقيقتين، بالمقاييس الحيوية أو قفل الجهاز) ثابتة وغير قابلة للتهيئة.</string>
+    <string name="restriction_hardware_bound_only">لا يمكن تخزين الحسابات إلا في شريحة الأمان</string>
+    <string name="restriction_no_backup_export">تصدير النسخة الاحتياطية المشفرة معطّل</string>
+    <string name="restriction_no_backup_import">استيراد النسخ الاحتياطية والنقل معطّلان</string>
+    <string name="restriction_no_pdf_export">نسخة PDF الاحتياطية معطّلة</string>
+    <string name="restriction_no_transfer_send">إرسال الحسابات إلى هاتف آخر معطّل</string>
+    <string name="restriction_no_transfer_receive">استقبال الحسابات من هاتف آخر معطّل</string>
+    <string name="restriction_block_rooted">الرموز محظورة على الجهاز المجذّر</string>
+    <string name="restriction_block_debugger">الرموز محظورة أثناء اتصال مصحح أخطاء</string>
+    <string name="add_rejected_by_policy">تشترط مؤسستك تخزين الحسابات في شريحة الأمان، ومفتاح هذا الحساب أقصر من أن يُقبل فيها. اطلب مفتاحًا جديدًا من الخدمة أو تواصل مع الدعم.</string>
+    <string name="import_rejected_by_policy">لم تُخزَّن لأن قاعدة المؤسسة تشترط شريحة الأمان وهذه المفاتيح أقصر من اللازم: %1$d</string>
+    <string name="move_to_chip_title">نقل الحسابات إلى شريحة الأمان</string>
+    <string name="move_to_chip_body">تشترط مؤسستك تخزين الحسابات في شريحة أمان الجهاز. لا يزال %1$d حساب(ات) مخزنًا كمفاتيح قابلة للتصدير. نقلها يجعلها غير قابلة للتصدير؛ وتظل الرموز تعمل.</string>
+    <string name="move_to_chip_action">انقل الآن</string>
+    <string name="move_to_chip_later">لاحقًا</string>
+    <string name="move_to_chip_done">نُقل إلى شريحة الأمان: %1$d. يحتاج إعادة تسجيل (المفتاح قصير جدًا): %2$d</string>
+    <string name="blocked_title">الرموز غير متاحة على هذا الجهاز</string>
+    <string name="blocked_rooted">لا تسمح مؤسستك بالرموز لمرة واحدة على جهاز مجذّر أو معدّل.</string>
+    <string name="blocked_debugger">لا تسمح مؤسستك بالرموز لمرة واحدة أثناء اتصال مصحح أخطاء بالتطبيق.</string>
+    <string name="blocked_contact">تواصل مع دعم تقنية المعلومات لديك: %1$s</string>
 </resources>

@@ -27,6 +27,7 @@ import com.selbir.authenticator.core.TransferException
 import com.selbir.authenticator.data.Account
 import com.selbir.authenticator.data.DuplicateAccountException
 import com.selbir.authenticator.export.PdfExport
+import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.DeviceIntegrity
 import com.selbir.authenticator.security.DeviceRisk
@@ -79,7 +80,18 @@ data class UiState(
     val groups: List<String> = emptyList(),
     /** Null = show all, "" = ungrouped, otherwise the group name. */
     val selectedGroup: String? = null,
+    /** Under a hardware-only policy: accounts still stored as exportable keys. */
+    val exportableUnderPolicy: Int = 0,
 )
+
+/** Which screens the organisation's rules leave reachable. */
+fun Policy.allows(screen: Screen): Boolean = when (screen) {
+    Screen.Export -> allowBackupExport
+    Screen.Import, Screen.Migrate -> allowBackupImport
+    Screen.PdfExport -> allowPdfExport
+    Screen.Transfer -> allowTransfer
+    Screen.List, Screen.Add, Screen.About -> true
+}
 
 /** Outcome of an operation that needs a Keystore key. */
 enum class OpResult {
@@ -222,6 +234,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = app.repository
     private val preferences = app.preferences
 
+    /** Organisation rules; [Policy.NONE] on an unmanaged device. */
+    val policy: StateFlow<Policy> = app.policies.policy
+
+    /** Shown once per unlock while a hardware-only policy finds exportable accounts. */
+    var showMoveToChipPrompt by mutableStateOf(false)
+    private var moveToChipPromptEpoch = -1
+
     var showBackupPrompt by mutableStateOf(false)
 
     private val _state = MutableStateFlow(UiState())
@@ -256,6 +275,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onAuthenticated() {
+        app.policies.refresh()
         _state.update { it.copy(locked = false) }
         viewModelScope.launch { refresh() }
         // Checked again at every unlock: a debugger can attach long after the app started.
@@ -281,6 +301,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun navigate(screen: Screen) {
+        // Defence in depth: a stale menu must not reach a screen the organisation disabled.
+        if (!policy.value.allows(screen)) return
         addForm.clear()
         backupForm.clear()
         transferForm.clear()
@@ -330,6 +352,39 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     fun acceptBackupPrompt() {
         dismissBackupPrompt()
         navigate(Screen.Export)
+    }
+
+    /** The storage new and imported accounts must use. */
+    private fun requiredProtection(): Protection =
+        if (policy.value.hardwareBoundOnly) Protection.HARDWARE_BOUND else Protection.EXPORTABLE
+
+    fun dismissMoveToChipPrompt() {
+        showMoveToChipPrompt = false
+    }
+
+    /** Moves every exportable account into the security chip; reports what the Keystore refused. */
+    suspend fun moveAllToHardware(): OpResult {
+        showMoveToChipPrompt = false
+        var moved = 0
+        var refused = 0
+        val result = withContext(Dispatchers.IO) {
+            try {
+                for (account in repository.all().filter { it.protection == Protection.EXPORTABLE }) {
+                    if (repository.moveToHardware(account.id)) moved++ else refused++
+                    keyLevels.remove(account.id)
+                }
+                OpResult.Success
+            } catch (e: UserNotAuthenticatedException) {
+                OpResult.NeedsAuth
+            } catch (e: Exception) {
+                OpResult.Failed
+            }
+        }
+        if (result == OpResult.Success) {
+            toast(R.string.move_to_chip_done, moved, refused)
+            refresh()
+        }
+        return result
     }
 
     suspend fun generateHotp(id: String): OpResult {
@@ -490,11 +545,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun importAccounts(specs: List<OtpSpec>): OpResult {
         var added = 0
         var alreadyPresent = 0
+        var rejected = 0
         val result = withContext(Dispatchers.IO) {
             try {
-                val imported = repository.importAll(specs)
+                val imported = repository.importAll(specs, requiredProtection())
                 added = imported.added
                 alreadyPresent = imported.alreadyPresent
+                rejected = imported.rejected
                 OpResult.Success
             } catch (e: UserNotAuthenticatedException) {
                 OpResult.NeedsAuth
@@ -504,6 +561,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         if (result == OpResult.Success) {
             toast(R.string.import_done, added, alreadyPresent)
+            if (rejected > 0) toast(R.string.import_rejected_by_policy, rejected)
             navigate(Screen.List)
         }
         return result
@@ -541,6 +599,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun refresh() = refreshMutex.withLock {
         val before = _state.value
         if (before.locked || before.screen != Screen.List) return@withLock
+        // The organisation forbids codes under a detected risk: compute nothing, show nothing.
+        if (policy.value.blocks(before.risks)) {
+            clearCodes()
+            _state.update { if (it.lockEpoch == before.lockEpoch) it.copy(rows = emptyList()) else it }
+            return@withLock
+        }
 
         val now = System.currentTimeMillis() / 1000
         val rows = try {
@@ -551,8 +615,17 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         val sorted = rows.sortedByDescending { it.pinned }
         val groups = sorted.map { it.group }.filter { it.isNotEmpty() }.distinct().sorted()
+        val exportableUnderPolicy = if (policy.value.hardwareBoundOnly) sorted.count { !it.hardwareBound } else 0
         _state.update {
-            if (it.locked || it.lockEpoch != before.lockEpoch) it else it.copy(rows = sorted, epochSeconds = now, groups = groups)
+            if (it.locked || it.lockEpoch != before.lockEpoch) {
+                it
+            } else {
+                it.copy(rows = sorted, epochSeconds = now, groups = groups, exportableUnderPolicy = exportableUnderPolicy)
+            }
+        }
+        if (exportableUnderPolicy > 0 && moveToChipPromptEpoch != before.lockEpoch) {
+            moveToChipPromptEpoch = before.lockEpoch
+            showMoveToChipPrompt = true
         }
     }
 
@@ -649,7 +722,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun importMigrationSpecs(specs: List<OtpSpec>) {
         val result = withContext(Dispatchers.IO) {
             try {
-                repository.importAll(specs)
+                repository.importAll(specs, requiredProtection())
             } catch (e: UserNotAuthenticatedException) {
                 null
             } catch (e: Exception) {
@@ -661,6 +734,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         if (result != null) {
             migrationResult = MigrationResult(result.added, result.alreadyPresent)
             toast(R.string.migration_done, result.added, result.alreadyPresent)
+            if (result.rejected > 0) toast(R.string.import_rejected_by_policy, result.rejected)
             refresh()
         } else {
             toast(R.string.migration_failed)
@@ -707,6 +781,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     // --- Device-to-device transfer ---
 
     fun chooseTransferRole(role: TransferRole) {
+        val allowed = if (role == TransferRole.Send) policy.value.allowTransferSend else policy.value.allowTransferReceive
+        if (!allowed) return
         val form = transferForm
         form.clear()
         form.role = role
@@ -802,6 +878,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         val keyPair = form.keyPair ?: return OpResult.Failed
         var added = 0
         var alreadyPresent = 0
+        var rejected = 0
         var errorRes: Int? = null
         val result = withContext(Dispatchers.Default) {
             var specs: List<OtpSpec> = emptyList()
@@ -812,9 +889,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 } finally {
                     payload.fill(0)
                 }
-                val imported = repository.importAll(specs)
+                val imported = repository.importAll(specs, requiredProtection())
                 added = imported.added
                 alreadyPresent = imported.alreadyPresent
+                rejected = imported.rejected
                 OpResult.Success
             } catch (e: UserNotAuthenticatedException) {
                 OpResult.NeedsAuth
@@ -836,6 +914,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 blob.fill(0)
                 form.result = MigrationResult(added, alreadyPresent)
                 toast(R.string.transfer_done, added, alreadyPresent)
+                if (rejected > 0) toast(R.string.import_rejected_by_policy, rejected)
                 refresh()
             }
             OpResult.Failed -> {

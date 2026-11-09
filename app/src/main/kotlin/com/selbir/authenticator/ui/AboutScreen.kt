@@ -42,10 +42,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.selbir.authenticator.R
+import com.selbir.authenticator.policy.Policy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutScreen(onBack: () -> Unit) {
+fun AboutScreen(policy: Policy, onBack: () -> Unit) {
     val context = LocalContext.current
     val version = remember { versionName(context) }
     var selectedProject by remember { mutableStateOf<VeiloProject?>(null) }
@@ -113,6 +114,36 @@ fun AboutScreen(onBack: () -> Unit) {
                     text = stringResource(R.string.about_security_body),
                     style = MaterialTheme.typography.bodySmall,
                 )
+            }
+
+            // --- Organisation policy (managed devices only) ---
+            if (policy.managed) {
+                SectionHeader(stringResource(R.string.about_policy_title))
+                SectionBody {
+                    Text(
+                        text = stringResource(R.string.about_policy_body, policy.organizationName ?: stringResource(R.string.policy_org_fallback)),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    val restrictions = policy.activeRestrictions
+                    if (restrictions.isEmpty()) {
+                        Text(stringResource(R.string.about_policy_none), style = MaterialTheme.typography.bodySmall)
+                    } else {
+                        for (r in restrictions) {
+                            Text("• " + stringResource(restrictionLabel(r)), style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    policy.supportContact?.let {
+                        Spacer(Modifier.height(6.dp))
+                        Text(stringResource(R.string.about_policy_support, it), style = MaterialTheme.typography.bodySmall)
+                    }
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = stringResource(R.string.about_policy_fixed_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
 
             // --- Veilo Ecosystem ---
@@ -296,3 +327,14 @@ private val veiloProjects = listOf(
         url = "https://volt.veilo.tr/",
     ),
 )
+
+fun restrictionLabel(r: Policy.Restriction): Int = when (r) {
+    Policy.Restriction.HARDWARE_BOUND_ONLY -> R.string.restriction_hardware_bound_only
+    Policy.Restriction.NO_BACKUP_EXPORT -> R.string.restriction_no_backup_export
+    Policy.Restriction.NO_BACKUP_IMPORT -> R.string.restriction_no_backup_import
+    Policy.Restriction.NO_PDF_EXPORT -> R.string.restriction_no_pdf_export
+    Policy.Restriction.NO_TRANSFER_SEND -> R.string.restriction_no_transfer_send
+    Policy.Restriction.NO_TRANSFER_RECEIVE -> R.string.restriction_no_transfer_receive
+    Policy.Restriction.BLOCK_ROOTED -> R.string.restriction_block_rooted
+    Policy.Restriction.BLOCK_DEBUGGER -> R.string.restriction_block_debugger
+}
