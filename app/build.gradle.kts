@@ -40,6 +40,22 @@ android {
         }
     }
 
+    // Two editions from one code base. "public" is the Play Store app: offline by construction,
+    // no INTERNET permission. "enterprise" adds the Veilo Gateway client (enrolment confirm,
+    // later attestation and challenge-response) and is distributed through Managed Google Play.
+    flavorDimensions += "edition"
+    productFlavors {
+        create("public") {
+            dimension = "edition"
+            isDefault = true
+        }
+        create("enterprise") {
+            dimension = "edition"
+            applicationIdSuffix = ".enterprise"
+            versionNameSuffix = "-enterprise"
+        }
+    }
+
     buildTypes {
         release {
             signingConfig = signingConfigs.findByName("release")
@@ -56,6 +72,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     // Keeps Google's encrypted dependency blob out of the artifact, so the APK

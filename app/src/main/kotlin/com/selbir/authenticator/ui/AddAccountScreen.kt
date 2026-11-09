@@ -49,6 +49,8 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.selbir.authenticator.R
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpAuthUri
+import com.selbir.authenticator.core.VeiloEnrolment
+import com.selbir.authenticator.edition.Edition
 import com.selbir.authenticator.data.Protection
 
 /**
@@ -72,7 +74,10 @@ fun AddAccountScreen(
         val contents = result.contents ?: return@rememberLauncherForActivityResult
         try {
             val spec = OtpAuthUri.parse(contents)
+            // Public edition: parsed for validity only, never acted on. Enterprise: confirmed on save.
+            form.veilo = VeiloEnrolment.parse(contents, allowPlainHttp = Edition.ALLOW_PLAIN_HTTP_GATEWAY)
             form.scanned = spec
+            if (form.enterpriseEnrolment) form.protection = Protection.HARDWARE_BOUND
             form.issuer = spec.issuer
             form.account = spec.accountName
             form.secretText = ""
@@ -124,6 +129,17 @@ fun AddAccountScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
+                form.veilo?.takeIf { form.enterpriseEnrolment }?.let { veilo ->
+                    Text(
+                        text = stringResource(
+                            R.string.enrol_gateway_notice,
+                            java.net.URI(veilo.gatewayUrl).host.orEmpty(),
+                            veilo.requiredLevel.wire,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             } else {
                 OutlinedTextField(
                     value = form.secretText,
@@ -209,9 +225,9 @@ fun AddAccountScreen(
             }
 
             Text(stringResource(R.string.protection_title), style = MaterialTheme.typography.titleSmall)
-            if (hardwareBoundOnly) {
+            if (hardwareBoundOnly || form.enterpriseEnrolment) {
                 Text(
-                    text = stringResource(R.string.restriction_hardware_bound_only),
+                    text = stringResource(if (hardwareBoundOnly) R.string.restriction_hardware_bound_only else R.string.enrol_gateway_hardware_only),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

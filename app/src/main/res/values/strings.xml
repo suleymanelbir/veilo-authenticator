@@ -242,4 +242,14 @@
     <string name="blocked_rooted">Your organisation does not allow one-time codes on a rooted or modified device.</string>
     <string name="blocked_debugger">Your organisation does not allow one-time codes while a debugger is attached to the app.</string>
     <string name="blocked_contact">Contact your IT support: %1$s</string>
+
+    <!-- Enterprise flavour: Veilo Gateway enrolment -->
+    <string name="enrol_gateway_notice">Organisation enrolment: this phone will be registered with %1$s. Required key level: %2$s.</string>
+    <string name="enrol_gateway_hardware_only">Organisation enrolments are always stored in the security hardware.</string>
+    <string name="enrol_gateway_recorded">Registered with your organisation.</string>
+    <string name="enrol_gateway_refused">Your organisation\'s Gateway refused this enrolment. Ask your administrator for a new QR code.</string>
+    <string name="enrol_gateway_refused_key_level">This phone\'s security hardware does not meet the key level your organisation requires. The token was disabled; contact your administrator.</string>
+    <string name="enrol_gateway_refused_ticket">This QR code has expired or was already used. Ask your administrator for a new one.</string>
+    <string name="enrol_gateway_refused_app">Your organisation\'s Gateway does not accept this app build.</string>
+    <string name="enrol_gateway_unreachable">Could not reach your organisation\'s Gateway. Connect to the internet and scan the QR code again.</string>
 </resources>

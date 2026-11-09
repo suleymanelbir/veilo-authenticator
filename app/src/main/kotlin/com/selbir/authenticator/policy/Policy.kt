@@ -38,6 +38,23 @@ data class Policy(
             if (blockOnDebugger) add(Restriction.BLOCK_DEBUGGER)
         }
 
+    /**
+     * The policy as the phone sees it, for the Enterprise flavour's enrolment confirm (Gateway
+     * compares it with the desired policy). Null on an unmanaged device.
+     */
+    fun toSnapshot(): Map<String, Any?>? = if (!managed) null else mapOf(
+        KEY_ORGANIZATION_NAME to organizationName.orEmpty(),
+        KEY_SUPPORT_CONTACT to supportContact.orEmpty(),
+        KEY_HARDWARE_BOUND_ONLY to hardwareBoundOnly,
+        KEY_ALLOW_BACKUP_EXPORT to allowBackupExport,
+        KEY_ALLOW_BACKUP_IMPORT to allowBackupImport,
+        KEY_ALLOW_PDF_EXPORT to allowPdfExport,
+        KEY_ALLOW_TRANSFER_SEND to allowTransferSend,
+        KEY_ALLOW_TRANSFER_RECEIVE to allowTransferReceive,
+        KEY_BLOCK_ON_ROOTED_DEVICE to blockOnRootedDevice,
+        KEY_BLOCK_ON_DEBUGGER to blockOnDebugger,
+    )
+
     enum class Restriction {
         HARDWARE_BOUND_ONLY, NO_BACKUP_EXPORT, NO_BACKUP_IMPORT, NO_PDF_EXPORT,
         NO_TRANSFER_SEND, NO_TRANSFER_RECEIVE, BLOCK_ROOTED, BLOCK_DEBUGGER,

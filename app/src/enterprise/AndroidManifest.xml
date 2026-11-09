@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+        Used for exactly one thing today: confirming a Gateway enrolment (POST /enrol/confirm)
+        right after a Gateway QR was scanned. Codes are still computed offline; no telemetry.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

@@ -89,4 +89,15 @@ class PolicyTest {
         val policy = Policy.from(mapOf("allow_transfer_send" to false, "allow_transfer_receive" to false))
         assertFalse(policy.allowTransfer)
     }
+
+    @Test
+    fun snapshotCarriesAllTenKeysOrIsNullWhenUnmanaged() {
+        kotlin.test.assertNull(Policy.NONE.toSnapshot())
+        val snap = Policy.from(mapOf("organization_name" to "Deneme AŞ", "allow_pdf_export" to false)).toSnapshot()!!
+        kotlin.test.assertEquals(10, snap.size)
+        kotlin.test.assertEquals("Deneme AŞ", snap["organization_name"])
+        kotlin.test.assertEquals(false, snap["allow_pdf_export"])
+        kotlin.test.assertEquals(true, snap["allow_backup_export"])
+        kotlin.test.assertEquals("", snap["support_contact"])
+    }
 }

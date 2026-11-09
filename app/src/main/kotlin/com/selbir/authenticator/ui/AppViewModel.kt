@@ -1,6 +1,7 @@
 package com.selbir.authenticator.ui
 
 import android.app.Application
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.security.keystore.UserNotAuthenticatedException
@@ -27,6 +28,11 @@ import com.selbir.authenticator.core.TransferException
 import com.selbir.authenticator.data.Account
 import com.selbir.authenticator.data.DuplicateAccountException
 import com.selbir.authenticator.export.PdfExport
+import com.selbir.authenticator.core.VeiloEnrolment
+import com.selbir.authenticator.core.VeiloKeyLevel
+import com.selbir.authenticator.edition.DeviceKeyFactory
+import com.selbir.authenticator.edition.Edition
+import com.selbir.authenticator.gateway.ConfirmResult
 import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.DeviceIntegrity
@@ -108,6 +114,9 @@ class AddFormState {
     var account by mutableStateOf("")
     var secretText by mutableStateOf("")
     var scanned by mutableStateOf<OtpSpec?>(null)
+
+    /** Veilo Gateway extension of the scanned QR; acted on by the Enterprise flavour only. */
+    var veilo by mutableStateOf<VeiloEnrolment?>(null)
     var protection by mutableStateOf(Protection.EXPORTABLE)
     var errorRes by mutableStateOf<Int?>(null)
     var saving by mutableStateOf(false)
@@ -121,6 +130,9 @@ class AddFormState {
 
     val canSave: Boolean
         get() = !saving && (scanned != null || secretText.isNotBlank()) && (issuer.isNotBlank() || account.isNotBlank())
+
+    /** True when saving will also register this phone with the organisation's Gateway. */
+    val enterpriseEnrolment: Boolean get() = Edition.CONNECTED && veilo != null
 
     /** Null when the typed secret is not valid Base32. */
     fun toSpec(): OtpSpec? {
@@ -139,6 +151,7 @@ class AddFormState {
     fun clear() {
         scanned?.secret?.fill(0)
         scanned = null
+        veilo = null
         issuer = ""
         account = ""
         secretText = ""
@@ -323,10 +336,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     suspend fun addAccount(spec: OtpSpec, protection: Protection, group: String = ""): OpResult {
+        val enrolment = addForm.veilo?.takeIf { Edition.CONNECTED }
         val result = withContext(Dispatchers.IO) {
             try {
-                repository.add(spec, protection, group)
-                OpResult.Success
+                val account = repository.add(spec, protection, group)
+                if (enrolment != null) confirmWithGateway(account, enrolment) else OpResult.Success
             } catch (e: UserNotAuthenticatedException) {
                 OpResult.NeedsAuth
             } catch (e: DuplicateAccountException) {
@@ -342,6 +356,59 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             navigate(Screen.List)
         }
         return result
+    }
+
+    /**
+     * Enterprise flavour: registers the freshly stored account with the Gateway named in the QR.
+     * Enrolment is all-or-nothing: on refusal (the Gateway has disabled the token) or when the
+     * Gateway cannot be reached (the ticket is still valid, the user can rescan online) the
+     * account is removed again, so the phone never holds a token the organisation does not know.
+     */
+    private fun confirmWithGateway(account: Account, enrolment: VeiloEnrolment): OpResult {
+        val gateway = Edition.gateway(app) ?: return OpResult.Success
+        val alias = DeviceKeyFactory.alias(account.id)
+        val result = try {
+            val strongBox = app.packageManager.hasSystemFeature(PackageManager.FEATURE_STRONGBOX_KEYSTORE)
+            val deviceKey = DeviceKeyFactory.generate(alias, enrolment.attestationChallenge(), strongBox)
+            gateway.confirm(
+                enrolment = enrolment,
+                keyLevel = repository.keyLevel(account).toVeilo(),
+                app = DeviceKeyFactory.appIdentity(app),
+                deviceKey = deviceKey,
+                policySnapshot = policy.value.toSnapshot(),
+            )
+        } catch (e: Exception) {
+            ConfirmResult.Unreachable(e.javaClass.simpleName)
+        }
+        return when (result) {
+            is ConfirmResult.Recorded -> {
+                toast(R.string.enrol_gateway_recorded)
+                OpResult.Success
+            }
+            is ConfirmResult.Refused -> {
+                repository.delete(account.id)
+                DeviceKeyFactory.delete(alias)
+                addForm.errorRes = when (result.code) {
+                    "key_level_below_policy" -> R.string.enrol_gateway_refused_key_level
+                    "ticket_expired", "ticket_already_used", "unknown_ticket" -> R.string.enrol_gateway_refused_ticket
+                    "unknown_app" -> R.string.enrol_gateway_refused_app
+                    else -> R.string.enrol_gateway_refused
+                }
+                OpResult.Failed
+            }
+            is ConfirmResult.Unreachable -> {
+                repository.delete(account.id)
+                DeviceKeyFactory.delete(alias)
+                addForm.errorRes = R.string.enrol_gateway_unreachable
+                OpResult.Failed
+            }
+        }
+    }
+
+    private fun KeyLevel.toVeilo(): VeiloKeyLevel = when (this) {
+        KeyLevel.STRONGBOX -> VeiloKeyLevel.STRONGBOX
+        KeyLevel.SECURE_HARDWARE -> VeiloKeyLevel.TEE
+        KeyLevel.SOFTWARE, KeyLevel.UNKNOWN -> VeiloKeyLevel.SOFTWARE
     }
 
     fun dismissBackupPrompt() {

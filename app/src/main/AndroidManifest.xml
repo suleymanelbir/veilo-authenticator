@@ -8,13 +8,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <!--
-        This edition is offline by construction. Removing the permission here strips it
-        from the merged manifest even if a dependency ever tries to add it.
-    -->
-    <uses-permission
-        android:name="android.permission.INTERNET"
-        tools:node="remove" />
+    <!-- INTERNET is decided per edition: src/public removes it, src/enterprise declares it. -->
 
     <application
         android:name=".AuthenticatorApp"

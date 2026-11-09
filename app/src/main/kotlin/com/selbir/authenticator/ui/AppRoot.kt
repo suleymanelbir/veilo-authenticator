@@ -79,7 +79,7 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
                         scope.launch {
                             form.saving = true
                             form.errorRes = null
-                            val protection = if (policy.hardwareBoundOnly) Protection.HARDWARE_BOUND else form.protection
+                            val protection = if (policy.hardwareBoundOnly || form.enterpriseEnrolment) Protection.HARDWARE_BOUND else form.protection
                             val group = form.group
                             val result = withAuthRetry(viewModel, promptOnce) { viewModel.addAccount(spec, protection, group) }
                             form.saving = false

@@ -234,4 +234,14 @@
     <string name="blocked_rooted">Kurumunuz köklü veya değiştirilmiş cihazda tek kullanımlık koda izin vermiyor.</string>
     <string name="blocked_debugger">Kurumunuz uygulamaya hata ayıklayıcı bağlıyken tek kullanımlık koda izin vermiyor.</string>
     <string name="blocked_contact">BT desteğinize başvurun: %1$s</string>
+
+    <!-- Enterprise sürümü: Veilo Gateway kaydı -->
+    <string name="enrol_gateway_notice">Kurumsal kayıt: bu telefon %1$s adresine kaydedilecek. Gerekli anahtar seviyesi: %2$s.</string>
+    <string name="enrol_gateway_hardware_only">Kurumsal kayıtlar her zaman güvenlik donanımında saklanır.</string>
+    <string name="enrol_gateway_recorded">Kurumunuza kaydedildi.</string>
+    <string name="enrol_gateway_refused">Kurumunuzun Gateway\'i bu kaydı reddetti. Yöneticinizden yeni bir QR kod isteyin.</string>
+    <string name="enrol_gateway_refused_key_level">Bu telefonun güvenlik donanımı kurumunuzun istediği anahtar seviyesini karşılamıyor. Token devre dışı bırakıldı; yöneticinize başvurun.</string>
+    <string name="enrol_gateway_refused_ticket">Bu QR kodun süresi dolmuş veya daha önce kullanılmış. Yöneticinizden yenisini isteyin.</string>
+    <string name="enrol_gateway_refused_app">Kurumunuzun Gateway\'i bu uygulama yapısını kabul etmiyor.</string>
+    <string name="enrol_gateway_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. İnternete bağlanın ve QR kodu yeniden okutun.</string>
 </resources>

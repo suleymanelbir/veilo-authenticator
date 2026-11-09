@@ -1,0 +1,61 @@
+{
+  "protocol": 1,
+  "note": "Shared test vectors for PROTOCOL.md v1. veilo-api tests/test_enrol.py and the Enterprise flavour's unit tests both read this file.",
+  "key_levels": {
+    "software": 0,
+    "tee": 1,
+    "strongbox": 2
+  },
+  "ticket": {
+    "random_bytes": 32,
+    "encoding": "urlsafe base64 without padding",
+    "length": 43,
+    "ttl_seconds": 600,
+    "stored": "sha256 hex of the ticket string"
+  },
+  "otpauth": {
+    "issuer": "Deneme AŞ",
+    "username": "ayse",
+    "seed_hex": "3132333435363738393031323334353637383930",
+    "gateway_url": "https://gw.example.com",
+    "ticket": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "key_level": "strongbox",
+    "uri": "otpauth://totp/Deneme%20A%C5%9E:ayse?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=Deneme%20A%C5%9E&algorithm=SHA1&digits=6&period=30&veilo_gw=https%3A%2F%2Fgw.example.com&veilo_ticket=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&veilo_keylevel=strongbox",
+    "attestation_challenge_hex": "b65310c384c436f94f9400a3017669addbce09da67c0ebd6ea838edc16ad415e"
+  },
+  "confirm": {
+    "endpoint": "POST /enrol/confirm",
+    "auth": "none; the ticket is the credential",
+    "request": {
+      "ticket": "<veilo_ticket>",
+      "key_level": "software|tee|strongbox",
+      "app": {
+        "package": "tr.veilo.authenticator.enterprise",
+        "version": "0.5.0",
+        "signing_digest": "<sha256 of signing cert>"
+      },
+      "device_pubkey": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "...",
+        "y": "..."
+      },
+      "attestation_chain": [
+        "-----BEGIN CERTIFICATE-----..."
+      ],
+      "policy_snapshot": {
+        "organization_name": "Deneme AŞ",
+        "allow_pdf_export": false
+      }
+    },
+    "responses": {
+      "200": "recorded",
+      "404": "unknown_ticket",
+      "410": "ticket_already_used | ticket_expired",
+      "403": "unknown_app",
+      "409": "key_level_below_policy",
+      "422": "bad_key_level | bad_device_key"
+    },
+    "on_failure": "token disabled in the core (except unknown_ticket)"
+  }
+}

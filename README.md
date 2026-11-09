@@ -36,8 +36,9 @@ exercised on a physical device (Samsung). The OTP core is tested against the RFC
   thumbnail are blocked (`FLAG_SECURE`).
 - Warns (without blocking) when the device looks rooted or modified, or when a debugger
   is attached to the app.
-- No network access: the `INTERNET` permission is stripped from the merged manifest.
-  Android cloud backup and device-to-device transfer are disabled.
+- No network access in the public edition: the `INTERNET` permission is stripped from the
+  merged manifest. Android cloud backup and device-to-device transfer are disabled. (The
+  separate Enterprise flavour talks to Veilo Gateway; see [docs/PLAN-v0.5.md](docs/PLAN-v0.5.md).)
 - English and Turkish.
 - About screen with security overview and links to other Veilo ecosystem products.
 
@@ -120,7 +121,8 @@ require "strong biometric or device credential".
 
 **v0.5 — Enterprise connected**
 
-- [ ] Separate build flavor with network access; the public edition stays offline by construction
+- [x] Separate build flavour (`enterprise`) with network access; the public edition stays offline by construction — see [docs/PLAN-v0.5.md](docs/PLAN-v0.5.md)
+- [x] Gateway QR enrolment: Veilo extension parsed, device key generated with attestation challenge, `/enrol/confirm` called (device test pending)
 - [ ] Hardware key attestation (device integrity verification)
 - [ ] Signed challenge-response authentication against Veilo MFA Gateway
 - [ ] Centralized enrollment from the Gateway admin console
