@@ -111,24 +111,34 @@ require "strong biometric or device credential".
 - [x] Reproducible builds — see [docs/REPRODUCIBLE-BUILDS.md](docs/REPRODUCIBLE-BUILDS.md)
 - [ ] Independent third-party penetration test
 
-**v0.4 — Wear OS**
+**v0.4 — Enterprise foundation (still offline)**
 
-- [ ] Companion app for Wear OS — view codes on your watch
-- [ ] Secure Data Layer API communication (phone ↔ watch)
+- [ ] Managed Google Play listing for MDM distribution (Intune, Workspace, Knox and others)
+- [ ] Managed configuration (app restrictions) pushed by the MDM: hardware-bound keys only, exports / PDF / transfer disabled, enforced lock timeout
+- [ ] Policy status visible in the app and in the About screen
+- [ ] Independent third-party penetration test (carried over from v0.3)
 
-**v0.5 — Enterprise edition**
+**v0.5 — Enterprise connected**
 
-- [ ] Separate build flavor with network access
+- [ ] Separate build flavor with network access; the public edition stays offline by construction
 - [ ] Hardware key attestation (device integrity verification)
-- [ ] Signed challenge-response authentication
-- [ ] Admin console for centralized enrollment
-- [ ] Managed Google Play (MDM) support
+- [ ] Signed challenge-response authentication against Veilo MFA Gateway
+- [ ] Centralized enrollment from the Gateway admin console
+
+**Veilo MFA Gateway** *(separate server product, developed alongside v0.5)*
+
+- [ ] 1.0 — privacyIDEA / multiOTP core with Veilo API layer, admin console, Docker image and .deb package
+- [ ] 1.x — ISO virtual appliance for self-hosted deployment, once 1.0 is stable
 
 **v0.6 — Passkeys & cross-platform**
 
 - [ ] FIDO2 / Passkey support (phishing-resistant authentication)
 - [ ] iOS companion app
 - [ ] Desktop companion (view-only, no key storage)
+
+**Deferred**
+
+- Wear OS companion: small user base and a weaker security model on the watch (no StrongBox, weak lock, no screen protection). Revisited only on demand, after v0.6.
 
 ## License
 
