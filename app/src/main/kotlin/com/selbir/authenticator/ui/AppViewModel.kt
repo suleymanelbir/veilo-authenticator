@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.security.keystore.UserNotAuthenticatedException
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -640,9 +642,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         BackupException.Reason.WRONG_PASSPHRASE_OR_CORRUPT -> R.string.import_wrong_passphrase
     }
 
+    /**
+     * Safe from any thread: Toast needs a Looper, and a call from Dispatchers.IO (the Gateway
+     * confirm runs there) would otherwise throw and turn a successful enrolment into "failed".
+     */
     private fun toast(messageRes: Int, vararg args: Any) {
         val app = getApplication<Application>()
-        Toast.makeText(app, app.getString(messageRes, *args), Toast.LENGTH_LONG).show()
+        val text = app.getString(messageRes, *args)
+        val show = { Toast.makeText(app, text, Toast.LENGTH_LONG).show() }
+        if (Looper.myLooper() == Looper.getMainLooper()) show() else Handler(Looper.getMainLooper()).post { show() }
     }
 
     fun rename(id: String, issuer: String, name: String) {
