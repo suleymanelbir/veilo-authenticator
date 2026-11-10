@@ -25,15 +25,19 @@ import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
+import com.selbir.authenticator.core.PendingChallenge
 import com.selbir.authenticator.core.Transfer
 import com.selbir.authenticator.core.TransferException
 import com.selbir.authenticator.data.Account
 import com.selbir.authenticator.data.DuplicateAccountException
+import com.selbir.authenticator.data.GatewayBinding
 import com.selbir.authenticator.export.PdfExport
 import com.selbir.authenticator.core.VeiloEnrolment
 import com.selbir.authenticator.core.VeiloKeyLevel
 import com.selbir.authenticator.edition.DeviceKeyFactory
 import com.selbir.authenticator.edition.Edition
+import com.selbir.authenticator.gateway.AnswerResult
+import com.selbir.authenticator.gateway.ChallengeFetch
 import com.selbir.authenticator.gateway.ConfirmResult
 import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.data.Protection
@@ -90,6 +94,18 @@ data class UiState(
     val selectedGroup: String? = null,
     /** Under a hardware-only policy: accounts still stored as exportable keys. */
     val exportableUnderPolicy: Int = 0,
+    /** Enterprise flavour: a login waiting for number matching on this phone (PROTOCOL.md §5). */
+    val challenge: ChallengePrompt? = null,
+)
+
+/** One Gateway challenge shown to the user, with the account it arrived for. */
+data class ChallengePrompt(
+    val accountId: String,
+    val issuer: String,
+    val name: String,
+    val challenge: PendingChallenge,
+    /** True while the answer is being signed and sent. */
+    val busy: Boolean = false,
 )
 
 /** Which screens the organisation's rules leave reachable. */
@@ -244,6 +260,9 @@ class TransferFormState {
     }
 }
 
+/** How often an unlocked Enterprise phone asks its Gateways for pending challenges. */
+private const val CHALLENGE_POLL_MS = 4_000L
+
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as AuthenticatorApp
     private val repository = app.repository
@@ -280,11 +299,22 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     /** Key metadata, not key material: it does not change and need not be cleared on lock. */
     private val keyLevels = ConcurrentHashMap<String, KeyLevel>()
 
+    /** Challenges the user sent away with "not me", left to expire on the Gateway. */
+    private val dismissedChallenges = HashSet<String>()
+
     init {
         viewModelScope.launch {
             while (true) {
                 refresh()
                 delay(1000 - System.currentTimeMillis() % 1000)
+            }
+        }
+        if (Edition.CONNECTED) {
+            viewModelScope.launch {
+                while (true) {
+                    pollChallenges()
+                    delay(CHALLENGE_POLL_MS)
+                }
             }
         }
     }
@@ -307,6 +337,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         addForm.clear()
         backupForm.clear()
         transferForm.clear()
+        dismissedChallenges.clear()
         // Taking the mutex waits out any refresh still in flight, so it cannot repopulate the caches.
         viewModelScope.launch { refreshMutex.withLock { clearCodes() } }
     }
@@ -384,6 +415,8 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         }
         return when (result) {
             is ConfirmResult.Recorded -> {
+                // From now on this phone answers the Gateway's challenges for this account (§5).
+                repository.bindGateway(account.id, GatewayBinding(enrolment.gatewayUrl, result.deviceId))
                 toast(R.string.enrol_gateway_recorded)
                 OpResult.Success
             }
@@ -400,6 +433,81 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 OpResult.Failed
             }
         }
+    }
+
+    // --- 0.4: signed challenge-response (Enterprise flavour) ---------------------------------
+
+    /**
+     * Asks every Gateway-bound account's Gateway what it is waiting on and shows the first
+     * pending challenge. Runs only while unlocked: a locked phone must not reveal that a
+     * login is in progress, and the user has to be there to read the number.
+     */
+    private suspend fun pollChallenges() {
+        val state = _state.value
+        if (state.locked || state.challenge != null || policy.value.blocks(state.risks)) return
+        val gateway = Edition.gateway(app) ?: return
+        val bound = try {
+            repository.all().filter { it.gateway != null }
+        } catch (e: Exception) {
+            return
+        }
+        if (bound.isEmpty()) return
+        val prompt = withContext(Dispatchers.IO) {
+            for (account in bound) {
+                val binding = account.gateway ?: continue
+                val fetch = try {
+                    gateway.pendingChallenges(binding.url, binding.deviceId, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)))
+                } catch (e: Exception) {
+                    continue
+                }
+                val first = (fetch as? ChallengeFetch.Pending)?.challenges?.firstOrNull { it.id !in dismissedChallenges } ?: continue
+                return@withContext ChallengePrompt(account.id, account.issuer, account.name, first)
+            }
+            null
+        } ?: return
+        _state.update { if (it.locked || it.challenge != null) it else it.copy(challenge = prompt) }
+    }
+
+    /** The user tapped [number]: sign and send it. One attempt; the Gateway decides. */
+    fun answerChallenge(number: String) {
+        val prompt = _state.value.challenge ?: return
+        if (prompt.busy) return
+        _state.update { it.copy(challenge = prompt.copy(busy = true)) }
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                val gateway = Edition.gateway(app) ?: return@withContext AnswerResult.Unreachable("no gateway")
+                val binding = repository.all().find { it.id == prompt.accountId }?.gateway
+                    ?: return@withContext AnswerResult.Gone(0, "unbound")
+                try {
+                    gateway.answer(binding.url, binding.deviceId, prompt.challenge, number, DeviceKeyFactory.signer(DeviceKeyFactory.alias(prompt.accountId)))
+                } catch (e: Exception) {
+                    AnswerResult.Unreachable(e.javaClass.simpleName)
+                }
+            }
+            when (result) {
+                AnswerResult.Answered -> toast(R.string.challenge_answered)
+                is AnswerResult.Refused -> toast(if (result.reason == "wrong_number") R.string.challenge_wrong_number else R.string.challenge_refused)
+                is AnswerResult.Gone -> toast(R.string.challenge_gone)
+                is AnswerResult.Unreachable -> {
+                    toast(R.string.challenge_unreachable)
+                    // keep it off the screen until the next poll shows it is still pending
+                    dismissedChallenges.add(prompt.challenge.id)
+                }
+            }
+            if (result !is AnswerResult.Unreachable) dismissedChallenges.add(prompt.challenge.id)
+            _state.update { if (it.challenge?.challenge?.id == prompt.challenge.id) it.copy(challenge = null) else it }
+            if (result is AnswerResult.Unreachable) {
+                delay(CHALLENGE_POLL_MS)
+                dismissedChallenges.remove(prompt.challenge.id)
+            }
+        }
+    }
+
+    /** "Not me": nothing is sent; the challenge expires on the Gateway and the login fails. */
+    fun dismissChallenge() {
+        val prompt = _state.value.challenge ?: return
+        dismissedChallenges.add(prompt.challenge.id)
+        _state.update { if (it.challenge?.challenge?.id == prompt.challenge.id) it.copy(challenge = null) else it }
     }
 
     private fun KeyLevel.toVeilo(): VeiloKeyLevel = when (this) {
@@ -657,7 +765,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun delete(id: String) {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { repository.delete(id) }
+            withContext(Dispatchers.IO) {
+                val bound = repository.all().find { it.id == id }?.gateway != null
+                repository.delete(id)
+                // the Gateway device key has no owner any more; the Gateway still lists the device
+                if (bound) DeviceKeyFactory.delete(DeviceKeyFactory.alias(id))
+            }
             totpCache.remove(id)
             hotpCodes.remove(id)
             keyLevels.remove(id)

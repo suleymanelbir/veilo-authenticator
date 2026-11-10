@@ -10,5 +10,5 @@ object Edition {
     const val CONNECTED = true
     val ALLOW_PLAIN_HTTP_GATEWAY: Boolean = BuildConfig.DEBUG
 
-    fun gateway(context: Context): GatewayClient = HttpGatewayClient()
+    fun gateway(context: Context): GatewayClient = HttpGatewayClient(versionName = BuildConfig.VERSION_NAME)
 }

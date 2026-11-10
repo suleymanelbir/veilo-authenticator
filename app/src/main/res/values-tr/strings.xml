@@ -247,4 +247,14 @@
     <string name="enrol_gateway_refused_revoked">Bu telefonun attestation anahtarı Google tarafından iptal edilmiş. Token devre dışı bırakıldı; yöneticinize başvurun.</string>
     <string name="enrol_gateway_refused_device">Bu telefonun önyükleyicisi kilitli değil ya da sistem bütünlüğü doğrulanamadı; kurumunuz bu cihaza izin vermiyor. Token devre dışı bırakıldı.</string>
     <string name="enrol_gateway_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. İnternete bağlanın ve QR kodu yeniden okutun.</string>
+
+    <!-- İmzalı challenge-response (Enterprise sürümü, Gateway 0.4) -->
+    <string name="challenge_title">Giriş onayı</string>
+    <string name="challenge_body">%1$s, %2$s hesabıyla giriş yapmak istiyor. Giriş ekranında gördüğünüz sayıya dokunun. Şu anda giriş yapmıyorsanız "Ben değilim"i seçin.</string>
+    <string name="challenge_not_me">Ben değilim</string>
+    <string name="challenge_answered">Giriş onaylandı.</string>
+    <string name="challenge_wrong_number">Yanlış sayı: giriş reddedildi.</string>
+    <string name="challenge_refused">Kurumunuzun Gateway\'i bu yanıtı reddetti.</string>
+    <string name="challenge_gone">Bu giriş isteği artık geçerli değil (süresi doldu ya da yanıtlandı).</string>
+    <string name="challenge_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. Bağlantıyı kontrol edip yeniden deneyin.</string>
 </resources>

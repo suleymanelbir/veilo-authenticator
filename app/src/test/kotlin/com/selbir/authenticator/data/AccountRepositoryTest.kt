@@ -259,4 +259,21 @@ class AccountRepositoryTest {
         repository.delete(bound.id)
         assertEquals(KeyLevel.UNKNOWN, repository.keyLevel(bound))
     }
+
+    @Test
+    fun gatewayBindingIsPersistedAndSurvivesOtherEdits() {
+        val account = repository.add(totp(1), Protection.HARDWARE_BOUND)
+        assertNull(account.gateway)
+        repository.bindGateway(account.id, GatewayBinding("https://gw.example", "dev-1"))
+        repository.rename(account.id, "Deneme AŞ", "ayse")
+        val stored = store.saved.single()
+        assertEquals(GatewayBinding("https://gw.example", "dev-1"), stored.gateway)
+        assertEquals("Deneme AŞ", stored.issuer)
+        // a vault written before 0.5 (no gateway field) still decodes, and the binding round-trips
+        val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; encodeDefaults = true }
+        val text = json.encodeToString(Account.serializer(), stored)
+        assertEquals(stored, json.decodeFromString(Account.serializer(), text))
+        val old = text.replace(Regex(""","gateway":\{[^}]*\}"""), "")
+        assertNull(json.decodeFromString(Account.serializer(), old).gateway)
+    }
 }

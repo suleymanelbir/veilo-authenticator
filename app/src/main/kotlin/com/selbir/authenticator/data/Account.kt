@@ -32,6 +32,19 @@ data class Account(
     val pinned: Boolean = false,
     /** [Protection.EXPORTABLE] only: Base64 of the Keystore-wrapped secret. */
     val wrappedSecret: String? = null,
+    /** Enterprise flavour: the Gateway this account was confirmed with (null for a plain account). */
+    val gateway: GatewayBinding? = null,
+)
+
+/**
+ * Where an Enterprise account's organisation Gateway lives and what it calls this phone
+ * (Gateway PROTOCOL.md §4 step 4, §5). The device key is in the Keystore under the account's
+ * alias; from 0.4 it signs the Gateway's challenges.
+ */
+@Serializable
+data class GatewayBinding(
+    val url: String,
+    val deviceId: String,
 )
 
 /** On-disk format of the account list. */

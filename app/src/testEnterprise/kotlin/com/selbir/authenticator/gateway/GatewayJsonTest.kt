@@ -47,4 +47,35 @@ class GatewayJsonTest {
         assertIs<ConfirmResult.Unreachable>(GatewayJson.confirmResult(502, "<html>bad gateway</html>"))
         assertIs<ConfirmResult.Unreachable>(GatewayJson.confirmResult(200, """{"status":"weird"}"""))
     }
+
+    @Test
+    fun pendingChallengesAreParsedAndMalformedOnesSkipped() {
+        val body = """[
+            {"id":"c1","rp_id":"vpn.deneme.example","status":"pending","expires_at":"2026-11-10T12:00:00+00:00","nonce":"AAEC","choices":["17","42","88"]},
+            {"id":"c2","rp_id":"x","nonce":"AAEC","choices":["17","42"]},
+            {"id":"c3","rp_id":"x","nonce":"AAEC","choices":["17","42","100"]},
+            {"rp_id":"x","nonce":"AAEC","choices":["17","42","88"]}
+        ]"""
+        val fetch = assertIs<ChallengeFetch.Pending>(GatewayJson.challengeFetch(200, body))
+        assertEquals(1, fetch.challenges.size)
+        assertEquals("c1", fetch.challenges[0].id)
+        assertEquals(listOf("17", "42", "88"), fetch.challenges[0].choices)
+        assertEquals("vpn.deneme.example", fetch.challenges[0].rpId)
+        assertIs<ChallengeFetch.Pending>(GatewayJson.challengeFetch(200, "[]"))
+        assertEquals(ChallengeFetch.Rejected(401, "stale_timestamp"), GatewayJson.challengeFetch(401, """{"detail":{"code":"stale_timestamp"}}"""))
+        assertIs<ChallengeFetch.Unreachable>(GatewayJson.challengeFetch(502, "<html>"))
+        assertIs<ChallengeFetch.Unreachable>(GatewayJson.challengeFetch(200, "{}"))
+    }
+
+    @Test
+    fun answerRequestAndResultFollowTheProtocol() {
+        val request = Json.parseToJsonElement(GatewayJson.answerRequest("42", byteArrayOf(1, 2, 3))).jsonObject
+        assertEquals("42", request["number"]!!.jsonPrimitive.content)
+        assertEquals("AQID", request["signature"]!!.jsonPrimitive.content)
+        assertEquals(AnswerResult.Answered, GatewayJson.answerResult(200, """{"id":"c1","status":"answered","reason":null}"""))
+        assertEquals(AnswerResult.Refused("wrong_number"), GatewayJson.answerResult(200, """{"id":"c1","status":"refused","reason":"wrong_number"}"""))
+        assertEquals(AnswerResult.Gone(409, "challenge_expired"), GatewayJson.answerResult(409, """{"detail":{"code":"challenge_expired"}}"""))
+        assertEquals(AnswerResult.Gone(403, "token_disabled"), GatewayJson.answerResult(403, """{"detail":{"code":"token_disabled"}}"""))
+        assertIs<AnswerResult.Unreachable>(GatewayJson.answerResult(503, ""))
+    }
 }

@@ -268,6 +268,10 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
         )
     }
 
+    state.challenge?.let { prompt ->
+        if (!state.locked) ChallengeDialog(prompt, onChoose = viewModel::answerChallenge, onDismiss = viewModel::dismissChallenge)
+    }
+
     if (viewModel.showBackupPrompt) {
         AlertDialog(
             onDismissRequest = viewModel::dismissBackupPrompt,

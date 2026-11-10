@@ -10,6 +10,7 @@ import java.security.KeyFactory
 import java.security.KeyPairGenerator
 import java.security.KeyStore
 import java.security.PrivateKey
+import java.security.Signature
 import java.security.cert.Certificate
 import java.security.interfaces.ECPublicKey
 import java.security.spec.ECGenParameterSpec
@@ -57,6 +58,16 @@ object DeviceKey {
         }
     } catch (e: Exception) {
         VeiloKeyLevel.SOFTWARE
+    }
+
+    /** ECDSA P-256 / SHA-256 with the Keystore private key, as the Gateway verifies it (§5). */
+    fun signer(alias: String): DeviceSigner = DeviceSigner { payload ->
+        val key = KeyStore.getInstance(KEYSTORE).apply { load(null) }.getKey(alias, null) as PrivateKey
+        Signature.getInstance("SHA256withECDSA").run {
+            initSign(key)
+            update(payload)
+            sign()
+        }
     }
 
     fun delete(alias: String) {

@@ -255,4 +255,14 @@
     <string name="enrol_gateway_refused_revoked">This phone\'s attestation key has been revoked by Google. The token was disabled; contact your administrator.</string>
     <string name="enrol_gateway_refused_device">This phone\'s bootloader is unlocked or its system integrity could not be verified, so your organisation does not allow it. The token was disabled.</string>
     <string name="enrol_gateway_unreachable">Could not reach your organisation\'s Gateway. Connect to the internet and scan the QR code again.</string>
+
+    <!-- Signed challenge-response (Enterprise flavour, Gateway 0.4) -->
+    <string name="challenge_title">Sign-in approval</string>
+    <string name="challenge_body">%1$s is asking to sign in with %2$s. Tap the number shown on the sign-in screen. If you are not signing in right now, choose "Not me".</string>
+    <string name="challenge_not_me">Not me</string>
+    <string name="challenge_answered">Sign-in approved.</string>
+    <string name="challenge_wrong_number">Wrong number: the sign-in was refused.</string>
+    <string name="challenge_refused">Your organisation\'s Gateway refused this answer.</string>
+    <string name="challenge_gone">This sign-in request is no longer valid (expired or already answered).</string>
+    <string name="challenge_unreachable">Could not reach your organisation\'s Gateway. Check the connection and try again.</string>
 </resources>

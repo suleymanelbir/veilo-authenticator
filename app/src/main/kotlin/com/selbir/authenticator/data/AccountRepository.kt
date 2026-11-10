@@ -184,6 +184,12 @@ class AccountRepository(
         persist(all().map { if (it.id == id) it.copy(group = group) else it })
     }
 
+    /** Enterprise flavour: remembers which Gateway confirmed [id] and the device id it gave. */
+    @Synchronized
+    fun bindGateway(id: String, binding: GatewayBinding) {
+        persist(all().map { if (it.id == id) it.copy(gateway = binding) else it })
+    }
+
     @Synchronized
     fun togglePin(id: String) {
         persist(all().map { if (it.id == id) it.copy(pinned = !it.pinned) else it })

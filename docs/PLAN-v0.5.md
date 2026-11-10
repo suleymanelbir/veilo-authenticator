@@ -57,13 +57,24 @@ phone can reach; the lab binds to 127.0.0.1 on the server).
   chain. Note: the attestation proves where the *device key* lives; the OTP key level is the
   Keystore's own report of the HMAC key. Both are hardware-bound by the same Keystore, so the
   Gateway treats the device key's attestation as evidence for the OTP key as well.
-- **Challenge-response** (Gateway 0.4): sign `nonce || rp_id || number || device_id` with the
-  device key, HTTPS polling while unlocked, QR fallback.
+- **Challenge-response** (Gateway 0.4) — built 2026-11-10. A confirmed account keeps a
+  `GatewayBinding` (Gateway URL, device id). While unlocked, the Enterprise flavour polls
+  `GET /device/challenges` on each bound Gateway every 4 s, authenticating with
+  `Authorization: Veilo-Device <device_id>.<ts>.<sig>` (signature of
+  `veilo-device|device_id|ts|METHOD|path` by the device key). A pending challenge opens a
+  number-matching dialog with the three candidates; the tap signs
+  `nonce|rp_id|number|device_id` and POSTs `/device/challenges/{id}/response`, one attempt.
+  "Not me" sends nothing: the challenge expires on the Gateway and the login fails. Formats
+  live in `core/VeiloChallenge.kt` and are checked against the shared protocol vectors
+  (the vector signatures verify with the vector public key). QR fallback for air-gapped
+  logins is not built: it needs a short, typeable response format first (Gateway O-item).
 - **Certificate pinning per tenant** through the QR (Gateway 0.6).
 - **Managed Google Play** private-app listing for the Enterprise flavour.
 
 ## 4. What does not change
 
-Codes are computed offline in both flavours. The Enterprise flavour makes exactly one network
-call today, right after a Gateway QR is scanned, and only to the host that QR names. No
-telemetry, no background traffic.
+Codes are computed offline in both flavours. The Enterprise flavour talks only to the
+Gateway hosts its QR codes named: once at enrolment, and, for a bound account, a short
+poll every few seconds while the app is unlocked and in front. Nothing runs in the
+background, there is no push service, and the public edition never opens a socket. No
+telemetry.

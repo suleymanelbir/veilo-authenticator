@@ -122,9 +122,9 @@ require "strong biometric or device credential".
 **v0.5 — Enterprise connected**
 
 - [x] Separate build flavour (`enterprise`) with network access; the public edition stays offline by construction — see [docs/PLAN-v0.5.md](docs/PLAN-v0.5.md)
-- [x] Gateway QR enrolment: Veilo extension parsed, device key generated with attestation challenge, `/enrol/confirm` called (device test pending)
-- [ ] Hardware key attestation (device integrity verification)
-- [ ] Signed challenge-response authentication against Veilo MFA Gateway
+- [x] Gateway QR enrolment: Veilo extension parsed, device key generated with attestation challenge, `/enrol/confirm` called (verified on a phone 2026-11-10)
+- [x] Hardware key attestation: the Gateway verifies the Keystore chain at enrolment (Gateway 0.3, verified on a phone 2026-11-10)
+- [x] Signed challenge-response: the Enterprise flavour polls its Gateway while unlocked, shows number matching and signs the answer with the device key (Gateway 0.4; device test pending)
 - [ ] Centralized enrollment from the Gateway admin console
 
 **Veilo MFA Gateway** *(separate server product, developed alongside v0.5)*
