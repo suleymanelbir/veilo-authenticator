@@ -77,7 +77,10 @@ phone can reach; the lab binds to 127.0.0.1 on the server).
   expires; a touch outside it no longer counts as "not me". Verified with a real phone.
 - **Centralized enrolment** is done on the Gateway side (0.5): the console issues the QR, in
   one form together with the directory user.
-- **Certificate pinning per tenant** through the QR (Gateway 0.6).
+- **TLS pinning through the QR** (Gateway D-18) — built 2026-11-10. `veilo_pins` in the QR is
+  stored on the `GatewayBinding`; `PinnedHostnameVerifier` requires, inside the handshake, that the
+  chain the system trust store built contains a pinned key (`core/TlsPins.kt`, shared vectors). A
+  mismatch sends nothing; enrolment shows its own message. No pins in the QR = system trust only.
 - **Managed Google Play** private-app listing for the Enterprise flavour.
 
 ## 4. What does not change

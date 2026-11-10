@@ -247,6 +247,7 @@
     <string name="enrol_gateway_refused_revoked">Bu telefonun attestation anahtarı Google tarafından iptal edilmiş. Token devre dışı bırakıldı; yöneticinize başvurun.</string>
     <string name="enrol_gateway_refused_device">Bu telefonun önyükleyicisi kilitli değil ya da sistem bütünlüğü doğrulanamadı; kurumunuz bu cihaza izin vermiyor. Token devre dışı bırakıldı.</string>
     <string name="enrol_gateway_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. İnternete bağlanın ve QR kodu yeniden okutun.</string>
+    <string name="enrol_gateway_pin_mismatch">Sunucu, kurumunuzun Gateway\'i olduğunu kanıtlayamadı (sertifikası QR koddakiyle eşleşmiyor). Hiçbir şey gönderilmedi. BT biriminize haber verin.</string>
 
     <!-- İmzalı challenge-response (Enterprise sürümü, Gateway 0.4) -->
     <string name="challenge_title">Giriş onayı</string>

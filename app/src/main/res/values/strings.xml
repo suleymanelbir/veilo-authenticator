@@ -255,6 +255,7 @@
     <string name="enrol_gateway_refused_revoked">This phone\'s attestation key has been revoked by Google. The token was disabled; contact your administrator.</string>
     <string name="enrol_gateway_refused_device">This phone\'s bootloader is unlocked or its system integrity could not be verified, so your organisation does not allow it. The token was disabled.</string>
     <string name="enrol_gateway_unreachable">Could not reach your organisation\'s Gateway. Connect to the internet and scan the QR code again.</string>
+    <string name="enrol_gateway_pin_mismatch">The server did not prove it is your organisation\'s Gateway (its certificate does not match the QR code). Nothing was sent. Tell your IT department.</string>
 
     <!-- Signed challenge-response (Enterprise flavour, Gateway 0.4) -->
     <string name="challenge_title">Sign-in approval</string>

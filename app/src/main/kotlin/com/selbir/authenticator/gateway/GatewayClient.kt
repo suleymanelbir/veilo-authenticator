@@ -25,6 +25,9 @@ sealed class ConfirmResult {
     data class Unreachable(val detail: String) : ConfirmResult()
 }
 
+/** [ConfirmResult.Unreachable.detail] and friends when the Gateway's TLS chain matched none of the QR's pins (D-18). */
+const val TLS_PIN_MISMATCH = "tls_pin_mismatch"
+
 /**
  * What the phone declares about itself on each challenge poll (Gateway PROTOCOL.md §5.1). Declared,
  * not attested: the Gateway shows it next to the attested facts, never instead of them.
@@ -79,8 +82,8 @@ interface GatewayClient {
     ): ConfirmResult
 
     /** `GET /device/challenges` (PROTOCOL.md §5): what the Gateway is waiting on from this device; [state] rides along as the heartbeat (§5.1). */
-    fun pendingChallenges(gatewayUrl: String, deviceId: String, signer: DeviceSigner, state: DeviceState? = null): ChallengeFetch
+    fun pendingChallenges(gatewayUrl: String, pins: List<String>, deviceId: String, signer: DeviceSigner, state: DeviceState? = null): ChallengeFetch
 
     /** `POST /device/challenges/{id}/response`: one attempt with the number the user chose. */
-    fun answer(gatewayUrl: String, deviceId: String, challenge: PendingChallenge, number: String, signer: DeviceSigner): AnswerResult
+    fun answer(gatewayUrl: String, pins: List<String>, deviceId: String, challenge: PendingChallenge, number: String, signer: DeviceSigner): AnswerResult
 }

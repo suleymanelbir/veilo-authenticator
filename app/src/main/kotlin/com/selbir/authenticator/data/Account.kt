@@ -51,6 +51,12 @@ data class GatewayBinding(
      * organisation's server, so the account card says so.
      */
     val revokedAt: Long? = null,
+    /**
+     * TLS pins from the enrolment QR (Gateway D-18): every connection to [url] must present a
+     * system-trusted chain containing one of these keys. Empty = system trust only (Gateways
+     * before 1.0, or an installation that pins nothing). Fixed at enrolment.
+     */
+    val pins: List<String> = emptyList(),
 )
 
 /** On-disk format of the account list. */

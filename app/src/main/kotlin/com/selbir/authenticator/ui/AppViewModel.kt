@@ -42,6 +42,7 @@ import com.selbir.authenticator.gateway.AnswerResult
 import com.selbir.authenticator.gateway.ChallengeFetch
 import com.selbir.authenticator.gateway.ConfirmResult
 import com.selbir.authenticator.gateway.DeviceState
+import com.selbir.authenticator.gateway.TLS_PIN_MISMATCH
 import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.DeviceIntegrity
@@ -438,7 +439,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         return when (result) {
             is ConfirmResult.Recorded -> {
                 // From now on this phone answers the Gateway's challenges for this account (§5).
-                repository.bindGateway(account.id, GatewayBinding(enrolment.gatewayUrl, result.deviceId))
+                repository.bindGateway(account.id, GatewayBinding(enrolment.gatewayUrl, result.deviceId, pins = enrolment.pins))
                 toast(R.string.enrol_gateway_recorded)
                 OpResult.Success
             }
@@ -451,7 +452,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             is ConfirmResult.Unreachable -> {
                 repository.delete(account.id)
                 DeviceKeyFactory.delete(alias)
-                addForm.errorRes = R.string.enrol_gateway_unreachable
+                addForm.errorRes = if (result.detail == TLS_PIN_MISMATCH) R.string.enrol_gateway_pin_mismatch else R.string.enrol_gateway_unreachable
                 OpResult.Failed
             }
         }
@@ -480,7 +481,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             for (account in bound) {
                 val binding = account.gateway ?: continue
                 val fetch = try {
-                    gateway.pendingChallenges(binding.url, binding.deviceId, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)), deviceState)
+                    gateway.pendingChallenges(binding.url, binding.pins, binding.deviceId, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)), deviceState)
                 } catch (e: Exception) {
                     continue
                 }
@@ -533,7 +534,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 val binding = repository.all().find { it.id == prompt.accountId }?.gateway
                     ?: return@withContext AnswerResult.Gone(0, "unbound")
                 try {
-                    gateway.answer(binding.url, binding.deviceId, prompt.challenge, number, DeviceKeyFactory.signer(DeviceKeyFactory.alias(prompt.accountId)))
+                    gateway.answer(binding.url, binding.pins, binding.deviceId, prompt.challenge, number, DeviceKeyFactory.signer(DeviceKeyFactory.alias(prompt.accountId)))
                 } catch (e: Exception) {
                     AnswerResult.Unreachable(e.javaClass.simpleName)
                 }

@@ -27,6 +27,8 @@ data class VeiloEnrolment(
     val gatewayUrl: String,
     val ticket: String,
     val requiredLevel: VeiloKeyLevel,
+    /** TLS pins the phone enforces on every connection to this Gateway (D-18); empty = system trust only. */
+    val pins: List<String> = emptyList(),
 ) {
     /** The challenge the device key's attestation must carry: SHA-256("veilo-enrol" || ticket). */
     fun attestationChallenge(): ByteArray = attestationChallenge(ticket)
@@ -36,6 +38,7 @@ data class VeiloEnrolment(
         const val PARAM_GATEWAY = "veilo_gw"
         const val PARAM_TICKET = "veilo_ticket"
         const val PARAM_KEY_LEVEL = "veilo_keylevel"
+        const val PARAM_PINS = "veilo_pins"
 
         /** 32 random bytes as URL-safe Base64 without padding. */
         private val TICKET_FORMAT = Regex("^[A-Za-z0-9_-]{43}$")
@@ -68,7 +71,8 @@ data class VeiloEnrolment(
             require(uri.scheme == "https" || (allowPlainHttp && uri.scheme == "http")) { "Gateway must use https" }
             require(!uri.host.isNullOrEmpty()) { "Bad Gateway URL" }
             require(uri.rawQuery == null && uri.rawFragment == null && uri.userInfo == null) { "Bad Gateway URL" }
-            return VeiloEnrolment(gateway.trimEnd('/'), ticket, required)
+            val pins = params[PARAM_PINS]?.let { TlsPins.parse(it) }.orEmpty()
+            return VeiloEnrolment(gateway.trimEnd('/'), ticket, required, pins)
         }
 
         fun attestationChallenge(ticket: String): ByteArray =

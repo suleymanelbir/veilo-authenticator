@@ -23,6 +23,19 @@
     "uri": "otpauth://totp/Deneme%20A%C5%9E:ayse?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=Deneme%20A%C5%9E&algorithm=SHA1&digits=6&period=30&veilo_gw=https%3A%2F%2Fgw.example.com&veilo_ticket=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&veilo_keylevel=strongbox",
     "attestation_challenge_hex": "b65310c384c436f94f9400a3017669addbce09da67c0ebd6ea838edc16ad415e"
   },
+  "pins": {
+    "note": "D-18: optional veilo_pins = comma-separated sha256/<base64 SPKI SHA-256>; the phone accepts a Gateway connection only if a certificate of the system-validated chain matches one pin. Absent = system trust only.",
+    "pins": [
+      "sha256/C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=",
+      "sha256/sCkq5UWXjg+7mKu9lMhhYF5bGLsy7VI/UNW3tccdR7w="
+    ],
+    "uri": "otpauth://totp/Deneme%20A%C5%9E:ayse?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=Deneme%20A%C5%9E&algorithm=SHA1&digits=6&period=30&veilo_gw=https%3A%2F%2Fgw.example.com&veilo_ticket=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&veilo_keylevel=strongbox&veilo_pins=sha256%2FC5%2BlpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M%3D%2Csha256%2FsCkq5UWXjg%2B7mKu9lMhhYF5bGLsy7VI%2FUNW3tccdR7w%3D",
+    "bad": [
+      "sha1/C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=",
+      "sha256/not-base64!",
+      "sha256/AAAA"
+    ]
+  },
   "confirm": {
     "endpoint": "POST /enrol/confirm",
     "auth": "none; the ticket is the credential",
