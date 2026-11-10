@@ -68,6 +68,15 @@ phone can reach; the lab binds to 127.0.0.1 on the server).
   live in `core/VeiloChallenge.kt` and are checked against the shared protocol vectors
   (the vector signatures verify with the vector public key). QR fallback for air-gapped
   logins is not built: it needs a short, typeable response format first (Gateway O-item).
+- **Device heartbeat and revocation** (Gateway 0.5) — built 2026-11-10. The challenge poll
+  carries a small device-state header (app version, OS patch level, integrity risks, model;
+  PROTOCOL §5.1), so the Gateway console shows `last_seen` and risks per device. When a help-desk
+  user revokes a device, the Gateway answers `401 device_revoked`; the app marks the binding as
+  revoked, never polls it again, tells the user once, and the account card reads "Revoked by your
+  organisation". The sign-in dialog shows the seconds left and closes itself when the request
+  expires; a touch outside it no longer counts as "not me". Verified with a real phone.
+- **Centralized enrolment** is done on the Gateway side (0.5): the console issues the QR, in
+  one form together with the directory user.
 - **Certificate pinning per tenant** through the QR (Gateway 0.6).
 - **Managed Google Play** private-app listing for the Enterprise flavour.
 

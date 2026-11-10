@@ -1567,6 +1567,9 @@
         }
         .gateway-step h5 { font-size: 0.95rem; margin-bottom: 4px; }
         .gateway-step p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
+        .mdm-tabs { display: flex; gap: 4px; padding: 10px 18px 0; border-bottom: 1px solid var(--border); background: rgba(11,22,40,0.5); }
+        .mdm-tabs > span { padding: 8px 14px; font-size: 0.78rem; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+        .mdm-tabs > span.on { color: var(--text-main); border-bottom-color: var(--shield-blue); }
         .mdm-val.pending { color: var(--amber); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
 
         /* Documentation strip */
@@ -2854,8 +2857,8 @@
                     <span class="lang-tr">Veilo MFA Gateway uygulamayı kurumun yönettiği ikinci faktöre dönüştürür: merkezi kayıt, donanım doğrulaması ve oltalamaya dayanıklı onaylar, zaten kullandığınız sistemlere RADIUS üzerinden ulaşır.</span>
                 </p>
                 <span class="tier-badge">
-                    <span class="lang-en">CONNECTED TIER &middot; EARLY ACCESS &middot; v0.5</span>
-                    <span class="lang-tr">BAĞLI KATMAN &middot; ERKEN ERİŞİM &middot; v0.5</span>
+                    <span class="lang-en">CONNECTED TIER &middot; EARLY ACCESS &middot; GATEWAY 0.5</span>
+                    <span class="lang-tr">BAĞLI KATMAN &middot; ERKEN ERİŞİM &middot; GATEWAY 0.5</span>
                 </span>
             </div>
 
@@ -2908,8 +2911,34 @@
                                 <span class="lang-tr">RADIUS, kendi ağınızın içinde</span>
                             </h4>
                             <p>
-                                <span class="lang-en">VPN, Wi-Fi (802.1X), SSH, PAM: anything that already speaks RADIUS receives Veilo approvals. Built on privacyIDEA, shipped as Docker and .deb, running on a server you control.</span>
-                                <span class="lang-tr">VPN, Wi-Fi (802.1X), SSH, PAM: RADIUS konuşan her sistem Veilo onaylarını alır. privacyIDEA üzerine kurulu, Docker ve .deb olarak gelir, kontrolünüzdeki sunucuda çalışır.</span>
+                                <span class="lang-en">VPN, Wi-Fi (802.1X), SSH, PAM: anything that already speaks RADIUS receives Veilo approvals. Built on privacyIDEA, installed with one command from a Docker stack, running on a server you control. A .deb package is planned.</span>
+                                <span class="lang-tr">VPN, Wi-Fi (802.1X), SSH, PAM: RADIUS konuşan her sistem Veilo onaylarını alır. privacyIDEA üzerine kurulu, Docker yığınıyla tek komutla kurulur, kontrolünüzdeki sunucuda çalışır. .deb paketi planlanıyor.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128101;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Roles and lost-phone revocation</span>
+                                <span class="lang-tr">Roller ve kayıp telefon iptali</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">Admin, help desk and auditor each see only what they need. A help-desk agent enrols a new employee or revokes a lost phone from the console, no terminal, and the revoked device is cut off at its next check-in.</span>
+                                <span class="lang-tr">Yönetici, yardım masası ve denetçi yalnızca ihtiyaç duyduğunu görür. Yardım masası çalışanı yeni personeli kaydeder veya kayıp telefonu konsoldan iptal eder, terminal gerekmez; iptal edilen cihaz bir sonraki bağlanışında devre dışı kalır.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128203;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Audit trail for your SIEM</span>
+                                <span class="lang-tr">SIEM'iniz için denetim kaydı</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">Sign-ins, enrolments, policy changes and revocations in one tenant-wide stream, with search and CSV export. Each action records who did it. Devices also report app version and root risk.</span>
+                                <span class="lang-tr">Girişler, kayıtlar, politika değişiklikleri ve iptaller tek bir kiracı akışında; arama ve CSV dışa aktarma ile. Her işlem kimin yaptığını kaydeder. Cihazlar ayrıca uygulama sürümünü ve root riskini bildirir.</span>
                             </p>
                         </div>
                     </div>
@@ -2925,6 +2954,12 @@
                             <span class="lang-en">ATTESTATION ON</span>
                             <span class="lang-tr">DOĞRULAMA AÇIK</span>
                         </span>
+                    </div>
+                    <div class="mdm-tabs">
+                        <span class="on"><span class="lang-en">Users</span><span class="lang-tr">Kullanıcılar</span></span>
+                        <span><span class="lang-en">Devices</span><span class="lang-tr">Cihazlar</span></span>
+                        <span><span class="lang-en">Events</span><span class="lang-tr">Olaylar</span></span>
+                        <span><span class="lang-en">Roles</span><span class="lang-tr">Roller</span></span>
                     </div>
                     <div class="mdm-body">
                         <div class="mdm-row">
@@ -2950,6 +2985,13 @@
                         </div>
                         <div class="mdm-row">
                             <div class="mdm-key">
+                                ali &middot; Galaxy A54
+                                <small><span class="lang-en">reported lost &middot; revoked by help desk</span><span class="lang-tr">kayıp bildirildi &middot; yardım masası iptal etti</span></small>
+                            </div>
+                            <span class="mdm-val off"><span class="lang-en">REVOKED</span><span class="lang-tr">İPTAL</span></span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
                                 VPN login &middot; 10:58
                                 <small><span class="lang-en">challenge 47 &middot; signed by ayse</span><span class="lang-tr">challenge 47 &middot; ayse imzaladı</span></small>
                             </div>
@@ -2970,8 +3012,8 @@
                             <span class="mdm-val pending"><span class="lang-en">PENDING</span><span class="lang-tr">BEKLİYOR</span></span>
                         </div>
                         <div class="mdm-foot">
-                            <span class="lang-en"><strong>Tickets, devices, challenges, audit log</strong> in one console on your server. Nothing leaves your network. The public Play edition has no network permission at all; the Enterprise edition talks only to your Gateway.</span>
-                            <span class="lang-tr"><strong>Biletler, cihazlar, challenge'lar, denetim günlüğü</strong> kendi sunucunuzdaki tek konsolda. Hiçbir veri ağınızdan çıkmaz. Herkese açık Play sürümünün ağ izni hiç yoktur; Kurumsal sürüm yalnızca sizin Gateway'inizle konuşur.</span>
+                            <span class="lang-en"><strong>Users, devices, sign-ins, audit log and CSV export</strong> in one console on your server, with admin, help-desk and auditor roles. Nothing leaves your network. The public Play edition has no network permission at all; the Enterprise edition talks only to your Gateway.</span>
+                            <span class="lang-tr"><strong>Kullanıcılar, cihazlar, girişler, denetim günlüğü ve CSV dışa aktarma</strong> kendi sunucunuzdaki tek konsolda; yönetici, yardım masası ve denetçi rolleriyle. Hiçbir veri ağınızdan çıkmaz. Herkese açık Play sürümünün ağ izni hiç yoktur; Kurumsal sürüm yalnızca sizin Gateway'inizle konuşur.</span>
                         </div>
                     </div>
                 </div>
@@ -3005,8 +3047,8 @@
                 <span>PRIVACYIDEA</span>
                 <span>VPN / 802.1X</span>
                 <span>SSH / PAM</span>
-                <span>DOCKER</span>
-                <span>DEBIAN .DEB</span>
+                <span>DOCKER COMPOSE</span>
+                <span>BACKUP &amp; RESTORE</span>
             </div>
 
             <div class="enterprise-cta reveal">
@@ -3015,8 +3057,8 @@
                     <span class="lang-tr">Gateway pilotu talep edin &rarr;</span>
                 </a>
                 <small>
-                    <span class="lang-en">Early access. QR enrolment, attestation, number matching and a full RADIUS round are verified end-to-end on a real phone in our lab. The Enterprise edition is distributed through your MDM, not the Play Store.</span>
-                    <span class="lang-tr">Erken erişim. QR kayıt, doğrulama, numara eşleştirme ve tam bir RADIUS turu laboratuvarımızda gerçek telefonda uçtan uca doğrulandı. Kurumsal sürüm Play Store'dan değil, MDM'iniz üzerinden dağıtılır.</span>
+                    <span class="lang-en">Early access, Gateway 0.5. Enrolment, attestation, number matching, a full RADIUS round and help-desk revocation are verified end-to-end on a real phone in our lab. Independent penetration testing and a stable 1.0 are still ahead. The Enterprise edition is distributed through your MDM, not the Play Store.</span>
+                    <span class="lang-tr">Erken erişim, Gateway 0.5. Kayıt, doğrulama, numara eşleştirme, tam bir RADIUS turu ve yardım masası iptali laboratuvarımızda gerçek telefonda uçtan uca doğrulandı. Bağımsız sızma testi ve kararlı 1.0 henüz önümüzde. Kurumsal sürüm Play Store'dan değil, MDM'iniz üzerinden dağıtılır.</span>
                 </small>
             </div>
 
@@ -3054,7 +3096,7 @@
                         <div class="recovery-icon">&#129517;</div>
                         <h3><span class="lang-en">Connected Enterprise Plan</span><span class="lang-tr">Bağlı Kurumsal Planı</span></h3>
                         <p><span class="lang-en">Flavours, Gateway enrolment protocol, what is implemented and what is still open in v0.5. Updated as we ship.</span><span class="lang-tr">Sürüm çeşitleri, Gateway kayıt protokolü, v0.5'te tamamlananlar ve açık kalanlar. Teslim ettikçe güncellenir.</span></p>
-                        <small>GATEWAY &middot; v0.5</small>
+                        <small>APP v0.5 PLAN</small>
                     </a>
                 </div>
             </div>

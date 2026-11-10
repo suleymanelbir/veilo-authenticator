@@ -124,12 +124,16 @@ require "strong biometric or device credential".
 - [x] Separate build flavour (`enterprise`) with network access; the public edition stays offline by construction — see [docs/PLAN-v0.5.md](docs/PLAN-v0.5.md)
 - [x] Gateway QR enrolment: Veilo extension parsed, device key generated with attestation challenge, `/enrol/confirm` called (verified on a phone 2026-11-10)
 - [x] Hardware key attestation: the Gateway verifies the Keystore chain at enrolment (Gateway 0.3, verified on a phone 2026-11-10)
-- [x] Signed challenge-response: the Enterprise flavour polls its Gateway while unlocked, shows number matching and signs the answer with the device key (Gateway 0.4; device test pending)
-- [ ] Centralized enrollment from the Gateway admin console
+- [x] Signed challenge-response: the Enterprise flavour polls its Gateway while unlocked, shows number matching and signs the answer with the device key (Gateway 0.4; verified on a phone, including a RADIUS login, 2026-11-10)
+- [x] Centralized enrollment from the Gateway admin console: a help-desk session enrols a new employee and revokes a lost phone without a terminal (Gateway 0.5, verified with a phone 2026-11-10)
+- [x] Device heartbeat (app version, OS patch level, integrity risks) on the challenge poll, and handling of a device revoked by the organisation
+- [ ] Managed Google Play listing for the Enterprise flavour
 
 **Veilo MFA Gateway** *(separate server product, developed alongside v0.5)*
 
-- [ ] 1.0 — privacyIDEA / multiOTP core with Veilo API layer, admin console, Docker image and .deb package
+- [x] 0.1–0.5 — privacyIDEA core with the Veilo API layer: tenants, policy, attestation, signed challenges, RADIUS, admin console with roles, audit events and CSV export (closed 2026-11-10)
+- [ ] 0.6 — installable stack and backup/restore done; upgrade, hardening and `.deb` package still open
+- [ ] 1.0 — independent penetration test, tested upgrade path, Managed Google Play release of the Enterprise flavour
 - [ ] 1.x — ISO virtual appliance for self-hosted deployment, once 1.0 is stable
 
 **v0.6 — Passkeys & cross-platform**
