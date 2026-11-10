@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="root">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Administrator Guide — Veilo Authenticator</title>
+<title>Administrator Guide / Yönetici Kılavuzu — Veilo Authenticator</title>
 <meta name="description" content="Deploy Veilo Authenticator through your MDM and govern it with organisation policy.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2l11 4v9c0 7-5 12-11 15C10 27 5 22 5 15V6z' fill='%233b82f6'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@ h1{font-family:Syne,sans-serif;font-size:clamp(1.9rem,4.5vw,3rem);line-height:1.
 h1 span{color:var(--blue)}
 .lead{max-width:760px;margin-top:20px;font-size:1.05rem}.lead p{margin-bottom:12px}
 .layout{max-width:1120px;margin:0 auto;padding:24px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
-nav.toc{position:sticky;top:90px;align-self:start;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--blue-soft)}
+nav.toc{position:sticky;top:90px;align-self:start;border-left:1px solid var(--blue-soft)} nav.toc>div{flex-direction:column;gap:2px} .lang-en.toc-on,nav.toc>div.lang-en{display:flex} body.tr nav.toc>div.lang-en{display:none} body.tr nav.toc>div.lang-tr{display:flex}
 nav.toc a{padding:8px 14px;font-size:.86rem;color:var(--muted);border-left:2px solid transparent;margin-left:-1px;transition:.2s}
 nav.toc a:hover{color:var(--text);border-left-color:var(--blue);background:rgba(59,130,246,.08)}
 nav.toc small{padding:0 14px 8px;font-family:Orbitron,monospace;font-size:.62rem;letter-spacing:.16em;color:var(--faint)}
@@ -46,26 +46,37 @@ main ol>li{counter-increment:s;position:relative;padding:14px 18px 14px 58px;bac
 main ol>li:hover{border-color:var(--blue);background:rgba(59,130,246,.12)}
 main ol>li::before{content:counter(s);position:absolute;left:16px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:rgba(59,130,246,.2);border:1px solid var(--blue-line);color:var(--text);font-family:Orbitron,monospace;font-size:.75rem;display:grid;place-items:center}
 main ul>li{padding-left:4px}
+.lang-tr{display:none} body.tr .lang-en{display:none} body.tr .lang-tr{display:block}
+.tag .lang-en,.tag .lang-tr,.back .lang-en,.back .lang-tr{display:inline} body.tr .tag .lang-en,body.tr .back .lang-en{display:none} body.tr .tag .lang-tr,body.tr .back .lang-tr{display:inline} .tag .lang-tr,.back .lang-tr{display:none} body.tr .tag .lang-tr,body.tr .back .lang-tr{display:inline}
+.actions{display:flex;gap:10px;align-items:center}
+.langbtn{font-family:Orbitron,monospace;font-size:.7rem;letter-spacing:.1em;color:var(--muted);background:rgba(17,30,51,.8);border:1px solid var(--blue-line);padding:8px 13px;border-radius:9px;cursor:pointer;transition:.2s}
+.langbtn:hover{color:var(--text);border-color:var(--blue);background:rgba(59,130,246,.15)}
 footer{max-width:1120px;margin:40px auto 0;padding:28px 24px 48px;border-top:1px solid var(--blue-soft);font-size:.85rem;color:var(--faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-@media(max-width:900px){.layout{grid-template-columns:1fr;gap:12px}nav.toc{position:static;flex-direction:row;flex-wrap:wrap;border:0;gap:6px}nav.toc small{width:100%}nav.toc a{border:1px solid var(--blue-soft);border-radius:8px;margin:0}}
+@media(max-width:900px){.layout{grid-template-columns:1fr;gap:12px}nav.toc{position:static;border:0}nav.toc>div,body.tr nav.toc>div.lang-tr{flex-direction:row;flex-wrap:wrap;gap:6px}nav.toc small{width:100%}nav.toc a{border:1px solid var(--blue-soft);border-radius:8px;margin:0}}
 </style>
 </head>
 <body>
-<header class="top"><div><span class="brand"><b>VEILO</b> AUTHENTICATOR</span><a class="back" href="./#enterprise">&larr; Back to Enterprise</a></div></header>
+<header class="top"><div><span class="brand"><b>VEILO</b> AUTHENTICATOR</span><span class="actions"><button class="langbtn" id="langBtn" type="button" aria-label="Language">TR / EN</button><a class="back" href="./#enterprise"><span class="lang-en">&larr; Back to Enterprise</span><span class="lang-tr">&larr; Kurumsal bölüme dön</span></a></span></div></header>
 <section class="hero">
-<span class="tag">ENTERPRISE &middot; MDM &middot; v0.4</span>
-<h1>Administrator guide: <span>Veilo Authenticator</span> on managed devices</h1>
-<div class="lead"><p>Veilo Authenticator can be distributed through your MDM and governed by organisation rules
+<span class="tag"><span class="lang-en">ENTERPRISE &middot; MDM &middot; v0.4</span><span class="lang-tr">KURUMSAL &middot; MDM &middot; v0.4</span></span>
+<div class="lang-en"><h1>Administrator guide: <span>Veilo Authenticator on managed devices</span></h1><div class="lead"><p>Veilo Authenticator can be distributed through your MDM and governed by organisation rules
 without any change to its security model: the app still has no network permission, and rules
 reach it through Android's own managed-configuration channel. The same APK serves personal and
 managed devices; a device with no configuration behaves exactly like the public edition.</p>
 <p>Requires Android 11 or later and a device enrolled in Android Enterprise, either as a fully
 managed device or with a work profile.</p>
-</div>
+</div></div>
+<div class="lang-tr"><h1>Yönetici kılavuzu: <span>Yönetilen cihazlarda Veilo Authenticator</span></h1><div class="lead"><p>Veilo Authenticator, MDM'iniz üzerinden dağıtılabilir ve güvenlik modelinde hiçbir değişiklik
+olmadan kurum kurallarıyla yönetilebilir: uygulamanın hâlâ ağ izni yoktur ve kurallar ona
+Android'in kendi yönetilen yapılandırma kanalıyla ulaşır. Aynı APK hem kişisel hem yönetilen
+cihazlarda çalışır; yapılandırması olmayan bir cihaz tam olarak herkese açık sürüm gibi davranır.</p>
+<p>Android 11 veya üstü ve Android Enterprise'a kayıtlı bir cihaz gerekir; tam yönetilen cihaz
+ya da iş profili olabilir.</p>
+</div></div>
 </section>
 <div class="layout">
-<nav class="toc"><small>ON THIS PAGE</small><a href="#1-approve-the-app-in-managed-google-play">1. Approve the app in Managed Google Play</a><a href="#2-set-the-managed-configuration">2. Set the managed configuration</a><a href="#3-what-a-user-sees">3. What a user sees</a><a href="#4-limitations-to-know">4. Limitations to know</a><a href="#5-testing-without-an-emm-subscription">5. Testing without an EMM subscription</a></nav>
-<main><h2 id="1-approve-the-app-in-managed-google-play">1. Approve the app in Managed Google Play</h2>
+<nav class="toc"><div class="lang-en"><small>ON THIS PAGE</small><a href="#1-approve-the-app-in-managed-google-play">1. Approve the app in Managed Google Play</a><a href="#2-set-the-managed-configuration">2. Set the managed configuration</a><a href="#3-what-a-user-sees">3. What a user sees</a><a href="#4-limitations-to-know">4. Limitations to know</a><a href="#5-testing-without-an-emm-subscription">5. Testing without an EMM subscription</a></div><div class="lang-tr"><small>BU SAYFADA</small><a href="#1-uygulamay-managed-google-playde-onaylayn">1. Uygulamayı Managed Google Play&#x27;de onaylayın</a><a href="#2-yonetilen-yaplandrmay-ayarlayn">2. Yönetilen yapılandırmayı ayarlayın</a><a href="#3-kullanc-ne-gorur">3. Kullanıcı ne görür</a><a href="#4-bilinmesi-gereken-snrlamalar">4. Bilinmesi gereken sınırlamalar</a><a href="#5-emm-aboneligi-olmadan-test">5. EMM aboneliği olmadan test</a></div></nav>
+<main><div class="lang-en"><h2 id="1-approve-the-app-in-managed-google-play">1. Approve the app in Managed Google Play</h2>
 <ol>
 <li>In your EMM console (Microsoft Intune, Google Workspace, Samsung Knox Manage, VMware
    Workspace ONE, and others) open the Managed Google Play store.</li>
@@ -179,8 +190,137 @@ if it is open.</p>
 <li>Install Veilo Authenticator from Play into that profile.</li>
 <li>In Test DPC: Manage app restrictions → select the app → set values → Save.</li>
 <li>Open the app; it shows "Managed by …" and applies the rules.</li>
-</ol></main>
+</ol></div><div class="lang-tr"><h2 id="1-uygulamay-managed-google-playde-onaylayn">1. Uygulamayı Managed Google Play'de onaylayın</h2>
+<ol>
+<li>EMM konsolunuzda (Microsoft Intune, Google Workspace, Samsung Knox Manage, VMware
+   Workspace ONE ve diğerleri) Managed Google Play mağazasını açın.</li>
+<li><strong>Veilo Authenticator</strong> uygulamasını (paket <code>tr.veilo.authenticator</code>) arayın ve onaylayın.</li>
+<li>İhtiyacı olan kullanıcı gruplarına veya cihazlara atayın. Kurulum zorunlu yapılabilir.</li>
+</ol>
+<h2 id="2-yonetilen-yaplandrmay-ayarlayn">2. Yönetilen yapılandırmayı ayarlayın</h2>
+<p>Her EMM aynı formu gösterir; form uygulamanın içindeki şemadan üretilir:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Ayar</th>
+<th>Varsayılan</th>
+<th>Değiştirildiğinde etkisi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kurum adı</td>
+<td>—</td>
+<td>Uygulama başlığının altında ve Hakkında ekranında gösterilir</td>
+</tr>
+<tr>
+<td>Destek iletişimi</td>
+<td>—</td>
+<td>E-posta veya telefon; Hakkında ekranında ve engelleme ekranında gösterilir</td>
+</tr>
+<tr>
+<td>Yalnızca güvenlik çipi</td>
+<td>kapalı</td>
+<td>Yeni ve içe aktarılan hesaplar, cihazın güvenlik donanımında dışa aktarılamaz anahtar olarak saklanır. Dışa aktarılabilir mevcut hesaplar, hiçbiri kalmayana kadar her kilit açılışında bir kez "güvenlik çipine taşı" uyarısı alır.</td>
+</tr>
+<tr>
+<td>Şifreli yedek dosyalarına izin ver</td>
+<td>açık</td>
+<td>Kapatılırsa parola korumalı yedek dışa aktarma gizlenir</td>
+</tr>
+<tr>
+<td>Yedek içe aktarmaya ve diğer uygulamalardan taşımaya izin ver</td>
+<td>açık</td>
+<td>Kapatılırsa yedek içe aktarma ile Google, Microsoft veya Aegis'ten taşıma gizlenir</td>
+</tr>
+<tr>
+<td>Yazdırılabilir PDF yedeğe izin ver</td>
+<td>açık</td>
+<td>Kapatılırsa PDF dışa aktarma gizlenir</td>
+</tr>
+<tr>
+<td>Hesapları başka telefona göndermeye izin ver</td>
+<td>açık</td>
+<td>Kapalıysa: bu telefon cihazdan cihaza aktarımda gönderen olamaz</td>
+</tr>
+<tr>
+<td>Başka telefondan hesap almaya izin ver</td>
+<td>açık</td>
+<td>Kapalıysa: bu telefon alıcı olamaz</td>
+</tr>
+<tr>
+<td>Root'lu cihazlarda kodları engelle</td>
+<td>kapalı</td>
+<td>Açıksa: uyarı bandı yerine, root'lu veya değiştirilmiş cihazda kodlar hiç gösterilmez</td>
+</tr>
+<tr>
+<td>Debugger bağlıyken kodları engelle</td>
+<td>kapalı</td>
+<td>Açıksa: debugger veya izleyici bağlıyken kodlar gösterilmez</td>
+</tr>
+</tbody>
+</table></div>
+<p>Formu nerede bulursunuz:</p>
+<ul>
+<li><strong>Intune:</strong> Uygulamalar → Uygulama yapılandırma ilkeleri → Ekle → Yönetilen cihazlar →
+  platform Android Enterprise → uygulamayı seçin → "Yapılandırma tasarımcısını kullan".</li>
+<li><strong>Google Workspace:</strong> Cihazlar → Mobil ve uç noktalar → Uygulamalar → Web ve mobil
+  uygulamalar → uygulama → Yönetilen yapılandırmalar.</li>
+<li><strong>Knox Manage:</strong> Uygulama → uygulama → Yapılandırmayı ayarla.</li>
+</ul>
+<p>Değişiklikler dakikalar içinde cihaza ulaşır; uygulama bunları bir sonraki kilit açılışında,
+açıksa hemen uygular.</p>
+<h2 id="3-kullanc-ne-gorur">3. Kullanıcı ne görür</h2>
+<ul>
+<li>Uygulama başlığının altında "<kurum> tarafından yönetiliyor".</li>
+<li>Kapattığınız her şey için gizlenen menü öğeleri; bu ekranlara başka hiçbir yoldan da ulaşılamaz.</li>
+<li>"Yalnızca güvenlik çipi" açıkken: hesap ekleme ekranında depolama seçimi kalkar ve mevcut
+  dışa aktarılabilir hesapları çipe taşımayı öneren bir pencere çıkar. Kodlar taşıma sırasında
+  ve sonrasında çalışmaya devam eder.</li>
+<li>Hakkında → "Kurum politikası", yürürlükteki kuralları ve destek iletişiminizi listeler.</li>
+<li>Engelleyici bir kural ve eşleşen bir risk varsa: hesap listesi yerine destek iletişiminizi
+  gösteren tam ekran bir bildirim.</li>
+</ul>
+<h2 id="4-bilinmesi-gereken-snrlamalar">4. Bilinmesi gereken sınırlamalar</h2>
+<ul>
+<li><strong>Güvenlik çipi için fazla kısa anahtarlar.</strong> Android Keystore, 64 bitten kısa HMAC
+  anahtarlarını reddeder. Bazı servisler böyle anahtarlar verir. "Yalnızca güvenlik çipi"
+  açıkken bu hesaplar eklenemez; kullanıcıya servisten yeni anahtar istemesi veya sizinle
+  iletişime geçmesi söylenir. Çipe taşıma penceresi bunları yeniden kayıt gerektiren hesaplar
+  olarak bildirir.</li>
+<li><strong>Sabit kilit ayarları.</strong> Kimlik doğrulama her 2 dakikalık anahtar kullanımında istenir ve
+  biyometrik ya da cihaz kimlik bilgisi olabilir. Bunlar anahtarların kendi özellikleridir,
+  yapılandırmayla değiştirilemez.</li>
+<li><strong>Raporlama yok.</strong> Uygulama çevrimdışı olduğundan bir kuralın yürürlükte olduğunu
+  konsolunuza bildiremez. Bir test cihazında doğrulayın. Uzaktan attestation ve raporlama,
+  bağlı kurumsal sürümle ve Veilo MFA Gateway ile gelir.</li>
+<li><strong>Root tespiti sezgiseldir.</strong> Sıradan root kurulumlarını yakalar; gelişmiş bir gizleme aracı
+  atlatabilir. Sağlam çözüm donanım attestation'ıdır (bağlı sürüm).</li>
+</ul>
+<h2 id="5-emm-aboneligi-olmadan-test">5. EMM aboneliği olmadan test</h2>
+<p>Google'ın <strong>Test DPC</strong> uygulaması (Play Store), geliştirme için cihaz politikası denetleyicisi
+görevi görür:</p>
+<ol>
+<li>Test DPC'yi kurun; bir test telefonunda iş profili oluşturun veya cihaz sahibi olarak ayarlayın.</li>
+<li>Veilo Authenticator'ı Play'den bu profile kurun.</li>
+<li>Test DPC'de: Uygulama kısıtlamalarını yönet → uygulamayı seçin → değerleri ayarlayın → Kaydet.</li>
+<li>Uygulamayı açın; "… tarafından yönetiliyor" yazar ve kuralları uygular.</li>
+</ol></div></main>
 </div>
-<footer><span>Veilo Authenticator &middot; Apache-2.0</span><span><a href="ADMIN-GUIDE.md">Raw Markdown</a> &middot; <a href="./">auth.veilo.tr</a></span></footer>
+<footer><span>Veilo Authenticator &middot; Apache-2.0</span><span><a href="ADMIN-GUIDE.md">Markdown (EN)</a> &middot; <a href="ADMIN-GUIDE.tr.md">Markdown (TR)</a> &middot; <a href="./">auth.veilo.tr</a></span></footer>
+<script>
+(function(){
+  var lang;
+  try{lang=localStorage.getItem('veilo-lang');}catch(e){}
+  if(!lang){lang=((navigator.language||'en').toLowerCase().indexOf('tr')===0)?'tr':'en';}
+  function set(l){
+    document.body.classList.toggle('tr',l==='tr');
+    document.documentElement.lang=l;
+    try{localStorage.setItem('veilo-lang',l);}catch(e){}
+  }
+  set(lang);
+  document.getElementById('langBtn').addEventListener('click',function(){set(document.body.classList.contains('tr')?'en':'tr');});
+})();
+</script>
 </body>
 </html>
