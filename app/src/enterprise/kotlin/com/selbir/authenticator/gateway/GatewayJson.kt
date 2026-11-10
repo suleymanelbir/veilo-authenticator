@@ -116,6 +116,21 @@ object GatewayJson {
         ChallengeFetch.Unreachable("bad body: ${e.javaClass.simpleName}")
     }
 
+    const val DEVICE_STATE_HEADER = "X-Veilo-Device-State"
+
+    /** `X-Veilo-Device-State` value (PROTOCOL.md §5.1): base64url of a small JSON object. */
+    fun deviceStateHeader(state: DeviceState): String = VeiloChallenge.base64Url(
+        JsonObject(
+            mapOf(
+                "model" to JsonPrimitive(state.model),
+                "app_version" to JsonPrimitive(state.appVersion),
+                "patch_level" to (state.patchLevel?.let { JsonPrimitive(it) } ?: JsonNull),
+                "managed" to JsonPrimitive(state.managed),
+                "risks" to JsonArray(state.risks.map(::JsonPrimitive)),
+            )
+        ).toString().toByteArray()
+    )
+
     /** `POST /device/challenges/{id}/response` body. */
     fun answerRequest(number: String, signature: ByteArray): String = JsonObject(
         mapOf("number" to JsonPrimitive(number), "signature" to JsonPrimitive(VeiloChallenge.base64Url(signature)))

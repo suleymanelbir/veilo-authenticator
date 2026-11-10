@@ -3,6 +3,7 @@ package com.selbir.authenticator.ui
 import android.app.Application
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.DocumentsContract
 import android.security.keystore.UserNotAuthenticatedException
 import android.os.Handler
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.selbir.authenticator.AuthenticatorApp
+import com.selbir.authenticator.BuildConfig
 import com.selbir.authenticator.R
 import com.selbir.authenticator.core.AegisMigration
 import com.selbir.authenticator.core.BackupCodec
@@ -39,6 +41,7 @@ import com.selbir.authenticator.edition.Edition
 import com.selbir.authenticator.gateway.AnswerResult
 import com.selbir.authenticator.gateway.ChallengeFetch
 import com.selbir.authenticator.gateway.ConfirmResult
+import com.selbir.authenticator.gateway.DeviceState
 import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.security.DeviceIntegrity
@@ -263,6 +266,12 @@ class TransferFormState {
 /** How often an unlocked Enterprise phone asks its Gateways for pending challenges. */
 private const val CHALLENGE_POLL_MS = 4_000L
 
+/** "2026-07-05" → 202607, as the Gateway stores patch levels; null for anything else. */
+internal fun patchLevel(securityPatch: String?): Int? {
+    val m = Regex("^(\\d{4})-(\\d{2})(-\\d{2})?$").find(securityPatch.orEmpty().trim()) ?: return null
+    return m.groupValues[1].toInt() * 100 + m.groupValues[2].toInt()
+}
+
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val app = application as AuthenticatorApp
     private val repository = app.repository
@@ -452,11 +461,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         if (bound.isEmpty()) return
+        val deviceState = deviceState(state.risks)
         val prompt = withContext(Dispatchers.IO) {
             for (account in bound) {
                 val binding = account.gateway ?: continue
                 val fetch = try {
-                    gateway.pendingChallenges(binding.url, binding.deviceId, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)))
+                    gateway.pendingChallenges(binding.url, binding.deviceId, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)), deviceState)
                 } catch (e: Exception) {
                     continue
                 }
@@ -467,6 +477,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         } ?: return
         _state.update { if (it.locked || it.challenge != null) it else it.copy(challenge = prompt) }
     }
+
+    /** The heartbeat that rides on the poll (PROTOCOL.md §5.1): declared facts, risks from the last unlock. */
+    private fun deviceState(risks: Set<DeviceRisk>): DeviceState = DeviceState(
+        model = listOf(Build.MANUFACTURER, Build.MODEL).filter { !it.isNullOrBlank() }.joinToString(" ").trim(),
+        appVersion = BuildConfig.VERSION_NAME,
+        patchLevel = patchLevel(Build.VERSION.SECURITY_PATCH),
+        managed = policy.value.managed,
+        risks = risks.map { it.name.lowercase() }.sorted(),
+    )
 
     /** The user tapped [number]: sign and send it. One attempt; the Gateway decides. */
     fun answerChallenge(number: String) {

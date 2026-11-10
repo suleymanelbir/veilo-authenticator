@@ -71,10 +71,12 @@ class HttpGatewayClient(
         }
     }
 
-    override fun pendingChallenges(gatewayUrl: String, deviceId: String, signer: DeviceSigner): ChallengeFetch {
+    override fun pendingChallenges(gatewayUrl: String, deviceId: String, signer: DeviceSigner, state: DeviceState?): ChallengeFetch {
         val path = "/device/challenges"
         return try {
-            val a = request(gatewayUrl + path, "GET", null, deviceAuth(deviceId, "GET", path, signer))
+            val headers = deviceAuth(deviceId, "GET", path, signer) +
+                (state?.let { mapOf(GatewayJson.DEVICE_STATE_HEADER to GatewayJson.deviceStateHeader(it)) } ?: emptyMap())
+            val a = request(gatewayUrl + path, "GET", null, headers)
             GatewayJson.challengeFetch(a.status, a.body)
         } catch (e: Exception) {
             ChallengeFetch.Unreachable(e.javaClass.simpleName)

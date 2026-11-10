@@ -25,6 +25,20 @@ sealed class ConfirmResult {
     data class Unreachable(val detail: String) : ConfirmResult()
 }
 
+/**
+ * What the phone declares about itself on each challenge poll (Gateway PROTOCOL.md §5.1). Declared,
+ * not attested: the Gateway shows it next to the attested facts, never instead of them.
+ */
+data class DeviceState(
+    val model: String,
+    val appVersion: String,
+    /** YYYYMM of the Android security patch level, null when unknown. */
+    val patchLevel: Int?,
+    val managed: Boolean,
+    /** Lower-case names of [com.selbir.authenticator.security.DeviceRisk] found at the last unlock. */
+    val risks: List<String>,
+)
+
 /** Signs with the enrolment's device key (ECDSA P-256, SHA-256); the key never leaves the Keystore. */
 fun interface DeviceSigner {
     fun sign(payload: ByteArray): ByteArray
@@ -64,8 +78,8 @@ interface GatewayClient {
         policySnapshot: Map<String, Any?>?,
     ): ConfirmResult
 
-    /** `GET /device/challenges` (PROTOCOL.md §5): what the Gateway is waiting on from this device. */
-    fun pendingChallenges(gatewayUrl: String, deviceId: String, signer: DeviceSigner): ChallengeFetch
+    /** `GET /device/challenges` (PROTOCOL.md §5): what the Gateway is waiting on from this device; [state] rides along as the heartbeat (§5.1). */
+    fun pendingChallenges(gatewayUrl: String, deviceId: String, signer: DeviceSigner, state: DeviceState? = null): ChallengeFetch
 
     /** `POST /device/challenges/{id}/response`: one attempt with the number the user chose. */
     fun answer(gatewayUrl: String, deviceId: String, challenge: PendingChallenge, number: String, signer: DeviceSigner): AnswerResult

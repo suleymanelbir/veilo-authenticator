@@ -78,4 +78,19 @@ class GatewayJsonTest {
         assertEquals(AnswerResult.Gone(403, "token_disabled"), GatewayJson.answerResult(403, """{"detail":{"code":"token_disabled"}}"""))
         assertIs<AnswerResult.Unreachable>(GatewayJson.answerResult(503, ""))
     }
+
+    @Test
+    fun deviceStateHeaderIsBase64UrlJson() {
+        val header = GatewayJson.deviceStateHeader(DeviceState("Google Pixel 9", "0.5.0-enterprise", 202607, true, listOf("rooted")))
+        val decoded = java.util.Base64.getUrlDecoder().decode(header).decodeToString()
+        val obj = Json.parseToJsonElement(decoded).jsonObject
+        assertEquals("Google Pixel 9", obj["model"]!!.jsonPrimitive.content)
+        assertEquals("202607", obj["patch_level"]!!.jsonPrimitive.content)
+        assertEquals("true", obj["managed"]!!.jsonPrimitive.content)
+        assertEquals(listOf("rooted"), obj["risks"]!!.jsonArray.map { it.jsonPrimitive.content })
+        assertTrue(header.none { it == '=' || it == '+' || it == '/' })
+        assertEquals("null", Json.parseToJsonElement(
+            java.util.Base64.getUrlDecoder().decode(GatewayJson.deviceStateHeader(DeviceState("x", "1", null, false, emptyList()))).decodeToString()
+        ).jsonObject["patch_level"].toString())
+    }
 }
