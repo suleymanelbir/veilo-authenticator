@@ -57,5 +57,53 @@
       "422": "bad_key_level | bad_device_key"
     },
     "on_failure": "token disabled in the core (except unknown_ticket)"
+  },
+  "challenge": {
+    "comment": "PROTOCOL.md §5. Fixed P-256 test key: private scalar = SHA-256(private_seed_ascii) as a big-endian integer. ECDSA is randomised: implementations verify these signatures, they do not reproduce them.",
+    "private_seed_ascii": "veilo-protocol-vectors-challenge-key-0001",
+    "device_pubkey": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "Y71EetyHp4ARB3PSHGpJd96GsaeIBarL7Y1r71JqMzY",
+      "y": "M1yfNsniSF6NEKYfciHXmUCDOFmZumfI1UIegB1gMKg"
+    },
+    "device_id": "8f1c2b7e-3a4d-4c5e-9f60-1a2b3c4d5e6f",
+    "nonce": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+    "rp_id": "vpn.deneme.example",
+    "number": "42",
+    "response_payload": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8|vpn.deneme.example|42|8f1c2b7e-3a4d-4c5e-9f60-1a2b3c4d5e6f",
+    "response_signature": "MEYCIQCqLC4KKmQzapvShM3fEX71_APxzjtII8EfPTAmm9pfeQIhAOi9ydPkEVqmpwwFUjg_uUXgxG0ukdOLukGdtkKSZNcW",
+    "device_auth": {
+      "ts": 1794300000,
+      "method": "GET",
+      "path": "/device/challenges",
+      "payload": "veilo-device|8f1c2b7e-3a4d-4c5e-9f60-1a2b3c4d5e6f|1794300000|GET|/device/challenges",
+      "header": "Veilo-Device 8f1c2b7e-3a4d-4c5e-9f60-1a2b3c4d5e6f.1794300000.MEUCIQDuR6pVyI_8oPkHA9PTV7wRq-wrx-k_1BADlYJw6RLVRwIgKsQxVTedQt6fwgqP13InXr8pCW7kX7aBDYeCv66xQFs",
+      "signature": "MEUCIQDuR6pVyI_8oPkHA9PTV7wRq-wrx-k_1BADlYJw6RLVRwIgKsQxVTedQt6fwgqP13InXr8pCW7kX7aBDYeCv66xQFs"
+    },
+    "choices_example": [
+      "17",
+      "42",
+      "88"
+    ],
+    "expiry_seconds": 120,
+    "status_values": [
+      "pending",
+      "answered",
+      "refused",
+      "expired"
+    ],
+    "refusal_reasons": [
+      "wrong_number",
+      "bad_signature",
+      "expired"
+    ],
+    "device_auth_errors": [
+      "device_auth_required",
+      "bad_device_auth",
+      "stale_timestamp",
+      "unknown_device",
+      "bad_device_signature"
+    ]
   }
 }
