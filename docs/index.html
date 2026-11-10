@@ -1489,6 +1489,94 @@
             .enterprise-grid { grid-template-columns: 1fr; gap: 32px; }
         }
 
+        /* Tier badges (v0.4 offline / v0.5 connected) */
+        .tier-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 18px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(245,158,11,0.4);
+            background: rgba(245,158,11,0.08);
+            color: var(--amber);
+            font-family: var(--font-display);
+            font-size: 0.66rem;
+            letter-spacing: 0.14em;
+        }
+        .tier-badge.live {
+            border-color: rgba(16,185,129,0.4);
+            background: rgba(16,185,129,0.08);
+            color: var(--emerald-bright);
+        }
+
+        /* ============================================================
+           SECTION 6c: GATEWAY (ENTERPRISE CONNECTED)
+           ============================================================ */
+        .gateway-section {
+            background:
+                radial-gradient(circle at 20% 35%, rgba(16,185,129,0.06), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59,130,246,0.08), transparent 55%),
+                var(--bg-dark);
+            border-top: 1px solid var(--border);
+        }
+        .gateway-flow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 44px;
+        }
+        .gateway-step {
+            position: relative;
+            padding: 18px 18px 18px 20px;
+            background: rgba(22,34,64,0.6);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 14px;
+        }
+        .gateway-step::after {
+            content: '\2192';
+            position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--shield-blue); font-size: 1.1rem; opacity: 0.8;
+        }
+        .gateway-step:last-child::after { content: none; }
+        .gateway-step .step-no {
+            font-family: var(--font-display); font-size: 0.62rem; letter-spacing: 0.14em;
+            color: var(--shield-blue); margin-bottom: 8px;
+        }
+        .gateway-step h5 { font-size: 0.95rem; margin-bottom: 4px; }
+        .gateway-step p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
+        .mdm-val.pending { color: var(--amber); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
+
+        /* Documentation strip */
+        .docs-strip { margin-top: 64px; }
+        .docs-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 28px;
+        }
+        .docs-card {
+            display: block;
+            padding: 28px 22px;
+            color: inherit;
+            text-decoration: none;
+        }
+        .docs-card .recovery-icon { width: 52px; height: 52px; font-size: 1.4rem; margin-bottom: 16px; }
+        .docs-card h3 { font-size: 1.02rem; }
+        .docs-card p { font-size: 0.86rem; }
+        .docs-card small {
+            display: block; margin-top: 14px;
+            color: var(--shield-blue);
+            font-family: var(--font-display); font-size: 0.68rem; letter-spacing: 0.1em;
+        }
+        @media (max-width: 1100px) {
+            .docs-cards { grid-template-columns: repeat(2, 1fr); }
+            .gateway-flow { grid-template-columns: repeat(2, 1fr); }
+            .gateway-step::after { content: none; }
+        }
+        @media (max-width: 800px) {
+            .docs-cards { grid-template-columns: 1fr; }
+            .gateway-flow { grid-template-columns: 1fr; }
+        }
+
         .ecosystem-section {
             background:
                 radial-gradient(circle at 30% 60%, rgba(59,130,246,0.06), transparent 50%),
@@ -1725,6 +1813,7 @@
                 <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a></li>
                 <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
                 <li><a href="#enterprise"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a></li>
+                <li><a href="#gateway">Gateway</a></li>
                 <li><a href="#ecosystem"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a></li>
             </ul>
             <div class="nav-actions">
@@ -1749,6 +1838,7 @@
         <a href="#compare" class="mobile-link"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a>
         <a href="#recovery" class="mobile-link"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a>
         <a href="#enterprise" class="mobile-link"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a>
+        <a href="#gateway" class="mobile-link">Gateway</a>
         <a href="#ecosystem" class="mobile-link"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a>
         <button class="lang-toggle" onclick="toggleLanguage()">TR / EN</button>
     </div>
@@ -2437,6 +2527,33 @@
                             <td><span class="cmp-no">&#10007;</span></td>
                             <td><span class="cmp-no">&#10007;</span></td>
                         </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Device Attestation Verified by Your Own Server</span>
+                                <span class="lang-tr">Cihaz Doğrulaması (Attestation) Kendi Sunucunuzda</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Number-Matching Approval Without a Vendor Cloud</span>
+                                <span class="lang-tr">Satıcı Bulutu Olmadan Numara Eşleştirmeli Onay</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">RADIUS / privacyIDEA Integration (VPN, Wi-Fi, SSH)</span>
+                                <span class="lang-tr">RADIUS / privacyIDEA Entegrasyonu (VPN, Wi-Fi, SSH)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -2542,6 +2659,10 @@
                     <span class="lang-en">Veilo speaks Android Enterprise. Push policy from Intune, Google Workspace, Knox or any MDM — no custom build, no server, no account.</span>
                     <span class="lang-tr">Veilo Android Enterprise dilini konuşur. Intune, Google Workspace, Knox veya herhangi bir MDM'den politika gönderin; özel derleme, sunucu ve hesap gerekmez.</span>
                 </p>
+                <span class="tier-badge live">
+                    <span class="lang-en">OFFLINE TIER &middot; AVAILABLE IN v0.4</span>
+                    <span class="lang-tr">ÇEVRİMDIŞI KATMAN &middot; v0.4 İLE KULLANILABİLİR</span>
+                </span>
             </div>
 
             <div class="enterprise-grid">
@@ -2691,6 +2812,232 @@
     </section>
 
     <!-- ============================================================
+         SECTION 6c: GATEWAY (ENTERPRISE CONNECTED)
+         ============================================================ -->
+    <section class="gateway-section section-padding" id="gateway">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">ENTERPRISE &middot; CONNECTED</span>
+                    <span class="lang-tr">KURUMSAL &middot; BAĞLI</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Your Own MFA Server. No Vendor Cloud in the Loop.</span>
+                    <span class="lang-tr">Kendi MFA Sunucunuz. Arada Satıcı Bulutu Yok.</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">Veilo MFA Gateway turns the app into a company-managed second factor: central enrolment, hardware attestation and phishing-resistant approvals, delivered to the systems you already run over RADIUS.</span>
+                    <span class="lang-tr">Veilo MFA Gateway uygulamayı kurumun yönettiği ikinci faktöre dönüştürür: merkezi kayıt, donanım doğrulaması ve oltalamaya dayanıklı onaylar, zaten kullandığınız sistemlere RADIUS üzerinden ulaşır.</span>
+                </p>
+                <span class="tier-badge">
+                    <span class="lang-en">CONNECTED TIER &middot; EARLY ACCESS &middot; v0.5</span>
+                    <span class="lang-tr">BAĞLI KATMAN &middot; ERKEN ERİŞİM &middot; v0.5</span>
+                </span>
+            </div>
+
+            <div class="enterprise-grid">
+                <div class="policy-list reveal">
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128279;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Central enrolment by QR</span>
+                                <span class="lang-tr">QR ile merkezi kayıt</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">IT issues a one-time ticket from the console; the employee scans it once. The phone creates its key inside the secure chip and the Gateway binds that key to the person. No shared secret ever travels.</span>
+                                <span class="lang-tr">BT konsoldan tek kullanımlık bir bilet üretir; çalışan bir kez tarar. Telefon anahtarını güvenli çipin içinde oluşturur, Gateway bu anahtarı kişiye bağlar. Ortak bir sır hiçbir zaman yolculuk etmez.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128737;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Hardware attestation, verified on your server</span>
+                                <span class="lang-tr">Donanım doğrulaması, kendi sunucunuzda</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">The Gateway checks Android Key Attestation against Google's root certificates: TEE or StrongBox, locked bootloader, verified boot. A phone below your policy is refused at enrolment, not discovered after a breach.</span>
+                                <span class="lang-tr">Gateway, Android Key Attestation zincirini Google kök sertifikalarıyla doğrular: TEE veya StrongBox, kilitli önyükleyici, doğrulanmış açılış. Politikanın altındaki telefon kayıt anında reddedilir, bir ihlalden sonra fark edilmez.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128290;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Number-matching approval</span>
+                                <span class="lang-tr">Numara eşleştirmeli onay</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">A login shows one number on the screen and three on the phone. The user picks the matching one and the device signs the answer with its hardware key. Blind taps and push fatigue stop working.</span>
+                                <span class="lang-tr">Giriş ekranda bir sayı, telefonda üç sayı gösterir. Kullanıcı eşleşeni seçer, cihaz yanıtı donanım anahtarıyla imzalar. Körlemesine dokunma ve bildirim yorgunluğu burada işe yaramaz.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128225;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">RADIUS, inside your network</span>
+                                <span class="lang-tr">RADIUS, kendi ağınızın içinde</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">VPN, Wi-Fi (802.1X), SSH, PAM: anything that already speaks RADIUS receives Veilo approvals. Built on privacyIDEA, shipped as Docker and .deb, running on a server you control.</span>
+                                <span class="lang-tr">VPN, Wi-Fi (802.1X), SSH, PAM: RADIUS konuşan her sistem Veilo onaylarını alır. privacyIDEA üzerine kurulu, Docker ve .deb olarak gelir, kontrolünüzdeki sunucuda çalışır.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdm-panel reveal" style="transition-delay: 0.15s">
+                    <div class="mdm-head">
+                        <span>
+                            <span class="lang-en">GATEWAY &middot; ACME</span>
+                            <span class="lang-tr">GATEWAY &middot; ACME</span>
+                        </span>
+                        <span class="mdm-badge">
+                            <span class="lang-en">ATTESTATION ON</span>
+                            <span class="lang-tr">DOĞRULAMA AÇIK</span>
+                        </span>
+                    </div>
+                    <div class="mdm-body">
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                ayse &middot; Pixel 8
+                                <small><span class="lang-en">StrongBox &middot; verified boot &middot; locked</span><span class="lang-tr">StrongBox &middot; doğrulanmış açılış &middot; kilitli</span></small>
+                            </div>
+                            <span class="mdm-val on"><span class="lang-en">VERIFIED</span><span class="lang-tr">DOĞRULANDI</span></span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                mehmet &middot; Galaxy S24
+                                <small><span class="lang-en">TEE &middot; verified boot &middot; locked</span><span class="lang-tr">TEE &middot; doğrulanmış açılış &middot; kilitli</span></small>
+                            </div>
+                            <span class="mdm-val on"><span class="lang-en">VERIFIED</span><span class="lang-tr">DOĞRULANDI</span></span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                guest-01 &middot; unmanaged
+                                <small><span class="lang-en">software key &middot; below policy</span><span class="lang-tr">yazılım anahtarı &middot; politikanın altında</span></small>
+                            </div>
+                            <span class="mdm-val off"><span class="lang-en">REFUSED</span><span class="lang-tr">REDDEDİLDİ</span></span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                VPN login &middot; 10:58
+                                <small><span class="lang-en">challenge 47 &middot; signed by ayse</span><span class="lang-tr">challenge 47 &middot; ayse imzaladı</span></small>
+                            </div>
+                            <span class="mdm-val on"><span class="lang-en">ACCEPT</span><span class="lang-tr">KABUL</span></span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                VPN login &middot; 11:02
+                                <small><span class="lang-en">challenge 12 &middot; wrong number</span><span class="lang-tr">challenge 12 &middot; yanlış sayı</span></small>
+                            </div>
+                            <span class="mdm-val off"><span class="lang-en">REJECT</span><span class="lang-tr">RED</span></span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                SSH jump &middot; 11:04
+                                <small><span class="lang-en">challenge 83 &middot; waiting for phone</span><span class="lang-tr">challenge 83 &middot; telefon bekleniyor</span></small>
+                            </div>
+                            <span class="mdm-val pending"><span class="lang-en">PENDING</span><span class="lang-tr">BEKLİYOR</span></span>
+                        </div>
+                        <div class="mdm-foot">
+                            <span class="lang-en"><strong>Tickets, devices, challenges, audit log</strong> in one console on your server. Nothing leaves your network. The public Play edition has no network permission at all; the Enterprise edition talks only to your Gateway.</span>
+                            <span class="lang-tr"><strong>Biletler, cihazlar, challenge'lar, denetim günlüğü</strong> kendi sunucunuzdaki tek konsolda. Hiçbir veri ağınızdan çıkmaz. Herkese açık Play sürümünün ağ izni hiç yoktur; Kurumsal sürüm yalnızca sizin Gateway'inizle konuşur.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gateway-flow reveal" style="transition-delay: 0.1s">
+                <div class="gateway-step">
+                    <div class="step-no">01</div>
+                    <h5><span class="lang-en">Enrol</span><span class="lang-tr">Kayıt</span></h5>
+                    <p><span class="lang-en">One-time QR from the console. Key born in the secure chip.</span><span class="lang-tr">Konsoldan tek kullanımlık QR. Anahtar güvenli çipte doğar.</span></p>
+                </div>
+                <div class="gateway-step">
+                    <div class="step-no">02</div>
+                    <h5><span class="lang-en">Attest</span><span class="lang-tr">Doğrula</span></h5>
+                    <p><span class="lang-en">Chain checked against Google roots. Policy enforced at the door.</span><span class="lang-tr">Zincir Google kökleriyle doğrulanır. Politika kapıda uygulanır.</span></p>
+                </div>
+                <div class="gateway-step">
+                    <div class="step-no">03</div>
+                    <h5><span class="lang-en">Match</span><span class="lang-tr">Eşleştir</span></h5>
+                    <p><span class="lang-en">Three numbers on the phone, one on the screen. Signed answer.</span><span class="lang-tr">Telefonda üç sayı, ekranda bir. İmzalı yanıt.</span></p>
+                </div>
+                <div class="gateway-step">
+                    <div class="step-no">04</div>
+                    <h5><span class="lang-en">Accept</span><span class="lang-tr">Kabul</span></h5>
+                    <p><span class="lang-en">RADIUS Access-Accept to VPN, Wi-Fi or SSH. Audit row written.</span><span class="lang-tr">VPN, Wi-Fi veya SSH'e RADIUS Access-Accept. Denetim satırı yazılır.</span></p>
+                </div>
+            </div>
+
+            <div class="enterprise-logos reveal">
+                <span>FREERADIUS</span>
+                <span>PRIVACYIDEA</span>
+                <span>VPN / 802.1X</span>
+                <span>SSH / PAM</span>
+                <span>DOCKER</span>
+                <span>DEBIAN .DEB</span>
+            </div>
+
+            <div class="enterprise-cta reveal">
+                <a href="mailto:partner@veilo.tr?subject=Veilo%20MFA%20Gateway%20pilot">
+                    <span class="lang-en">Request a Gateway pilot &rarr;</span>
+                    <span class="lang-tr">Gateway pilotu talep edin &rarr;</span>
+                </a>
+                <small>
+                    <span class="lang-en">Early access. QR enrolment, attestation, number matching and a full RADIUS round are verified end-to-end on a real phone in our lab. The Enterprise edition is distributed through your MDM, not the Play Store.</span>
+                    <span class="lang-tr">Erken erişim. QR kayıt, doğrulama, numara eşleştirme ve tam bir RADIUS turu laboratuvarımızda gerçek telefonda uçtan uca doğrulandı. Kurumsal sürüm Play Store'dan değil, MDM'iniz üzerinden dağıtılır.</span>
+                </small>
+            </div>
+
+            <div class="docs-strip reveal">
+                <div class="text-center">
+                    <p class="section-label">
+                        <span class="lang-en">DOCUMENTATION</span>
+                        <span class="lang-tr">BELGELER</span>
+                    </p>
+                    <h3>
+                        <span class="lang-en">What Your Security Team Will Ask For</span>
+                        <span class="lang-tr">Güvenlik Ekibinizin İsteyeceği Belgeler</span>
+                    </h3>
+                </div>
+                <div class="docs-cards">
+                    <a class="recovery-card docs-card" href="ADMIN-GUIDE.md">
+                        <div class="recovery-icon">&#128214;</div>
+                        <h3><span class="lang-en">Administrator Guide</span><span class="lang-tr">Yönetici Kılavuzu</span></h3>
+                        <p><span class="lang-en">Every managed-configuration key, what it does on the device, and how to roll it out from Intune, Workspace or Knox.</span><span class="lang-tr">Her yönetilen yapılandırma anahtarı, cihazda ne yaptığı ve Intune, Workspace veya Knox'tan nasıl dağıtılacağı.</span></p>
+                        <small>MDM &middot; v0.4</small>
+                    </a>
+                    <a class="recovery-card docs-card" href="SECURITY-ASSESSMENT.md">
+                        <div class="recovery-icon">&#128270;</div>
+                        <h3><span class="lang-en">Security Assessment</span><span class="lang-tr">Güvenlik Değerlendirmesi</span></h3>
+                        <p><span class="lang-en">Threat model, key hierarchy, what an attacker with the phone can and cannot do. Written for reviewers, not marketing.</span><span class="lang-tr">Tehdit modeli, anahtar hiyerarşisi, telefonu ele geçiren saldırganın yapabildikleri ve yapamadıkları. Pazarlama için değil, denetçiler için yazıldı.</span></p>
+                        <small>REPORT v1.0</small>
+                    </a>
+                    <a class="recovery-card docs-card" href="REPRODUCIBLE-BUILDS.md">
+                        <div class="recovery-icon">&#128260;</div>
+                        <h3><span class="lang-en">Reproducible Builds</span><span class="lang-tr">Tekrarlanabilir Derleme</span></h3>
+                        <p><span class="lang-en">Rebuild the APK from source and compare it byte for byte with the one on your devices.</span><span class="lang-tr">APK'yı kaynaktan yeniden derleyin, cihazlarınızdakiyle bayt bayt karşılaştırın.</span></p>
+                        <small>VERIFY YOURSELF</small>
+                    </a>
+                    <a class="recovery-card docs-card" href="PLAN-v0.5.md">
+                        <div class="recovery-icon">&#129517;</div>
+                        <h3><span class="lang-en">Connected Enterprise Plan</span><span class="lang-tr">Bağlı Kurumsal Planı</span></h3>
+                        <p><span class="lang-en">Flavours, Gateway enrolment protocol, what is implemented and what is still open in v0.5. Updated as we ship.</span><span class="lang-tr">Sürüm çeşitleri, Gateway kayıt protokolü, v0.5'te tamamlananlar ve açık kalanlar. Teslim ettikçe güncellenir.</span></p>
+                        <small>GATEWAY &middot; v0.5</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
          SECTION 7: ECOSYSTEM
          ============================================================ -->
     <section class="ecosystem-section" id="ecosystem">
@@ -2831,6 +3178,7 @@
                         <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a></li>
                         <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
                         <li><a href="#enterprise"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a></li>
+                        <li><a href="#gateway"><span class="lang-en">MFA Gateway</span><span class="lang-tr">MFA Gateway</span></a></li>
                         <li><a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" target="_blank">Google Play</a></li>
                     </ul>
                 </div>
