@@ -687,6 +687,7 @@
             border: 1px solid var(--border);
             text-align: center;
             transition: all var(--transition);
+            cursor: default;
             clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 20px 50%);
             margin-left: -10px;
         }
@@ -700,9 +701,21 @@
             border-radius: 0 12px 12px 0;
         }
         .pipeline-stage:hover {
-            background: rgba(37,99,235,0.08);
-            border-color: var(--border-strong);
+            background: linear-gradient(180deg, rgba(59,130,246,0.34), rgba(37,99,235,0.14));
+            border-color: var(--shield-blue);
+            box-shadow: inset 0 3px 0 var(--shield-blue), inset 0 0 40px rgba(59,130,246,0.22);
+            z-index: 2;
         }
+        .pipeline-track:hover .pipeline-stage:not(:hover) { opacity: 0.5; }
+        .pipeline-stage .pipeline-icon { transition: all var(--transition); }
+        .pipeline-stage:hover .pipeline-icon {
+            background: rgba(59,130,246,0.3);
+            border-color: var(--shield-blue);
+            box-shadow: 0 0 22px var(--shield-glow);
+            transform: scale(1.18);
+        }
+        .pipeline-stage:hover .pipeline-label { color: #fff; text-shadow: 0 0 12px var(--shield-glow); }
+        .pipeline-stage:hover .pipeline-desc { color: var(--text-main); }
 
         .pipeline-icon {
             width: 44px;
@@ -1223,7 +1236,18 @@
         }
 
         .compare-table tbody tr:hover td {
-            background: rgba(59,130,246,0.03);
+            background: rgba(59,130,246,0.16);
+            border-bottom-color: rgba(59,130,246,0.45);
+        }
+        .compare-table tbody tr:hover td.veilo-col {
+            background: rgba(59,130,246,0.28);
+        }
+        .compare-table tbody tr:hover td.feat-name {
+            color: #fff;
+            box-shadow: inset 4px 0 0 var(--shield-blue);
+        }
+        .compare-table tbody tr:hover .cmp-yes {
+            text-shadow: 0 0 10px var(--emerald-glow);
         }
 
         .compare-table tbody tr:last-child td {
@@ -2799,7 +2823,7 @@
             </div>
 
             <div class="enterprise-cta reveal">
-                <a href="ADMIN-GUIDE.md">
+                <a href="ADMIN-GUIDE.html">
                     <span class="lang-en">Read the Administrator Guide &rarr;</span>
                     <span class="lang-tr">Yönetici Kılavuzunu Okuyun &rarr;</span>
                 </a>
@@ -3008,7 +3032,7 @@
                     </h3>
                 </div>
                 <div class="docs-cards">
-                    <a class="recovery-card docs-card" href="ADMIN-GUIDE.md">
+                    <a class="recovery-card docs-card" href="ADMIN-GUIDE.html">
                         <div class="recovery-icon">&#128214;</div>
                         <h3><span class="lang-en">Administrator Guide</span><span class="lang-tr">Yönetici Kılavuzu</span></h3>
                         <p><span class="lang-en">Every managed-configuration key, what it does on the device, and how to roll it out from Intune, Workspace or Knox.</span><span class="lang-tr">Her yönetilen yapılandırma anahtarı, cihazda ne yaptığı ve Intune, Workspace veya Knox'tan nasıl dağıtılacağı.</span></p>
@@ -3190,7 +3214,7 @@
                     </h4>
                     <ul>
                         <li><a href="#security"><span class="lang-en">Dashboard</span><span class="lang-tr">Kontrol Paneli</span></a></li>
-                        <li><a href="ADMIN-GUIDE.md"><span class="lang-en">Admin Guide (MDM)</span><span class="lang-tr">Yönetici Kılavuzu (MDM)</span></a></li>
+                        <li><a href="ADMIN-GUIDE.html"><span class="lang-en">Admin Guide (MDM)</span><span class="lang-tr">Yönetici Kılavuzu (MDM)</span></a></li>
                         <li><a href="REPRODUCIBLE-BUILDS.md"><span class="lang-en">Reproducible Builds</span><span class="lang-tr">Tekrarlanabilir Derleme</span></a></li>
                         <li><a href="https://github.com/suleymanelbir/veilo-authenticator/releases" target="_blank"><span class="lang-en">Releases</span><span class="lang-tr">Sürümler</span></a></li>
                     </ul>
