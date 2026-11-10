@@ -190,6 +190,16 @@ class AccountRepository(
         persist(all().map { if (it.id == id) it.copy(gateway = binding) else it })
     }
 
+    /** The Gateway said this device is revoked: keep the binding, stop using it. Idempotent. */
+    @Synchronized
+    fun markGatewayRevoked(id: String, at: Long): Boolean {
+        val current = all()
+        val target = current.find { it.id == id }?.gateway ?: return false
+        if (target.revokedAt != null) return false
+        persist(current.map { if (it.id == id) it.copy(gateway = target.copy(revokedAt = at)) else it })
+        return true
+    }
+
     @Synchronized
     fun togglePin(id: String) {
         persist(all().map { if (it.id == id) it.copy(pinned = !it.pinned) else it })

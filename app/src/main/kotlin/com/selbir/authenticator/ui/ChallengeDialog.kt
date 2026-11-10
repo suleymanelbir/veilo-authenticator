@@ -12,11 +12,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.selbir.authenticator.R
+import kotlinx.coroutines.delay
 
 /**
  * Number matching (Gateway PROTOCOL.md §5): the login screen shows one number, the phone
@@ -24,8 +30,29 @@ import com.selbir.authenticator.R
  * nothing and lets the challenge expire on the Gateway.
  */
 @Composable
-fun ChallengeDialog(prompt: ChallengePrompt, onChoose: (String) -> Unit, onDismiss: () -> Unit) {
+fun ChallengeDialog(
+    prompt: ChallengePrompt,
+    onChoose: (String) -> Unit,
+    onDismiss: () -> Unit,
+    onExpire: () -> Unit = onDismiss,
+) {
     val account = listOf(prompt.issuer, prompt.name).filter { it.isNotBlank() }.joinToString(" · ")
+    // the Gateway gives each sign-in two minutes; show what is left and close when it is gone,
+    // so a stale request never sits on the screen waiting for a tap that can only fail
+    var left by remember(prompt.challenge.id) {
+        mutableStateOf(secondsLeft(prompt.challenge.expiresAt, System.currentTimeMillis()))
+    }
+    LaunchedEffect(prompt.challenge.id) {
+        while (true) {
+            val now = secondsLeft(prompt.challenge.expiresAt, System.currentTimeMillis()) ?: break
+            left = now
+            if (now <= 0L) {
+                onExpire()
+                break
+            }
+            delay(1000 - System.currentTimeMillis() % 1000)
+        }
+    }
     AlertDialog(
         onDismissRequest = { if (!prompt.busy) onDismiss() },
         title = { Text(stringResource(R.string.challenge_title)) },
@@ -42,6 +69,14 @@ fun ChallengeDialog(prompt: ChallengePrompt, onChoose: (String) -> Unit, onDismi
                             Text(number, style = MaterialTheme.typography.headlineSmall)
                         }
                     }
+                }
+                left?.let {
+                    Text(
+                        stringResource(R.string.challenge_seconds_left, it),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (it <= 15) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
                 if (prompt.busy) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {

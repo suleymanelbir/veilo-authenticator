@@ -79,6 +79,8 @@ data class AccountRow(
     val unusable: Boolean,
     val group: String = "",
     val pinned: Boolean = false,
+    /** The organisation's Gateway revoked this device: the codes no longer work there. */
+    val revoked: Boolean = false,
 )
 
 data class UiState(
@@ -265,6 +267,17 @@ class TransferFormState {
 
 /** How often an unlocked Enterprise phone asks its Gateways for pending challenges. */
 private const val CHALLENGE_POLL_MS = 4_000L
+
+/** The Gateway's answer that ends a device binding for good (Gateway 0.5, PROTOCOL §5). */
+internal const val DEVICE_REVOKED = "device_revoked"
+
+/** Whole seconds until an ISO-8601 `expires_at`; null when it cannot be read. */
+internal fun secondsLeft(expiresAt: String, nowMillis: Long): Long? = try {
+    val until = java.time.OffsetDateTime.parse(expiresAt).toInstant().toEpochMilli()
+    maxOf(0L, (until - nowMillis + 999) / 1000)
+} catch (e: Exception) {
+    null
+}
 
 /** "2026-07-05" → 202607, as the Gateway stores patch levels; null for anything else. */
 internal fun patchLevel(securityPatch: String?): Int? {
@@ -456,12 +469,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         if (state.locked || state.challenge != null || policy.value.blocks(state.risks)) return
         val gateway = Edition.gateway(app) ?: return
         val bound = try {
-            repository.all().filter { it.gateway != null }
+            repository.all().filter { it.gateway != null && it.gateway.revokedAt == null }
         } catch (e: Exception) {
             return
         }
         if (bound.isEmpty()) return
         val deviceState = deviceState(state.risks)
+        val revoked = mutableListOf<Account>()
         val prompt = withContext(Dispatchers.IO) {
             for (account in bound) {
                 val binding = account.gateway ?: continue
@@ -470,12 +484,33 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 } catch (e: Exception) {
                     continue
                 }
+                if (fetch is ChallengeFetch.Rejected && fetch.code == DEVICE_REVOKED) {
+                    revoked += account
+                    continue
+                }
                 val first = (fetch as? ChallengeFetch.Pending)?.challenges?.firstOrNull { it.id !in dismissedChallenges } ?: continue
                 return@withContext ChallengePrompt(account.id, account.issuer, account.name, first)
             }
             null
-        } ?: return
+        }
+        revoked.forEach { markRevoked(it.id, it.issuer.ifBlank { it.name }) }
+        prompt ?: return
         _state.update { if (it.locked || it.challenge != null) it else it.copy(challenge = prompt) }
+    }
+
+    /** Stop polling a binding the organisation revoked; tell the user once. */
+    private suspend fun markRevoked(accountId: String, label: String) {
+        val changed = withContext(Dispatchers.IO) {
+            try {
+                repository.markGatewayRevoked(accountId, System.currentTimeMillis())
+            } catch (e: Exception) {
+                false
+            }
+        }
+        if (changed) {
+            toast(R.string.gateway_device_revoked, label)
+            refresh()
+        }
     }
 
     /** The heartbeat that rides on the poll (PROTOCOL.md §5.1): declared facts, risks from the last unlock. */
@@ -506,7 +541,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             when (result) {
                 AnswerResult.Answered -> toast(R.string.challenge_answered)
                 is AnswerResult.Refused -> toast(if (result.reason == "wrong_number") R.string.challenge_wrong_number else R.string.challenge_refused)
-                is AnswerResult.Gone -> toast(R.string.challenge_gone)
+                is AnswerResult.Gone -> if (result.code == DEVICE_REVOKED) {
+                    markRevoked(prompt.accountId, prompt.issuer.ifBlank { prompt.name })
+                } else {
+                    toast(R.string.challenge_gone)
+                }
                 is AnswerResult.Unreachable -> {
                     toast(R.string.challenge_unreachable)
                     // keep it off the screen until the next poll shows it is still pending
@@ -520,6 +559,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 dismissedChallenges.remove(prompt.challenge.id)
             }
         }
+    }
+
+    /** The dialog's countdown reached zero: close it quietly; the Gateway expires it too. */
+    fun expireChallenge(id: String) {
+        dismissedChallenges.add(id)
+        _state.update { if (it.challenge?.challenge?.id == id && it.challenge.busy.not()) it.copy(challenge = null) else it }
     }
 
     /** "Not me": nothing is sent; the challenge expires on the Gateway and the login fails. */
@@ -864,6 +909,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             unusable = unusable,
             group = account.group,
             pinned = account.pinned,
+            revoked = account.gateway?.revokedAt != null,
         )
     }
 

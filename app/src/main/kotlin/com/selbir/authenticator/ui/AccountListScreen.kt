@@ -517,6 +517,13 @@ private fun AccountItem(
                     color = MaterialTheme.colorScheme.error,
                 )
             }
+            if (row.revoked) {
+                Text(
+                    text = stringResource(R.string.badge_gateway_revoked),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
 
         when {

@@ -276,4 +276,19 @@ class AccountRepositoryTest {
         val old = text.replace(Regex(""","gateway":\{[^}]*\}"""), "")
         assertNull(json.decodeFromString(Account.serializer(), old).gateway)
     }
+
+    @Test
+    fun revokedBindingIsKeptAndMarkedOnce() {
+        val account = repository.add(totp(1), Protection.HARDWARE_BOUND)
+        assertEquals(false, repository.markGatewayRevoked(account.id, 1_000L))   // not bound
+        repository.bindGateway(account.id, GatewayBinding("https://gw.example", "dev-1"))
+        assertEquals(true, repository.markGatewayRevoked(account.id, 2_000L))
+        assertEquals(false, repository.markGatewayRevoked(account.id, 3_000L))   // first time wins
+        val stored = store.saved.single()
+        assertEquals(GatewayBinding("https://gw.example", "dev-1", revokedAt = 2_000L), stored.gateway)
+        // a binding written before revocation existed decodes as not revoked
+        val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; encodeDefaults = true }
+        val old = json.encodeToString(Account.serializer(), stored).replace(",\"revokedAt\":2000", "")
+        assertNull(json.decodeFromString(Account.serializer(), old).gateway!!.revokedAt)
+    }
 }

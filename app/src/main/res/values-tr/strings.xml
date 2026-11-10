@@ -256,5 +256,8 @@
     <string name="challenge_wrong_number">Yanlış sayı: giriş reddedildi.</string>
     <string name="challenge_refused">Kurumunuzun Gateway\'i bu yanıtı reddetti.</string>
     <string name="challenge_gone">Bu giriş isteği artık geçerli değil (süresi doldu ya da yanıtlandı).</string>
+    <string name="challenge_seconds_left">%1$d sn kaldı</string>
+    <string name="gateway_device_revoked">%1$s: kurumunuz bu cihazı iptal etti. Kodları ve giriş onayları artık geçerli değil; yeni tanımlama için yardım masanıza başvurun.</string>
+    <string name="badge_gateway_revoked">Kurumunuz tarafından iptal edildi</string>
     <string name="challenge_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. Bağlantıyı kontrol edip yeniden deneyin.</string>
 </resources>

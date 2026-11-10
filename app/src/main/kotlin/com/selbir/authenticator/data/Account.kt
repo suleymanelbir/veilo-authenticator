@@ -45,6 +45,12 @@ data class Account(
 data class GatewayBinding(
     val url: String,
     val deviceId: String,
+    /**
+     * When the organisation revoked this device (Gateway 0.5, 401 `device_revoked`), epoch
+     * milliseconds. A revoked binding is never polled again; its codes are refused by the
+     * organisation's server, so the account card says so.
+     */
+    val revokedAt: Long? = null,
 )
 
 /** On-disk format of the account list. */
