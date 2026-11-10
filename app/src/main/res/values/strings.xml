@@ -251,5 +251,8 @@
     <string name="enrol_gateway_refused_key_level">This phone\'s security hardware does not meet the key level your organisation requires. The token was disabled; contact your administrator.</string>
     <string name="enrol_gateway_refused_ticket">This QR code has expired or was already used. Ask your administrator for a new one.</string>
     <string name="enrol_gateway_refused_app">Your organisation\'s Gateway does not accept this app build.</string>
+    <string name="enrol_gateway_refused_attestation">This phone\'s hardware attestation could not be verified by your organisation\'s Gateway. The token was disabled; contact your administrator.</string>
+    <string name="enrol_gateway_refused_revoked">This phone\'s attestation key has been revoked by Google. The token was disabled; contact your administrator.</string>
+    <string name="enrol_gateway_refused_device">This phone\'s bootloader is unlocked or its system integrity could not be verified, so your organisation does not allow it. The token was disabled.</string>
     <string name="enrol_gateway_unreachable">Could not reach your organisation\'s Gateway. Connect to the internet and scan the QR code again.</string>
 </resources>

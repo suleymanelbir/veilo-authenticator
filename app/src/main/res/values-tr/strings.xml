@@ -243,5 +243,8 @@
     <string name="enrol_gateway_refused_key_level">Bu telefonun güvenlik donanımı kurumunuzun istediği anahtar seviyesini karşılamıyor. Token devre dışı bırakıldı; yöneticinize başvurun.</string>
     <string name="enrol_gateway_refused_ticket">Bu QR kodun süresi dolmuş veya daha önce kullanılmış. Yöneticinizden yenisini isteyin.</string>
     <string name="enrol_gateway_refused_app">Kurumunuzun Gateway\'i bu uygulama yapısını kabul etmiyor.</string>
+    <string name="enrol_gateway_refused_attestation">Bu telefonun donanım kanıtı (attestation) kurumunuzun Gateway\'i tarafından doğrulanamadı. Token devre dışı bırakıldı; yöneticinize başvurun.</string>
+    <string name="enrol_gateway_refused_revoked">Bu telefonun attestation anahtarı Google tarafından iptal edilmiş. Token devre dışı bırakıldı; yöneticinize başvurun.</string>
+    <string name="enrol_gateway_refused_device">Bu telefonun önyükleyicisi kilitli değil ya da sistem bütünlüğü doğrulanamadı; kurumunuz bu cihaza izin vermiyor. Token devre dışı bırakıldı.</string>
     <string name="enrol_gateway_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. İnternete bağlanın ve QR kodu yeniden okutun.</string>
 </resources>

@@ -390,12 +390,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             is ConfirmResult.Refused -> {
                 repository.delete(account.id)
                 DeviceKeyFactory.delete(alias)
-                addForm.errorRes = when (result.code) {
-                    "key_level_below_policy" -> R.string.enrol_gateway_refused_key_level
-                    "ticket_expired", "ticket_already_used", "unknown_ticket" -> R.string.enrol_gateway_refused_ticket
-                    "unknown_app" -> R.string.enrol_gateway_refused_app
-                    else -> R.string.enrol_gateway_refused
-                }
+                addForm.errorRes = GatewayRefusal.messageRes(result.code)
                 OpResult.Failed
             }
             is ConfirmResult.Unreachable -> {
