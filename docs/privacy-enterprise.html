@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizlilik Politikası — Veilo Enterprise</title>
+    <meta name="description" content="Veilo Authenticator gizlilik politikasi. Uygulama hicbir kisisel veri toplamaz, iletmez ve paylasmaz.">
+    <link rel="canonical" href="https://auth.veilo.tr/privacy-enterprise.html">
+    <style>
+        :root {
+            --bg: #0a0f1a;
+            --surface: #111827;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #00C875;
+            --border: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 2rem;
+        }
+        .lang-switch a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        .lang-switch a:hover { border-color: var(--accent); }
+        h1 {
+            font-family: 'Syne', 'Inter', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+        .updated {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .lead {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+        }
+        h2 {
+            font-size: 1.2rem;
+            margin: 2rem 0 0.8rem;
+            color: var(--text);
+        }
+        p, li { margin-bottom: 0.6rem; }
+        ul { padding-left: 1.5rem; }
+        li strong { color: var(--text); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+        }
+        th {
+            background: var(--surface);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        a { color: var(--accent); }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 3rem 0;
+        }
+        .back {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back:hover { text-decoration: underline; }
+        code { font-size: 0.9em; color: var(--accent); }
+        .section { display: none; }
+        .section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lang-switch">
+            <a href="#" onclick="switchLang('tr'); return false;" id="btn-tr">Türkçe</a>
+            <a href="#" onclick="switchLang('en'); return false;" id="btn-en">English</a>
+        </div>
+
+        <!-- TURKISH -->
+        <div id="lang-tr" class="section active">
+            <h1>Gizlilik Politikası — Veilo Enterprise</h1>
+            <p class="updated">Son güncelleme: 11 Kasım 2026 · Uygulama: <code>tr.veilo.authenticator.enterprise</code></p>
+            <p class="lead"><strong>Veilo Enterprise yalnızca kurumunuzun kendi sunucusunda çalışan Veilo Gateway ile konuşur. Veilo'ya ya da başka bir üçüncü tarafa hiçbir veri gönderilmez.</strong> Gateway'in adresini, BT biriminizin size verdiği kayıt QR kodu belirler. Bu verilerin sorumlusu (KVKK kapsamında veri sorumlusu) kurumunuzdur.</p>
+
+            <p>Bu politika Veilo Enterprise içindir. Herkese açık Veilo Authenticator uygulamasının internet izni yoktur; onun politikası <a href="privacy.html">ayrı bir sayfadadır</a>.</p>
+
+            <h2>Kurumunuzun Gateway'ine gönderilenler</h2>
+            <table>
+                <tr><th>Ne zaman</th><th>Ne</th></tr>
+                <tr><td>Kayıt sırasında (bir kez)</td><td>QR koddaki tek kullanımlık kayıt kodu; uygulamanın bu hesap için ürettiği cihaz anahtarının <strong>açık</strong> yarısı; Android'in donanım anahtarı kanıtı (anahtarın güvenli donanımda üretildiğini, önyükleyicinin kilitli olduğunu, Android sürümünü ve güvenlik yaması düzeyini, uygulamanın paket adını ve imza sertifikasının özetini içeren sertifika zinciri); uygulama sürümü; telefonda uygulanan kurum politikasının özeti.</td></tr>
+                <tr><td>Uygulama açık ve kilitsizken (birkaç saniyede bir)</td><td>Bekleyen bir oturum onayı olup olmadığı sorulur. Bu istekle birlikte cihaz modeli, uygulama sürümü, güvenlik yaması düzeyi, cihazın bir MDM tarafından yönetilip yönetilmediği ve bütünlük uyarıları (örneğin root ya da hata ayıklayıcı) gönderilir. İstek cihaz anahtarıyla imzalanır.</td></tr>
+                <tr><td>Bir oturumu onayladığınızda</td><td>Seçtiğiniz sayı ve cihaz anahtarıyla üretilen imza. "Ben değilim" dediğinizde ret yanıtı.</td></tr>
+            </table>
+            <p>Her internet bağlantısında olduğu gibi, Gateway telefonunuzun bağlandığı IP adresini de görür.</p>
+
+            <h2>Hiçbir zaman gönderilmeyenler</h2>
+            <ul>
+                <li><strong>Gizli anahtarlar ve kodlar.</strong> Kod üreten gizli anahtarlar ve cihaz anahtarının gizli yarısı telefonun güvenli donanımından çıkmaz. Üretilen kodlar gönderilmez.</li>
+                <li><strong>Diğer hesaplarınız.</strong> Uygulamaya kendiniz eklediğiniz kişisel hesaplar Gateway'e bildirilmez.</li>
+                <li><strong>Cihaz kimlikleri ve kişisel içerik.</strong> IMEI, seri numarası, telefon numarası, konum, rehber, fotoğraf ya da mesaj okunmaz ve gönderilmez.</li>
+                <li><strong>Analiz ve reklam.</strong> Uygulamada analiz, reklam, hata raporlama ya da üçüncü taraf hizmeti yoktur.</li>
+            </ul>
+
+            <h2>Bağlantının güvenliği</h2>
+            <p>Gateway ile tüm iletişim TLS ile şifrelenir. Uygulama, kayıt QR kodunda bildirilen sertifika otoritesi dışından gelen bir sertifikayı reddeder (sertifika pinleme).</p>
+
+            <h2>Cihazınızda kalanlar</h2>
+            <ul>
+                <li><strong>Hesaplarınız.</strong> Hizmet ve hesap adları ile gizli anahtarlar, cihazın güvenli donanımında (Android Keystore) tutulur ya da onunla şifrelenir. Android bulut yedeklemesine ve cihazdan cihaza aktarıma dahil edilmez.</li>
+                <li><strong>Gateway bağlantısı.</strong> Gateway adresi, cihaz kayıt numarası ve sertifika pinleri.</li>
+            </ul>
+
+            <h2>İzinler</h2>
+            <table>
+                <tr><th>İzin</th><th>Neden</th></tr>
+                <tr><td>İnternet</td><td>Yalnızca kurumunuzun Gateway'iyle konuşmak için.</td></tr>
+                <tr><td>Kamera</td><td>Yalnızca QR kodu taramak için. Görüntüler cihazda işlenir; saklanmaz ve gönderilmez.</td></tr>
+                <tr><td>Biyometri / ekran kilidi</td><td>Kilit açmayı Android yürütür. Uygulama parmak izinizi, yüzünüzü ya da PIN'inizi hiçbir zaman almaz.</td></tr>
+            </table>
+
+            <h2>Saklama ve silme</h2>
+            <p>Gateway'e gönderilen veriler kurumunuzun sunucusunda, kurumunuzun belirlediği süre boyunca saklanır. Bu verilere erişim, düzeltme ya da silme talepleriniz için kurumunuzun BT birimine başvurun; Veilo bu verilere erişemez. Telefonunuzdaki veriler, hesabı uygulamadan kaldırarak ya da uygulamayı kaldırarak silinir. Kurumunuz cihaz kaydınızı iptal ettiğinde telefon artık oturum onaylayamaz.</p>
+
+            <h2>Uygulama mağazaları ve MDM</h2>
+            <p>Uygulamayı Google Play ya da kurumunuzun mobil cihaz yönetimi (MDM) üzerinden kurarsanız, bu hizmetlerin işletmecileri kendi politikaları kapsamında kurulum ve çökme istatistikleri gibi bilgiler toplayabilir. Kurumunuzun MDM'i, uygulamaya politika ayarları gönderebilir.</p>
+
+            <h2>Değişiklikler</h2>
+            <p>Bu politika değişirse yeni sürüm, yeni tarihiyle aynı adreste yayımlanır.</p>
+
+            <h2>İletişim</h2>
+            <p>Bu politikayla ilgili sorularınız için: <a href="mailto:suleymanelbir@gmail.com">suleymanelbir@gmail.com</a>. Gateway'deki verileriniz için kurumunuzun BT birimine başvurun.</p>
+
+            <a href="https://veilo.tr" class="back">&larr; veilo.tr</a>
+        </div>
+
+        <!-- ENGLISH -->
+        <div id="lang-en" class="section">
+            <h1>Privacy Policy — Veilo Enterprise</h1>
+            <p class="updated">Last updated: 11 November 2026 · App: <code>tr.veilo.authenticator.enterprise</code></p>
+            <p class="lead"><strong>Veilo Enterprise talks only to the Veilo Gateway that runs on your organisation's own server. No data is sent to Veilo or to any other third party.</strong> The Gateway's address is set by the enrolment QR code your IT department gives you. Your organisation is the controller of this data.</p>
+
+            <p>This policy covers Veilo Enterprise. The public Veilo Authenticator app has no internet permission; its policy is <a href="privacy.html">on a separate page</a>.</p>
+
+            <h2>What is sent to your organisation's Gateway</h2>
+            <table>
+                <tr><th>When</th><th>What</th></tr>
+                <tr><td>At enrolment (once)</td><td>The one-time enrolment code from the QR; the <strong>public</strong> half of the device key the app creates for this account; Android's hardware key attestation (a certificate chain stating that the key was created in secure hardware, the bootloader lock state, the Android version and security patch level, the app's package name and a digest of its signing certificate); the app version; a summary of the organisation policy applied on the phone.</td></tr>
+                <tr><td>While the app is open and unlocked (every few seconds)</td><td>The app asks whether a sign-in approval is waiting. With this request it sends the device model, app version, security patch level, whether the device is managed by an MDM, and integrity warnings (for example root or a debugger). The request is signed with the device key.</td></tr>
+                <tr><td>When you approve a sign-in</td><td>The number you chose and a signature made with the device key. A refusal when you tap "Not me".</td></tr>
+            </table>
+            <p>As with any internet connection, the Gateway also sees the IP address your phone connects from.</p>
+
+            <h2>What is never sent</h2>
+            <ul>
+                <li><strong>Secret keys and codes.</strong> The secrets that generate codes and the private half of the device key never leave the phone's secure hardware. Generated codes are not sent.</li>
+                <li><strong>Your other accounts.</strong> Personal accounts you add to the app yourself are not reported to the Gateway.</li>
+                <li><strong>Device identifiers and personal content.</strong> IMEI, serial number, phone number, location, contacts, photos or messages are not read or sent.</li>
+                <li><strong>Analytics and advertising.</strong> The app has no analytics, advertising, crash reporting or third-party services.</li>
+            </ul>
+
+            <h2>Connection security</h2>
+            <p>All communication with the Gateway is encrypted with TLS. The app refuses a certificate from any certificate authority other than the ones named in the enrolment QR code (certificate pinning).</p>
+
+            <h2>What stays on your device</h2>
+            <ul>
+                <li><strong>Your accounts.</strong> Service and account names and secret keys, held in or encrypted by the device's secure hardware (Android Keystore), excluded from Android cloud backup and device-to-device transfer.</li>
+                <li><strong>The Gateway binding.</strong> The Gateway address, the device registration id and the certificate pins.</li>
+            </ul>
+
+            <h2>Permissions</h2>
+            <table>
+                <tr><th>Permission</th><th>Why</th></tr>
+                <tr><td>Internet</td><td>Only to talk to your organisation's Gateway.</td></tr>
+                <tr><td>Camera</td><td>Only to scan a QR code. Images are processed on the device and are not stored or sent.</td></tr>
+                <tr><td>Biometrics / screen lock</td><td>Unlocking is handled by Android. The app never receives your fingerprint, face or PIN.</td></tr>
+            </table>
+
+            <h2>Retention and deletion</h2>
+            <p>Data sent to the Gateway is stored on your organisation's server for as long as your organisation decides. For access, correction or deletion, contact your organisation's IT department; Veilo has no access to this data. Data on your phone is deleted by removing the account in the app or uninstalling the app. When your organisation revokes your device, the phone can no longer approve sign-ins.</p>
+
+            <h2>App stores and MDM</h2>
+            <p>If you install the app from Google Play or through your organisation's mobile device management (MDM), their operators may collect information such as installs and crash statistics under their own policies. Your organisation's MDM can send policy settings to the app.</p>
+
+            <h2>Changes</h2>
+            <p>If this policy changes, the new version will be published at the same address with a new date.</p>
+
+            <h2>Contact</h2>
+            <p>Questions about this policy: <a href="mailto:suleymanelbir@gmail.com">suleymanelbir@gmail.com</a>. For your data on the Gateway, contact your organisation's IT department.</p>
+
+            <a href="https://veilo.tr" class="back">&larr; veilo.tr</a>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang) {
+            document.getElementById('lang-tr').classList.toggle('active', lang === 'tr');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.documentElement.lang = lang === 'en' ? 'en' : 'tr';
+        }
+        if (navigator.language && navigator.language.startsWith('en')) switchLang('en');
+    </script>
+</body>
+</html>
