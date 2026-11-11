@@ -1,0 +1,29 @@
+KISA AÇIKLAMA (75/80):
+Kurumsal MFA: kendi sunucunuzdaki Veilo Gateway ile telefonda oturum onayı.
+
+TAM AÇIKLAMA:
+Veilo Enterprise, kurumunuzun kendi sunucusunda çalışan Veilo Gateway için telefon uygulamasıdır. VPN'e ya da kurum uygulamalarına girerken kimliğinizi telefonunuzda tek dokunuşla onaylarsınız. Verileriniz kurumunuzun dışına çıkmaz; Veilo'ya hiçbir şey gönderilmez.
+
+NASIL ÇALIŞIR
+• BT biriminiz size bir QR kod verir; Veilo Enterprise ile bir kez okutursunuz.
+• Telefonunuz, bu hesap için güvenli donanımında (TEE / StrongBox) bir anahtar üretir. Gateway, anahtarın gerçekten güvenli donanımda olduğunu Android'in kendi kanıtıyla doğrular.
+• Oturum açarken ekranda bir sayı görünür. Telefonunuzda üç sayıdan doğru olanı seçersiniz; cevabınız cihaz anahtarıyla imzalanır.
+• Siz değilseniz "Ben değilim" dersiniz ve giriş reddedilir.
+
+NEDEN GÜVENLİ
+• Sayı eşleştirme: Saldırganın gönderdiği bildirimi yanlışlıkla onaylayamazsınız. Ekrandaki sayıyı bilmeden giriş olmaz.
+• Donanım anahtarı: Gizli anahtarlar telefonun güvenli çipinden çıkmaz; kopyalanamaz.
+• Sertifika pinleme: Uygulama yalnızca kurumunuzun Gateway'ine bağlanır; araya girmeye çalışan sahte sertifikaları reddeder.
+• Bulutsuz: Arada Veilo'ya ait bir sunucu, bildirim servisi ya da hesap yoktur.
+• Kayıp telefon: BT biriminiz cihazınızı konsoldan tek tıkla iptal eder.
+
+KOD ÜRETİCİ DE
+Veilo Enterprise aynı zamanda tam bir doğrulama kodu (TOTP) uygulamasıdır. Kişisel hesaplarınızı da ekleyebilirsiniz; bu hesaplar kurumunuza bildirilmez.
+
+KURUMLAR İÇİN
+Veilo Enterprise tek başına değil, kurumunuzun Veilo Gateway kurulumuyla birlikte kullanılır. RADIUS konuşan her VPN ve ağ cihazıyla çalışır. Kuruluşunuzun mobil cihaz yönetimi (MDM) üzerinden dağıtılabilir ve politika ayarları (yalnızca donanım anahtarı, yedek dışa aktarma kısıtları vb.) MDM'den yönetilebilir.
+
+Gateway ve pilot program: https://gateway.veilo.tr
+
+GİZLİLİK
+Uygulama yalnızca kurumunuzun Gateway'iyle konuşur. Analiz, reklam ya da üçüncü taraf takip yoktur. Ayrıntılar: https://auth.veilo.tr/privacy-enterprise.html

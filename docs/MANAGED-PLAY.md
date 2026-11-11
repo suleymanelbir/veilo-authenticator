@@ -25,7 +25,7 @@ installed on the owner's phone on 2026-11-10 and passed against the lab Gateway
    records the upload certificate above.
 4. **Store listing**: short and full description below, icon and screenshots as for the
    public app (the Enterprise screens look the same plus the Gateway dialogs).
-5. **App content**: privacy policy (same URL), Data safety — unlike the public app this
+5. **App content**: privacy policy **https://auth.veilo.tr/privacy-enterprise.html** (not the public app's page: that one says "no internet permission"), Data safety — unlike the public app this
    edition **does** use the network: it sends the device's public key, attestation
    certificate chain, app version, OS patch level, device model and integrity flags to the
    organisation's own Gateway; nothing goes to Veilo. Data is not sold or shared; it is
@@ -47,7 +47,7 @@ installed on the owner's phone on 2026-11-10 and passed against the lab Gateway
 
 ### Listing text
 
-Short (≤ 80): "Kurumsal MFA: Veilo Gateway ile sayı eşleştirmeli oturum onayı."
+Short and full text as entered on 2026-11-11: `docs/store/enterprise/listing-tr.txt`. Graphics: `docs/store/enterprise/`.
 
 Full: start from the public app's description and add a paragraph: "Veilo Enterprise,
 kurumunuzun kendi sunucusunda çalışan Veilo Gateway ile birlikte kullanılır. BT biriminiz
