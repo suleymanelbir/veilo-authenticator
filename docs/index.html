@@ -1508,6 +1508,11 @@
             transition: all var(--transition);
         }
         .enterprise-cta a:hover { border-color: var(--shield-blue); background: rgba(59,130,246,0.1); }
+        .enterprise-cta a { text-decoration: none; }
+        .enterprise-cta a + a { margin-left: 10px; }
+        .enterprise-cta a.cta-primary { background: var(--shield-blue); border-color: var(--shield-blue); color: #fff; }
+        .enterprise-cta a.cta-primary:hover { filter: brightness(1.1); background: var(--shield-blue); }
+        @media (max-width: 520px) { .enterprise-cta a { display: flex; justify-content: center; } .enterprise-cta a + a { margin: 10px 0 0; } }
         .enterprise-cta small { display: block; margin-top: 12px; color: var(--text-faint); font-size: 0.8rem; }
         @media (max-width: 960px) {
             .enterprise-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -2857,166 +2862,9 @@
                     <span class="lang-tr">Veilo MFA Gateway uygulamayı kurumun yönettiği ikinci faktöre dönüştürür: merkezi kayıt, donanım doğrulaması ve oltalamaya dayanıklı onaylar, zaten kullandığınız sistemlere RADIUS üzerinden ulaşır.</span>
                 </p>
                 <span class="tier-badge">
-                    <span class="lang-en">CONNECTED TIER &middot; EARLY ACCESS &middot; GATEWAY 0.5</span>
-                    <span class="lang-tr">BAĞLI KATMAN &middot; ERKEN ERİŞİM &middot; GATEWAY 0.5</span>
+                    <span class="lang-en">CONNECTED TIER &middot; PILOT PROGRAMME</span>
+                    <span class="lang-tr">BAĞLI KATMAN &middot; PİLOT PROGRAMI</span>
                 </span>
-            </div>
-
-            <div class="enterprise-grid">
-                <div class="policy-list reveal">
-                    <div class="policy-item">
-                        <div class="policy-item-icon">&#128279;</div>
-                        <div>
-                            <h4>
-                                <span class="lang-en">Central enrolment by QR</span>
-                                <span class="lang-tr">QR ile merkezi kayıt</span>
-                            </h4>
-                            <p>
-                                <span class="lang-en">IT issues a one-time ticket from the console; the employee scans it once. The phone creates its key inside the secure chip and the Gateway binds that key to the person. No shared secret ever travels.</span>
-                                <span class="lang-tr">BT konsoldan tek kullanımlık bir bilet üretir; çalışan bir kez tarar. Telefon anahtarını güvenli çipin içinde oluşturur, Gateway bu anahtarı kişiye bağlar. Ortak bir sır hiçbir zaman yolculuk etmez.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="policy-item">
-                        <div class="policy-item-icon">&#128737;</div>
-                        <div>
-                            <h4>
-                                <span class="lang-en">Hardware attestation, verified on your server</span>
-                                <span class="lang-tr">Donanım doğrulaması, kendi sunucunuzda</span>
-                            </h4>
-                            <p>
-                                <span class="lang-en">The Gateway checks Android Key Attestation against Google's root certificates: TEE or StrongBox, locked bootloader, verified boot. A phone below your policy is refused at enrolment, not discovered after a breach.</span>
-                                <span class="lang-tr">Gateway, Android Key Attestation zincirini Google kök sertifikalarıyla doğrular: TEE veya StrongBox, kilitli önyükleyici, doğrulanmış açılış. Politikanın altındaki telefon kayıt anında reddedilir, bir ihlalden sonra fark edilmez.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="policy-item">
-                        <div class="policy-item-icon">&#128290;</div>
-                        <div>
-                            <h4>
-                                <span class="lang-en">Number-matching approval</span>
-                                <span class="lang-tr">Numara eşleştirmeli onay</span>
-                            </h4>
-                            <p>
-                                <span class="lang-en">A login shows one number on the screen and three on the phone. The user picks the matching one and the device signs the answer with its hardware key. Blind taps and push fatigue stop working.</span>
-                                <span class="lang-tr">Giriş ekranda bir sayı, telefonda üç sayı gösterir. Kullanıcı eşleşeni seçer, cihaz yanıtı donanım anahtarıyla imzalar. Körlemesine dokunma ve bildirim yorgunluğu burada işe yaramaz.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="policy-item">
-                        <div class="policy-item-icon">&#128225;</div>
-                        <div>
-                            <h4>
-                                <span class="lang-en">RADIUS, inside your network</span>
-                                <span class="lang-tr">RADIUS, kendi ağınızın içinde</span>
-                            </h4>
-                            <p>
-                                <span class="lang-en">VPN, Wi-Fi (802.1X), SSH, PAM: anything that already speaks RADIUS receives Veilo approvals. Built on privacyIDEA, installed with one command from a Docker stack, running on a server you control. A .deb package is planned.</span>
-                                <span class="lang-tr">VPN, Wi-Fi (802.1X), SSH, PAM: RADIUS konuşan her sistem Veilo onaylarını alır. privacyIDEA üzerine kurulu, Docker yığınıyla tek komutla kurulur, kontrolünüzdeki sunucuda çalışır. .deb paketi planlanıyor.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="policy-item">
-                        <div class="policy-item-icon">&#128101;</div>
-                        <div>
-                            <h4>
-                                <span class="lang-en">Roles and lost-phone revocation</span>
-                                <span class="lang-tr">Roller ve kayıp telefon iptali</span>
-                            </h4>
-                            <p>
-                                <span class="lang-en">Admin, help desk and auditor each see only what they need. A help-desk agent enrols a new employee or revokes a lost phone from the console, no terminal, and the revoked device is cut off at its next check-in.</span>
-                                <span class="lang-tr">Yönetici, yardım masası ve denetçi yalnızca ihtiyaç duyduğunu görür. Yardım masası çalışanı yeni personeli kaydeder veya kayıp telefonu konsoldan iptal eder, terminal gerekmez; iptal edilen cihaz bir sonraki bağlanışında devre dışı kalır.</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="policy-item">
-                        <div class="policy-item-icon">&#128203;</div>
-                        <div>
-                            <h4>
-                                <span class="lang-en">Audit trail for your SIEM</span>
-                                <span class="lang-tr">SIEM'iniz için denetim kaydı</span>
-                            </h4>
-                            <p>
-                                <span class="lang-en">Sign-ins, enrolments, policy changes and revocations in one tenant-wide stream, with search and CSV export. Each action records who did it. Devices also report app version and root risk.</span>
-                                <span class="lang-tr">Girişler, kayıtlar, politika değişiklikleri ve iptaller tek bir kiracı akışında; arama ve CSV dışa aktarma ile. Her işlem kimin yaptığını kaydeder. Cihazlar ayrıca uygulama sürümünü ve root riskini bildirir.</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mdm-panel reveal" style="transition-delay: 0.15s">
-                    <div class="mdm-head">
-                        <span>
-                            <span class="lang-en">GATEWAY &middot; ACME</span>
-                            <span class="lang-tr">GATEWAY &middot; ACME</span>
-                        </span>
-                        <span class="mdm-badge">
-                            <span class="lang-en">ATTESTATION ON</span>
-                            <span class="lang-tr">DOĞRULAMA AÇIK</span>
-                        </span>
-                    </div>
-                    <div class="mdm-tabs">
-                        <span class="on"><span class="lang-en">Users</span><span class="lang-tr">Kullanıcılar</span></span>
-                        <span><span class="lang-en">Devices</span><span class="lang-tr">Cihazlar</span></span>
-                        <span><span class="lang-en">Events</span><span class="lang-tr">Olaylar</span></span>
-                        <span><span class="lang-en">Roles</span><span class="lang-tr">Roller</span></span>
-                    </div>
-                    <div class="mdm-body">
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                ayse &middot; Pixel 8
-                                <small><span class="lang-en">StrongBox &middot; verified boot &middot; locked</span><span class="lang-tr">StrongBox &middot; doğrulanmış açılış &middot; kilitli</span></small>
-                            </div>
-                            <span class="mdm-val on"><span class="lang-en">VERIFIED</span><span class="lang-tr">DOĞRULANDI</span></span>
-                        </div>
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                mehmet &middot; Galaxy S24
-                                <small><span class="lang-en">TEE &middot; verified boot &middot; locked</span><span class="lang-tr">TEE &middot; doğrulanmış açılış &middot; kilitli</span></small>
-                            </div>
-                            <span class="mdm-val on"><span class="lang-en">VERIFIED</span><span class="lang-tr">DOĞRULANDI</span></span>
-                        </div>
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                guest-01 &middot; unmanaged
-                                <small><span class="lang-en">software key &middot; below policy</span><span class="lang-tr">yazılım anahtarı &middot; politikanın altında</span></small>
-                            </div>
-                            <span class="mdm-val off"><span class="lang-en">REFUSED</span><span class="lang-tr">REDDEDİLDİ</span></span>
-                        </div>
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                ali &middot; Galaxy A54
-                                <small><span class="lang-en">reported lost &middot; revoked by help desk</span><span class="lang-tr">kayıp bildirildi &middot; yardım masası iptal etti</span></small>
-                            </div>
-                            <span class="mdm-val off"><span class="lang-en">REVOKED</span><span class="lang-tr">İPTAL</span></span>
-                        </div>
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                VPN login &middot; 10:58
-                                <small><span class="lang-en">challenge 47 &middot; signed by ayse</span><span class="lang-tr">challenge 47 &middot; ayse imzaladı</span></small>
-                            </div>
-                            <span class="mdm-val on"><span class="lang-en">ACCEPT</span><span class="lang-tr">KABUL</span></span>
-                        </div>
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                VPN login &middot; 11:02
-                                <small><span class="lang-en">challenge 12 &middot; wrong number</span><span class="lang-tr">challenge 12 &middot; yanlış sayı</span></small>
-                            </div>
-                            <span class="mdm-val off"><span class="lang-en">REJECT</span><span class="lang-tr">RED</span></span>
-                        </div>
-                        <div class="mdm-row">
-                            <div class="mdm-key">
-                                SSH jump &middot; 11:04
-                                <small><span class="lang-en">challenge 83 &middot; waiting for phone</span><span class="lang-tr">challenge 83 &middot; telefon bekleniyor</span></small>
-                            </div>
-                            <span class="mdm-val pending"><span class="lang-en">PENDING</span><span class="lang-tr">BEKLİYOR</span></span>
-                        </div>
-                        <div class="mdm-foot">
-                            <span class="lang-en"><strong>Users, devices, sign-ins, audit log and CSV export</strong> in one console on your server, with admin, help-desk and auditor roles. Nothing leaves your network. The public Play edition has no network permission at all; the Enterprise edition talks only to your Gateway.</span>
-                            <span class="lang-tr"><strong>Kullanıcılar, cihazlar, girişler, denetim günlüğü ve CSV dışa aktarma</strong> kendi sunucunuzdaki tek konsolda; yönetici, yardım masası ve denetçi rolleriyle. Hiçbir veri ağınızdan çıkmaz. Herkese açık Play sürümünün ağ izni hiç yoktur; Kurumsal sürüm yalnızca sizin Gateway'inizle konuşur.</span>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="gateway-flow reveal" style="transition-delay: 0.1s">
@@ -3042,23 +2890,18 @@
                 </div>
             </div>
 
-            <div class="enterprise-logos reveal">
-                <span>FREERADIUS</span>
-                <span>PRIVACYIDEA</span>
-                <span>VPN / 802.1X</span>
-                <span>SSH / PAM</span>
-                <span>DOCKER COMPOSE</span>
-                <span>BACKUP &amp; RESTORE</span>
-            </div>
-
             <div class="enterprise-cta reveal">
+                <a href="https://gateway.veilo.tr/" class="cta-primary">
+                    <span class="lang-en">Explore Veilo Gateway &rarr;</span>
+                    <span class="lang-tr">Veilo Gateway'i inceleyin &rarr;</span>
+                </a>
                 <a href="mailto:partner@veilo.tr?subject=Veilo%20MFA%20Gateway%20pilot">
-                    <span class="lang-en">Request a Gateway pilot &rarr;</span>
-                    <span class="lang-tr">Gateway pilotu talep edin &rarr;</span>
+                    <span class="lang-en">Request a pilot</span>
+                    <span class="lang-tr">Pilot talep edin</span>
                 </a>
                 <small>
-                    <span class="lang-en">Early access, Gateway 0.5. Enrolment, attestation, number matching, a full RADIUS round and help-desk revocation are verified end-to-end on a real phone in our lab. Independent penetration testing and a stable 1.0 are still ahead. The Enterprise edition is distributed through your MDM, not the Play Store.</span>
-                    <span class="lang-tr">Erken erişim, Gateway 0.5. Kayıt, doğrulama, numara eşleştirme, tam bir RADIUS turu ve yardım masası iptali laboratuvarımızda gerçek telefonda uçtan uca doğrulandı. Bağımsız sızma testi ve kararlı 1.0 henüz önümüzde. Kurumsal sürüm Play Store'dan değil, MDM'iniz üzerinden dağıtılır.</span>
+                    <span class="lang-en">Gateway runs on your own server, with its own admin console on your own domain. Installation, features, security and current release status: gateway.veilo.tr. The Enterprise edition is distributed through your MDM (Managed Google Play).</span>
+                    <span class="lang-tr">Gateway kendi sunucunuzda, kendi alan adınızdaki yönetim konsoluyla çalışır. Kurulum, özellikler, güvenlik ve güncel sürüm durumu: gateway.veilo.tr. Kurumsal sürüm MDM'iniz (Managed Google Play) üzerinden dağıtılır.</span>
                 </small>
             </div>
 
