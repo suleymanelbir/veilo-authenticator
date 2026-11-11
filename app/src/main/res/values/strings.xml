@@ -259,7 +259,7 @@
 
     <!-- Signed challenge-response (Enterprise flavour, Gateway 0.4) -->
     <string name="challenge_title">Sign-in approval</string>
-    <string name="challenge_body">%1$s is asking to sign in with %2$s. Tap the number shown on the sign-in screen. If you are not signing in right now, choose "Not me".</string>
+    <string name="challenge_body">%1$s is asking to sign in with %2$s. Tap the number shown on the sign-in screen. If you are not signing in right now, choose \"Not me\".</string>
     <string name="challenge_not_me">Not me</string>
     <string name="challenge_answered">Sign-in approved.</string>
     <string name="challenge_wrong_number">Wrong number: the sign-in was refused.</string>

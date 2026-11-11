@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Enterprise overrides: a locale folder in main would otherwise win over values/ here -->
+    <string name="about_tagline">Yalnızca kurumunuzun Gateway\'iyle konuşur. Donanım destekli. Sıfır izleme.\nAnahtarlarınız asla cihazınızdan çıkmaz.</string>
+    <string name="about_description">Veilo Enterprise, kurumunuzun kendi Veilo Gateway sunucusu üzerinden oturum açma isteklerini sayı eşleştirmesiyle onaylar; anahtarlar güvenli donanımda tutulur. Ayrıca zamana dayalı (TOTP) ve sayaca dayalı (HOTP) tek kullanımlık parolalar üretir. Yalnızca kurumunuzun Gateway\'iyle konuşur — Veilo hesabı, analiz ya da izleme yoktur.</string>
+</resources>

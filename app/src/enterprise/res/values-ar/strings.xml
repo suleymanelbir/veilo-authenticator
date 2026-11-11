@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Enterprise overrides: a locale folder in main would otherwise win over values/ here -->
+    <string name="about_tagline">يتصل فقط بخادم Gateway الخاص بمؤسستك. مدعوم بالعتاد. بدون تتبع.\nمفاتيحك لا تغادر جهازك أبداً.</string>
+    <string name="about_description">يوافق Veilo Enterprise على طلبات تسجيل الدخول لمؤسستك عبر خادم Veilo Gateway الخاص بها، بمطابقة الأرقام ومفاتيح محفوظة في عتاد آمن. كما ينشئ كلمات مرور لمرة واحدة مبنية على الوقت (TOTP) وعلى العدّاد (HOTP). يتصل فقط بخادم Gateway الخاص بمؤسستك — بدون حساب Veilo وبدون تحليلات أو تتبع.</string>
+</resources>

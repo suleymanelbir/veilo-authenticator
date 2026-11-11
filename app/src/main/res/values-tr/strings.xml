@@ -251,7 +251,7 @@
 
     <!-- İmzalı challenge-response (Enterprise sürümü, Gateway 0.4) -->
     <string name="challenge_title">Giriş onayı</string>
-    <string name="challenge_body">%1$s, %2$s hesabıyla giriş yapmak istiyor. Giriş ekranında gördüğünüz sayıya dokunun. Şu anda giriş yapmıyorsanız "Ben değilim"i seçin.</string>
+    <string name="challenge_body">%1$s, %2$s hesabıyla giriş yapmak istiyor. Giriş ekranında gördüğünüz sayıya dokunun. Şu anda giriş yapmıyorsanız \"Ben değilim\"i seçin.</string>
     <string name="challenge_not_me">Ben değilim</string>
     <string name="challenge_answered">Giriş onaylandı.</string>
     <string name="challenge_wrong_number">Yanlış sayı: giriş reddedildi.</string>

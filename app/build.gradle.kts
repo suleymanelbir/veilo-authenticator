@@ -21,6 +21,9 @@ android {
     namespace = "com.selbir.authenticator"
     compileSdk = 36
 
+    // Robolectric (store screenshots) needs the merged resources in unit tests.
+    testOptions.unitTests.isIncludeAndroidResources = true
+
     defaultConfig {
         // Permanent once published on Google Play. It differs from the code namespace
         // above on purpose: the ID carries the product name, the code does not.
@@ -117,4 +120,11 @@ dependencies {
     implementation(libs.zxing.embedded)
 
     testImplementation(kotlin("test-junit"))
+
+    // Play store screenshots rendered from the real composables (FLAG_SECURE blocks device
+    // screenshots on purpose). Test-only: nothing here reaches a release build.
+    testImplementation(libs.robolectric)
+    testImplementation(platform(libs.compose.bom))
+    testImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
