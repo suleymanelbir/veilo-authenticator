@@ -126,6 +126,10 @@
     <string name="about_copyright">© 2026 Veilo Technology. All rights reserved.</string>
 
     <!-- Veilo ecosystem projects -->
+    <string name="project_gateway_name" translatable="false">Veilo Gateway</string>
+    <string name="project_gateway_tagline">On-premises MFA server for your VPN and apps</string>
+    <string name="project_gateway_info">Adds number-matching approval on the phone to your VPN and applications. Runs on your own server — no data goes to Veilo or to any cloud.\n\n• Number matching against push-fatigue attacks; one attempt per request, time-limited\n• Verifies with Android Key Attestation that every phone\'s key lives in TEE or StrongBox\n• Works with any VPN or network device that speaks RADIUS, plus an HTTP endpoint for your own apps\n• Admin, help desk and auditor roles; device state and full audit trail as CSV for your SIEM\n• Ubuntu + Docker, one-command install from a signed package\n• Pairs with the Veilo Enterprise app</string>
+
     <string name="project_veilo_name" translatable="false">Veilo Messenger</string>
     <string name="project_veilo_tagline">End-to-end encrypted enterprise messaging</string>
     <string name="project_veilo_info">Self-hosted, end-to-end encrypted corporate messaging platform for closed networks. Your data never leaves your infrastructure.\n\n• Zero-Trust mesh VPN, works without internet\n• Signal Protocol device-level encryption\n• Full admin control: users, devices, audit logs\n• Messaging, voice/video calls, file sharing\n• Screen capture blocking, remote device wipe, biometric lock\n• KVKK, GDPR and ISO 27001 compliant</string>

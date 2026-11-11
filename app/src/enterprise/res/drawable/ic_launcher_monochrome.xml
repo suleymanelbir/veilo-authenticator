@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Veilo Enterprise mark in one colour, for themed icons (Android 13+).
+    Enterprise edition: the public mark scaled to 86 % inside a ring (r 30, outer edge 31.2 dp,
+    within the 33 dp safe-zone radius). The ring is also in the monochrome icon, so the two
+    editions still differ when Android 13+ themes the icons. Store icon: docs/store/enterprise.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M54,24 A30,30 0 1 1 54,84 A30,30 0 1 1 54,24 Z"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.4" />
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.86"
+        android:scaleY="0.86">
+        <!-- The thin stroke in the fill colour only rounds the corners. -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M57.49,29.85 L44.17,47.27 L57.03,61.07 L45.07,76.71 A24.4,24.4 0 0 1 57.49,29.85 Z"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineJoin="round"
+            android:strokeWidth="1.2" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M62.93,31.29 L50.97,46.93 L63.83,60.73 L50.51,78.15 A24.4,24.4 0 0 0 62.93,31.29 Z"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineJoin="round"
+            android:strokeWidth="1.2" />
+    </group>
+</vector>

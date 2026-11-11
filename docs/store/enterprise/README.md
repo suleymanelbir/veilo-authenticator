@@ -1,7 +1,10 @@
 # Veilo Enterprise — Play store graphics
 
-- `icon-512.png` (512×512): the launcher mark from `app/src/main/res/drawable/ic_launcher_foreground.xml`
-  on `ic_launcher_background` (#14324A), so the store icon matches the installed icon.
+- `icon-512.png` (512×512): the Enterprise launcher icon from
+  `app/src/enterprise/res/drawable/ic_launcher_foreground.xml` (the public mark at 86 % in a gold
+  ring) on the Enterprise `ic_launcher_background` (#1E2128 charcoal, not the public app's navy
+  #14324A), so the store icon matches the installed icon and the two editions differ on a phone
+  (since 0.5.2 / versionCode 14).
 - `feature-graphic.png` (1024×500): gold accent (#F2B84B) to tell it apart from the public app's green.
 
 Re-render from the HTML sources with headless Chromium (snap Chromium can only read under $HOME):

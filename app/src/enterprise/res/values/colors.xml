@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Enterprise edition: charcoal instead of the public app's navy, so the two launcher
+         icons differ at a glance on a phone that has both. -->
+    <color name="ic_launcher_background">#1E2128</color>
+</resources>

@@ -303,6 +303,12 @@ private class VeiloProject(
 
 private val veiloProjects = listOf(
     VeiloProject(
+        nameRes = R.string.project_gateway_name,
+        taglineRes = R.string.project_gateway_tagline,
+        infoRes = R.string.project_gateway_info,
+        url = "https://gateway.veilo.tr/",
+    ),
+    VeiloProject(
         nameRes = R.string.project_veilo_name,
         taglineRes = R.string.project_veilo_tagline,
         infoRes = R.string.project_veilo_info,

@@ -122,6 +122,9 @@
     <string name="about_copyright">© 2026 Veilo Teknoloji. Tüm hakları saklıdır.</string>
 
     <!-- Veilo ekosistemi projeleri -->
+    <string name="project_gateway_tagline">VPN ve uygulamalarınız için kurum içi MFA sunucusu</string>
+    <string name="project_gateway_info">VPN\'inize ve uygulamalarınıza telefonda sayı eşleştirmeli onay ekler. Kendi sunucunuzda çalışır — hiçbir veri Veilo\'ya ya da bir buluta gitmez.\n\n• Push yorgunluğu saldırılarına karşı sayı eşleştirme; her istek tek deneme, süreli\n• Her telefonun anahtarının TEE ya da StrongBox içinde olduğunu Android Key Attestation ile doğrular\n• RADIUS konuşan her VPN ve ağ cihazıyla çalışır; kendi uygulamalarınız için HTTP uç noktası\n• Yönetici, yardım masası ve denetçi rolleri; cihaz durumu ve tam denetim kaydı CSV olarak SIEM\'e\n• Ubuntu + Docker, imzalı paketle tek komutla kurulum\n• Veilo Enterprise uygulamasıyla birlikte çalışır</string>
+
     <string name="project_veilo_tagline">Uçtan uca şifreli kurumsal mesajlaşma</string>
     <string name="project_veilo_info">Kapalı ağlar için self-hosted, uçtan uca şifreli kurumsal mesajlaşma platformu. Verileriniz asla altyapınızın dışına çıkmaz.\n\n• Zero-Trust mesh VPN, internet olmadan çalışır\n• Signal Protocol cihaz düzeyinde şifreleme\n• Tam yönetim kontrolü: kullanıcılar, cihazlar, denetim logları\n• Mesajlaşma, sesli/görüntülü arama, dosya paylaşımı\n• Ekran görüntüsü engeli, uzaktan cihaz silme, biyometrik kilit\n• KVKK, GDPR ve ISO 27001 uyumlu</string>
 
