@@ -23,23 +23,40 @@ import java.util.Base64
  */
 object DeviceKey {
     private const val KEYSTORE = "AndroidKeyStore"
+    private val SELF_TEST = "veilo device key self-test".toByteArray()
 
     fun alias(accountId: String) = "veilo.device.$accountId"
 
-    /** Tries the security chip first, then the TEE. */
+    /**
+     * Tries the security chip first, then the TEE; on each, first with the key usable only while
+     * the phone is unlocked (pentest 2026-11-12, O7: a locked phone must not sign an approval or
+     * a poll). Some StrongBox implementations refuse that flag or fail to sign with it, so each
+     * key is test-signed before it is used, and the next variant is tried when that fails. The
+     * Gateway sees what was granted in the attestation (tag 509, unlockedDeviceRequired).
+     */
     fun generate(alias: String, challenge: ByteArray, strongBoxAvailable: Boolean): DeviceKeyMaterial {
-        if (strongBoxAvailable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        val variants = buildList {
+            if (strongBoxAvailable) {
+                add(true to true)
+                add(true to false)
+            }
+            add(false to true)
+            add(false to false)
+        }
+        var last: Exception? = null
+        for ((strongBox, unlockedOnly) in variants) {
             try {
-                generateInKeystore(alias, challenge, strongBox = true)
+                generateInKeystore(alias, challenge, strongBox, unlockedOnly)
+                signer(alias).sign(SELF_TEST)
                 return material(alias)
             } catch (e: StrongBoxUnavailableException) {
-                delete(alias)
+                last = e
             } catch (e: Exception) {
-                delete(alias)
+                last = e
             }
+            delete(alias)
         }
-        generateInKeystore(alias, challenge, strongBox = false)
-        return material(alias)
+        throw last ?: IllegalStateException("no device key")
     }
 
     /** Where the Keystore says the key lives, as the Gateway names levels. */
@@ -78,11 +95,12 @@ object DeviceKey {
         }
     }
 
-    private fun generateInKeystore(alias: String, challenge: ByteArray, strongBox: Boolean) {
+    private fun generateInKeystore(alias: String, challenge: ByteArray, strongBox: Boolean, unlockedOnly: Boolean) {
         val spec = KeyGenParameterSpec.Builder(alias, KeyProperties.PURPOSE_SIGN)
             .setAlgorithmParameterSpec(ECGenParameterSpec("secp256r1"))
             .setDigests(KeyProperties.DIGEST_SHA256)
             .setAttestationChallenge(challenge)
+            .setUnlockedDeviceRequired(unlockedOnly)
             .apply { if (strongBox) setIsStrongBoxBacked(true) }
             .build()
         KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC, KEYSTORE).apply { initialize(spec) }.generateKeyPair()

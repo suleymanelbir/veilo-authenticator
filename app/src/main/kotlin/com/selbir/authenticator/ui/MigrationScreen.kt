@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.selbir.authenticator.R
+import com.selbir.authenticator.security.SecureCaptureActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,6 +104,7 @@ fun MigrationScreen(
                     scanner.launch(
                         ScanOptions()
                             .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                            .setCaptureActivity(SecureCaptureActivity::class.java)
                             .setPrompt(scanPrompt)
                             .setBeepEnabled(false)
                             .setOrientationLocked(false),
@@ -131,6 +133,7 @@ fun MigrationScreen(
                     scanner.launch(
                         ScanOptions()
                             .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                            .setCaptureActivity(SecureCaptureActivity::class.java)
                             .setPrompt(scanPrompt)
                             .setBeepEnabled(false)
                             .setOrientationLocked(false),

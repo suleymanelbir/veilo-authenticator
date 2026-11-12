@@ -50,8 +50,9 @@ import com.selbir.authenticator.R
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpAuthUri
 import com.selbir.authenticator.core.VeiloEnrolment
-import com.selbir.authenticator.edition.Edition
 import com.selbir.authenticator.data.Protection
+import com.selbir.authenticator.edition.Edition
+import com.selbir.authenticator.security.SecureCaptureActivity
 
 /**
  * @param onScannerVisible told true just before the QR scanner activity opens and false
@@ -113,6 +114,7 @@ fun AddAccountScreen(
                     scanner.launch(
                         ScanOptions()
                             .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                            .setCaptureActivity(SecureCaptureActivity::class.java)
                             .setPrompt(scanPrompt)
                             .setBeepEnabled(false)
                             .setOrientationLocked(false)

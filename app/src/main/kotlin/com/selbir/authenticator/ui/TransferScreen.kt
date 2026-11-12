@@ -57,6 +57,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.selbir.authenticator.R
 import com.selbir.authenticator.export.QrCodes
 import com.selbir.authenticator.policy.Policy
+import com.selbir.authenticator.security.SecureCaptureActivity
 import kotlinx.coroutines.delay
 
 /** Pixels per QR image. Scaled by Compose to the available width; more pixels only cost memory. */
@@ -175,6 +176,7 @@ private fun ColumnScope.SendStage(
                 scanner.launch(
                     ScanOptions()
                         .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                        .setCaptureActivity(SecureCaptureActivity::class.java)
                         .setPrompt(scanPrompt)
                         .setBeepEnabled(false)
                         .setOrientationLocked(false),

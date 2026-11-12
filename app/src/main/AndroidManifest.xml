@@ -45,5 +45,13 @@
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="android:screenOrientation" />
+        <!-- The scanner every screen uses: CaptureActivity with FLAG_SECURE (D10). -->
+        <activity
+            android:name=".security.SecureCaptureActivity"
+            android:exported="false"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
     </application>
 </manifest>
