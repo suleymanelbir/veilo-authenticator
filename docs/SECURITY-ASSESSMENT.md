@@ -5,7 +5,7 @@
 **Assessment Date:** November 2026  
 **Assessor:** Veilo Security Team  
 **Classification:** Public  
-**Report Version:** 1.2 (v0.3.0: metadata encryption, device-to-device transfer; v0.4.0: organisation policy via managed configuration)
+**Report Version:** 1.3 (v0.3.0: metadata encryption, device-to-device transfer; v0.4.0: organisation policy via managed configuration; November 2026: L-03 from the internal pre-pentest review)
 
 ---
 
@@ -22,7 +22,7 @@ The application implements defense-in-depth across 11 security layers. No critic
 | Critical | 0 |
 | High | 0 |
 | Medium | 0 |
-| Low | 1 (accepted risk, documented below) + 1 resolved in v0.3.0 |
+| Low | 1 (accepted risk, documented below) + 1 resolved in v0.3.0 + 1 resolved in the next release |
 | Informational | 4 |
 
 ---
@@ -240,6 +240,7 @@ android:dataExtractionRules="@xml/data_extraction_rules"
 - Camera permission declared with `android:required="false"`.
 - Frames decoded in memory, never written to storage or transmitted.
 - Scanner activity locked to sensor orientation only.
+- The scanner runs in its own activity; since the release after v0.4.0 (Enterprise 0.5.3) it carries the same `FLAG_SECURE` and recents protection as the main screen (L-03).
 
 **Assessment:** STRONG — No data exfiltration path from camera.
 
@@ -323,6 +324,11 @@ No dependencies with known CVEs at time of assessment. No dependencies require n
 - **Description:** Up to v0.2.0, service names and account labels were stored in plaintext JSON in app-private storage.
 - **Impact:** An attacker with root access could learn which services a user had enrolled, even without accessing the secrets.
 - **Resolution:** The account list is now one file encrypted with AES-256-GCM under a dedicated Android Keystore key (`vault.v1`), with a format header authenticated as associated data. The key does not require user authentication, by design: the list is read on every unlock, and the secrets inside stay wrapped under the authentication-bound key regardless. On the first start after the update the plaintext file is re-encrypted, overwritten and deleted. Writes are atomic (temporary file + rename).
+
+**L-03: QR scanner screen not covered by screen-capture protection** — *Resolved in the next release*
+- **Description:** The QR scanner opens in the library's own activity, which did not set `FLAG_SECURE`. While scanning, the camera preview (showing the QR code, i.e. the seed) could appear in a screenshot, a screen recording or the recent-apps view.
+- **Impact:** Requires an app with screen-capture rights or physical access during the few seconds of scanning. The stored secrets were never exposed.
+- **Resolution:** A `SecureCaptureActivity` subclass sets `FLAG_SECURE` and disables the recents screenshot; every scan uses it. Found in the internal pre-pentest review of November 2026.
 
 **L-02: JVM memory copy limitation**
 - **Description:** The JVM does not guarantee that a `ByteArray.fill(0)` call erases all copies of the data in memory.
