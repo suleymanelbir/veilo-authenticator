@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,13 +25,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -49,7 +44,6 @@ import com.selbir.authenticator.policy.Policy
 fun AboutScreen(policy: Policy, onBack: () -> Unit) {
     val context = LocalContext.current
     val version = remember { versionName(context) }
-    var selectedProject by remember { mutableStateOf<VeiloProject?>(null) }
 
     Scaffold(
         topBar = {
@@ -155,14 +149,11 @@ fun AboutScreen(policy: Policy, onBack: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(8.dp))
-                for (project in veiloProjects) {
-                    ProjectCard(
-                        name = stringResource(project.nameRes),
-                        tagline = stringResource(project.taglineRes),
-                        onClick = { selectedProject = project },
-                    )
-                    Spacer(Modifier.height(8.dp))
-                }
+                ProjectCard(
+                    name = stringResource(R.string.about_ecosystem_link_title),
+                    tagline = stringResource(R.string.about_ecosystem_link_body),
+                    onClick = { openUrl(context, VEILO_PRODUCTS_URL) },
+                )
             }
 
             // --- Developer ---
@@ -187,20 +178,6 @@ fun AboutScreen(policy: Policy, onBack: () -> Unit) {
                 )
             }
         }
-    }
-
-    // Project info dialog (Tecvid Okulu pattern)
-    selectedProject?.let { project ->
-        ProjectInfoDialog(
-            name = stringResource(project.nameRes),
-            info = stringResource(project.infoRes),
-            url = project.url,
-            onDismiss = { selectedProject = null },
-            onOpenUrl = { url ->
-                selectedProject = null
-                openUrl(context, url)
-            },
-        )
     }
 }
 
@@ -255,31 +232,6 @@ private fun ProjectCard(name: String, tagline: String, onClick: () -> Unit) {
     }
 }
 
-@Composable
-private fun ProjectInfoDialog(
-    name: String,
-    info: String,
-    url: String,
-    onDismiss: () -> Unit,
-    onOpenUrl: (String) -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(name) },
-        text = { Text(info) },
-        confirmButton = {
-            TextButton(onClick = { onOpenUrl(url) }) {
-                Text(stringResource(R.string.about_open_website))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_cancel))
-            }
-        },
-    )
-}
-
 private fun openUrl(context: Context, url: String) {
     try {
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -294,45 +246,13 @@ private fun versionName(context: Context): String = try {
     ""
 }
 
-private class VeiloProject(
-    val nameRes: Int,
-    val taglineRes: Int,
-    val infoRes: Int,
-    val url: String,
-)
-
-private val veiloProjects = listOf(
-    VeiloProject(
-        nameRes = R.string.project_gateway_name,
-        taglineRes = R.string.project_gateway_tagline,
-        infoRes = R.string.project_gateway_info,
-        url = "https://gateway.veilo.tr/",
-    ),
-    VeiloProject(
-        nameRes = R.string.project_veilo_name,
-        taglineRes = R.string.project_veilo_tagline,
-        infoRes = R.string.project_veilo_info,
-        url = "https://veilo.tr/",
-    ),
-    VeiloProject(
-        nameRes = R.string.project_axon_name,
-        taglineRes = R.string.project_axon_tagline,
-        infoRes = R.string.project_axon_info,
-        url = "https://axon.veilo.tr/",
-    ),
-    VeiloProject(
-        nameRes = R.string.project_radar_name,
-        taglineRes = R.string.project_radar_tagline,
-        infoRes = R.string.project_radar_info,
-        url = "https://radar.veilo.tr/",
-    ),
-    VeiloProject(
-        nameRes = R.string.project_voltbox_name,
-        taglineRes = R.string.project_voltbox_tagline,
-        infoRes = R.string.project_voltbox_info,
-        url = "https://volt.veilo.tr/",
-    ),
-)
+/**
+ * Veilo product list, shared by the public and Enterprise editions. Products are
+ * added or reworded only on that page (docs/index.html, GitHub Pages), never in
+ * the app, so no release is needed. Installed versions keep this address: do not
+ * change it, and keep the #ecosystem anchor on the page.
+ */
+internal const val VEILO_PRODUCTS_URL = "https://auth.veilo.tr/#ecosystem"
 
 fun restrictionLabel(r: Policy.Restriction): Int = when (r) {
     Policy.Restriction.HARDWARE_BOUND_ONLY -> R.string.restriction_hardware_bound_only
