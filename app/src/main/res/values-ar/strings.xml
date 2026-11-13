@@ -222,4 +222,8 @@
     <string name="blocked_rooted">لا تسمح مؤسستك بالرموز لمرة واحدة على جهاز مجذّر أو معدّل.</string>
     <string name="blocked_debugger">لا تسمح مؤسستك بالرموز لمرة واحدة أثناء اتصال مصحح أخطاء بالتطبيق.</string>
     <string name="blocked_contact">تواصل مع دعم تقنية المعلومات لديك: %1$s</string>
+    <string name="challenge_confirm_body">تسجيل دخول إلى %1$s بالحساب %2$s. كانت كلمة المرور صحيحة؛ وافق فقط إذا كنت تسجّل الدخول الآن.</string>
+    <string name="challenge_approve">موافقة</string>
+    <string name="challenge_reject">رفض</string>
+    <string name="challenge_refused_by_you">تم رفض تسجيل الدخول.</string>
 </resources>

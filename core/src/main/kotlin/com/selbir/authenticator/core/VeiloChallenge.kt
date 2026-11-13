@@ -38,8 +38,21 @@ data class PendingChallenge(
     val id: String,
     val rpId: String,
     val nonce: String,
-    /** Three candidate numbers, one of them the one on the login screen. */
+    /** Three candidate numbers, one of them the one on the login screen; for [APPROVAL_CONFIRM] only that one. */
     val choices: List<String>,
     /** ISO-8601 with offset, as the Gateway sends it. */
     val expiresAt: String,
-)
+    /**
+     * [APPROVAL_NUMBER] (number matching) or [APPROVAL_CONFIRM] (Gateway 1.1, PROTOCOL.md §5.3): the
+     * relying party cannot show a number (an LDAP application), so the phone asks Onayla / Reddet
+     * and signs the single choice exactly like a chosen number.
+     */
+    val approval: String = APPROVAL_NUMBER,
+) {
+    val isConfirm: Boolean get() = approval == APPROVAL_CONFIRM
+
+    companion object {
+        const val APPROVAL_NUMBER = "number"
+        const val APPROVAL_CONFIRM = "confirm"
+    }
+}

@@ -29,9 +29,11 @@ import kotlinx.coroutines.delay
 
 /**
  * Number matching (Gateway PROTOCOL.md §5): the login screen shows one number, the phone
- * offers three. Tapping one signs it with the device key and sends it; "not me" (or the back
- * gesture) sends nothing and lets the challenge expire on the Gateway. A touch outside the
- * dialog does nothing, and the screen stays on while it is open.
+ * offers three. Tapping one signs it with the device key and sends it. A plain confirmation
+ * (§5.3, an LDAP application that cannot show a number) offers Onayla / Reddet instead;
+ * Onayla signs the single choice the same way. "Not me" / Reddet (or the back gesture)
+ * refuses the request on the Gateway. A touch outside the dialog does nothing, and the screen
+ * stays on while it is open.
  */
 @Composable
 fun ChallengeDialog(
@@ -70,8 +72,9 @@ fun ChallengeDialog(
         title = { Text(stringResource(R.string.challenge_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(stringResource(R.string.challenge_body, prompt.challenge.rpId, account))
-                Row(
+                val confirm = prompt.challenge.isConfirm
+                Text(stringResource(if (confirm) R.string.challenge_confirm_body else R.string.challenge_body, prompt.challenge.rpId, account))
+                if (!confirm) Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically,
@@ -97,10 +100,16 @@ fun ChallengeDialog(
                 }
             }
         },
-        confirmButton = {},
+        confirmButton = {
+            if (prompt.challenge.isConfirm) {
+                FilledTonalButton(onClick = { onChoose(prompt.challenge.choices.first()) }, enabled = !prompt.busy) {
+                    Text(stringResource(R.string.challenge_approve))
+                }
+            }
+        },
         dismissButton = {
             TextButton(onClick = onDismiss, enabled = !prompt.busy) {
-                Text(stringResource(R.string.challenge_not_me))
+                Text(stringResource(if (prompt.challenge.isConfirm) R.string.challenge_reject else R.string.challenge_not_me))
             }
         },
     )

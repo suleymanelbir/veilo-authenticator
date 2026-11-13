@@ -116,6 +116,18 @@ class HttpGatewayClient(
         }
     }
 
+    override fun refuse(gatewayUrl: String, pins: List<String>, deviceId: String, challenge: PendingChallenge, signer: DeviceSigner): AnswerResult {
+        val path = "/device/challenges/${challenge.id}/refuse"
+        return try {
+            val a = request(gatewayUrl + path, "POST", ByteArray(0), deviceAuth(deviceId, "POST", path, signer), pins)
+            GatewayJson.answerResult(a.status, a.body)
+        } catch (e: PinMismatch) {
+            AnswerResult.Unreachable(TLS_PIN_MISMATCH)
+        } catch (e: Exception) {
+            AnswerResult.Unreachable(e.javaClass.simpleName)
+        }
+    }
+
     override fun registerPush(gatewayUrl: String, pins: List<String>, deviceId: String, signer: DeviceSigner, kind: String, token: String): Int {
         val path = "/device/push"
         return try {

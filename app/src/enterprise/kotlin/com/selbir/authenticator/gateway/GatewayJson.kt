@@ -99,13 +99,20 @@ object GatewayJson {
                     val choices = o["choices"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
                     val id = o["id"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
                     val nonce = o["nonce"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
-                    if (choices.size != 3 || !choices.all { VeiloChallenge.NUMBER_FORMAT.matches(it) }) return@mapNotNull null
+                    val approval = o["approval"]?.jsonPrimitive?.contentOrNull ?: PendingChallenge.APPROVAL_NUMBER
+                    val expected = when (approval) {
+                        PendingChallenge.APPROVAL_NUMBER -> 3
+                        PendingChallenge.APPROVAL_CONFIRM -> 1
+                        else -> return@mapNotNull null // a kind of approval this app does not know: never guess
+                    }
+                    if (choices.size != expected || !choices.all { VeiloChallenge.NUMBER_FORMAT.matches(it) }) return@mapNotNull null
                     PendingChallenge(
                         id = id,
                         rpId = o["rp_id"]?.jsonPrimitive?.contentOrNull.orEmpty(),
                         nonce = nonce,
                         choices = choices,
                         expiresAt = o["expires_at"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+                        approval = approval,
                     )
                 }
             )

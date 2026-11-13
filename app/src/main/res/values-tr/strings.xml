@@ -246,6 +246,10 @@
     <string name="challenge_refused">Kurumunuzun Gateway\'i bu yanıtı reddetti.</string>
     <string name="challenge_gone">Bu giriş isteği artık geçerli değil (süresi doldu ya da yanıtlandı).</string>
     <string name="challenge_seconds_left">%1$d sn kaldı</string>
+    <string name="challenge_confirm_body">%2$s hesabıyla %1$s girişi. Şifre doğru girildi; yalnızca şu anda giriş yapan sizseniz onaylayın.</string>
+    <string name="challenge_approve">Onayla</string>
+    <string name="challenge_reject">Reddet</string>
+    <string name="challenge_refused_by_you">Giriş reddedildi.</string>
     <string name="gateway_device_revoked">%1$s: kurumunuz bu cihazı iptal etti. Kodları ve giriş onayları artık geçerli değil; yeni tanımlama için yardım masanıza başvurun.</string>
     <string name="badge_gateway_revoked">Kurumunuz tarafından iptal edildi</string>
     <string name="challenge_unreachable">Kurumunuzun Gateway\'ine ulaşılamadı. Bağlantıyı kontrol edip yeniden deneyin.</string>

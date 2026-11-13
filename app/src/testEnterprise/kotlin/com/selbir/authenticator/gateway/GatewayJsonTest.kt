@@ -68,6 +68,23 @@ class GatewayJsonTest {
     }
 
     @Test
+    fun confirmChallengesCarryOneChoiceAndUnknownKindsAreSkipped() {
+        val body = """[
+            {"id":"c1","rp_id":"EBYS · 10.1.2.30","nonce":"AAEC","choices":["42"],"approval":"confirm","expires_at":"x"},
+            {"id":"c2","rp_id":"x","nonce":"AAEC","choices":["17","42","88"],"approval":"confirm"},
+            {"id":"c3","rp_id":"x","nonce":"AAEC","choices":["42"],"approval":"number"},
+            {"id":"c4","rp_id":"x","nonce":"AAEC","choices":["42"],"approval":"tap-anything"},
+            {"id":"c5","rp_id":"vpn","nonce":"AAEC","choices":["17","42","88"],"approval":"number"}
+        ]"""
+        val fetch = assertIs<ChallengeFetch.Pending>(GatewayJson.challengeFetch(200, body))
+        assertEquals(listOf("c1", "c5"), fetch.challenges.map { it.id })
+        assertEquals(true, fetch.challenges[0].isConfirm)
+        assertEquals(listOf("42"), fetch.challenges[0].choices)
+        assertEquals(false, fetch.challenges[1].isConfirm)
+        assertEquals(AnswerResult.Refused("user_refused"), GatewayJson.answerResult(200, """{"id":"c1","status":"refused","reason":"user_refused"}"""))
+    }
+
+    @Test
     fun answerRequestAndResultFollowTheProtocol() {
         val request = Json.parseToJsonElement(GatewayJson.answerRequest("42", byteArrayOf(1, 2, 3))).jsonObject
         assertEquals("42", request["number"]!!.jsonPrimitive.content)

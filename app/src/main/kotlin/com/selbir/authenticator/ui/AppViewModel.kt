@@ -597,11 +597,28 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         _state.update { if (it.challenge?.challenge?.id == id && it.challenge.busy.not()) it.copy(challenge = null) else it }
     }
 
-    /** "Not me": nothing is sent; the challenge expires on the Gateway and the login fails. */
+    /**
+     * "Not me" / "Reddet": the dialog closes at once and the Gateway is told, so the sign-in fails
+     * now instead of when the request expires (PROTOCOL.md §5.3). A Gateway before 1.1 does not
+     * know the call; the request then simply expires there, as it always did.
+     */
     fun dismissChallenge() {
         val prompt = _state.value.challenge ?: return
+        if (prompt.busy) return
         dismissedChallenges.add(prompt.challenge.id)
         _state.update { if (it.challenge?.challenge?.id == prompt.challenge.id) it.copy(challenge = null) else it }
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                val gateway = Edition.gateway(app) ?: return@withContext null
+                val binding = repository.all().find { it.id == prompt.accountId }?.gateway ?: return@withContext null
+                try {
+                    gateway.refuse(binding.url, binding.pins, binding.deviceId, prompt.challenge, DeviceKeyFactory.signer(DeviceKeyFactory.alias(prompt.accountId)))
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            if (result is AnswerResult.Refused) toast(R.string.challenge_refused_by_you)
+        }
     }
 
     private fun KeyLevel.toVeilo(): VeiloKeyLevel = when (this) {

@@ -250,6 +250,10 @@
     <string name="challenge_refused">Your organisation\'s Gateway refused this answer.</string>
     <string name="challenge_gone">This sign-in request is no longer valid (expired or already answered).</string>
     <string name="challenge_seconds_left">%1$d s left</string>
+    <string name="challenge_confirm_body">Sign-in to %1$s with %2$s. The password was correct; approve only if you are signing in right now.</string>
+    <string name="challenge_approve">Approve</string>
+    <string name="challenge_reject">Reject</string>
+    <string name="challenge_refused_by_you">Sign-in rejected.</string>
     <string name="gateway_device_revoked">%1$s: your organisation has revoked this device. Its codes and sign-in approvals no longer work; ask your help desk for a new enrolment.</string>
     <string name="badge_gateway_revoked">Revoked by your organisation</string>
     <string name="challenge_unreachable">Could not reach your organisation\'s Gateway. Check the connection and try again.</string>
