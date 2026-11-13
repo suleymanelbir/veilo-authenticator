@@ -3,4 +3,8 @@
     <!-- Enterprise overrides: a locale folder in main would otherwise win over values/ here -->
     <string name="about_tagline">Yalnızca kurumunuzun Gateway\'iyle konuşur. Donanım destekli. Sıfır izleme.\nAnahtarlarınız asla cihazınızdan çıkmaz.</string>
     <string name="about_description">Veilo Enterprise, kurumunuzun kendi Veilo Gateway sunucusu üzerinden oturum açma isteklerini sayı eşleştirmesiyle onaylar; anahtarlar güvenli donanımda tutulur. Ayrıca zamana dayalı (TOTP) ve sayaca dayalı (HOTP) tek kullanımlık parolalar üretir. Yalnızca kurumunuzun Gateway\'iyle konuşur — Veilo hesabı, analiz ya da izleme yoktur.</string>
+    <string name="push_channel_name">Giriş istekleri</string>
+    <string name="push_channel_description">Bir giriş onayınızı beklediğinde haber verir. Bildirim giriş hakkında bilgi içermez; ayrıntılar yalnızca uygulamada görünür.</string>
+    <string name="push_title">Giriş isteği</string>
+    <string name="push_text">Bir giriş onayınızı bekliyor. Sayıyı görmek için Veilo\'yu açın.</string>
 </resources>

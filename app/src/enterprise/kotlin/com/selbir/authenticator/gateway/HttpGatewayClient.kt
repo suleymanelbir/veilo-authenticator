@@ -115,4 +115,14 @@ class HttpGatewayClient(
             AnswerResult.Unreachable(e.javaClass.simpleName)
         }
     }
+
+    override fun registerPush(gatewayUrl: String, pins: List<String>, deviceId: String, signer: DeviceSigner, kind: String, token: String): Int {
+        val path = "/device/push"
+        return try {
+            val body = GatewayJson.pushRequest(kind, token).toByteArray()
+            request(gatewayUrl + path, "PUT", body, deviceAuth(deviceId, "PUT", path, signer), pins).status
+        } catch (e: Exception) {
+            0
+        }
+    }
 }

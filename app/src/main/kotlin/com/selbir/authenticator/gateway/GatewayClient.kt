@@ -86,4 +86,11 @@ interface GatewayClient {
 
     /** `POST /device/challenges/{id}/response`: one attempt with the number the user chose. */
     fun answer(gatewayUrl: String, pins: List<String>, deviceId: String, challenge: PendingChallenge, number: String, signer: DeviceSigner): AnswerResult
+
+    /**
+     * `PUT /device/push` (PROTOCOL.md §5.2): how the Gateway wakes this device when a sign-in
+     * waits for it. Returns the HTTP status (200 stored; 422 the Gateway cannot send that
+     * kind; 0 unreachable). The wake-up itself carries nothing; the app then polls as usual.
+     */
+    fun registerPush(gatewayUrl: String, pins: List<String>, deviceId: String, signer: DeviceSigner, kind: String, token: String): Int
 }

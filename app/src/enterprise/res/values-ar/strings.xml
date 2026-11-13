@@ -3,4 +3,8 @@
     <!-- Enterprise overrides: a locale folder in main would otherwise win over values/ here -->
     <string name="about_tagline">يتصل فقط بخادم Gateway الخاص بمؤسستك. مدعوم بالعتاد. بدون تتبع.\nمفاتيحك لا تغادر جهازك أبداً.</string>
     <string name="about_description">يوافق Veilo Enterprise على طلبات تسجيل الدخول لمؤسستك عبر خادم Veilo Gateway الخاص بها، بمطابقة الأرقام ومفاتيح محفوظة في عتاد آمن. كما ينشئ كلمات مرور لمرة واحدة مبنية على الوقت (TOTP) وعلى العدّاد (HOTP). يتصل فقط بخادم Gateway الخاص بمؤسستك — بدون حساب Veilo وبدون تحليلات أو تتبع.</string>
+    <string name="push_channel_name">طلبات تسجيل الدخول</string>
+    <string name="push_channel_description">يُعلمك عندما ينتظر تسجيل دخول موافقتك. لا يحتوي الإشعار على تفاصيل؛ تظهر التفاصيل في التطبيق فقط.</string>
+    <string name="push_title">طلب تسجيل دخول</string>
+    <string name="push_text">تسجيل دخول ينتظر موافقتك. افتح Veilo لرؤية الرقم.</string>
 </resources>

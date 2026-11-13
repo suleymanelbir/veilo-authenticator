@@ -351,6 +351,34 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             val risks = withContext(Dispatchers.IO) { DeviceIntegrity.check() }
             _state.update { it.copy(risks = risks) }
         }
+        if (Edition.CONNECTED) viewModelScope.launch { registerPush() }
+    }
+
+    /**
+     * 1.1 push: tell every Gateway binding how to wake this phone, once per token change.
+     * Done here, while unlocked, because the device key signs only then (O7/D10).
+     */
+    private suspend fun registerPush() {
+        val (kind, token) = Edition.pushRegistration(app) ?: return
+        val gateway = Edition.gateway(app) ?: return
+        val bound = try {
+            repository.all().filter { it.gateway != null && it.gateway.revokedAt == null }
+        } catch (e: Exception) {
+            return
+        }
+        withContext(Dispatchers.IO) {
+            for (account in bound) {
+                val binding = account.gateway ?: continue
+                val key = "${binding.url}|${binding.deviceId}"
+                if (Edition.pushRegisteredWith(app, key) == token) continue
+                val status = try {
+                    gateway.registerPush(binding.url, binding.pins, binding.deviceId, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)), kind, token)
+                } catch (e: Exception) {
+                    0
+                }
+                if (status == 200) Edition.markPushRegistered(app, key, token)
+            }
+        }
     }
 
     fun lock() {
@@ -497,6 +525,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         revoked.forEach { markRevoked(it.id, it.issuer.ifBlank { it.name }) }
         prompt ?: return
         _state.update { if (it.locked || it.challenge != null) it else it.copy(challenge = prompt) }
+        Edition.clearWake(app)
     }
 
     /** Stop polling a binding the organisation revoked; tell the user once. */

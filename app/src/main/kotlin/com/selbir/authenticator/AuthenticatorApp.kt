@@ -12,6 +12,11 @@ import com.selbir.authenticator.security.KeystoreVaultCipher
 import java.io.File
 
 class AuthenticatorApp : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        com.selbir.authenticator.edition.Edition.onAppStart(this)
+    }
+
     val preferences: AppPreferences by lazy { AppPreferences(this) }
 
     /** Organisation rules from managed configuration; [com.selbir.authenticator.policy.Policy.NONE] on an unmanaged device. */

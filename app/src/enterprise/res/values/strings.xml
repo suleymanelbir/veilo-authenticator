@@ -5,4 +5,8 @@
     <!-- the public tagline and description say "offline": not true for this edition -->
     <string name="about_tagline">Talks only to your organisation\'s Gateway. Hardware-backed. Zero tracking.\nYour keys never leave your device.</string>
     <string name="about_description">Veilo Enterprise approves sign-ins for your organisation through its own Veilo Gateway server, with number matching and keys held in secure hardware. It also generates time-based (TOTP) and counter-based (HOTP) one-time passwords. It talks only to your organisation\'s Gateway — no Veilo account, no analytics, no tracking.</string>
+    <string name="push_channel_name">Sign-in requests</string>
+    <string name="push_channel_description">Notifies you when a sign-in waits for your approval. The notification says nothing about the sign-in; the details appear only in the app.</string>
+    <string name="push_title">Sign-in request</string>
+    <string name="push_text">A sign-in is waiting for your approval. Open Veilo to see the number.</string>
 </resources>

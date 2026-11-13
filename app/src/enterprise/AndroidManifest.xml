@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!--
-        Used for exactly one thing today: confirming a Gateway enrolment (POST /enrol/confirm)
-        right after a Gateway QR was scanned. Codes are still computed offline; no telemetry.
+        The Gateway client: enrolment confirm, the signed challenge poll and answer, and (1.1)
+        registering for push wake-ups. Codes are still computed offline; no telemetry.
     -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 1.1: "a sign-in is waiting" notification (asked once; without it the app still polls) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application>
+        <!-- Firebase is initialised by Push.start() only when a project is configured -->
+        <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
+        <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+
+        <service
+            android:name="com.selbir.authenticator.push.WakeService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+    </application>
 </manifest>

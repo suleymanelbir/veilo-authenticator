@@ -136,6 +136,11 @@ object GatewayJson {
         mapOf("number" to JsonPrimitive(number), "signature" to JsonPrimitive(VeiloChallenge.base64Url(signature)))
     ).toString()
 
+    /** `PUT /device/push` body (PROTOCOL.md §5.2). */
+    fun pushRequest(kind: String, token: String): String = JsonObject(
+        mapOf("kind" to JsonPrimitive(kind), "token" to JsonPrimitive(token))
+    ).toString()
+
     fun answerResult(status: Int, body: String): AnswerResult {
         val obj = parseOrNull(body)
         return when {

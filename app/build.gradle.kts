@@ -16,6 +16,10 @@ val keyProperties = signingProperties("key.properties")
 // The Enterprise edition has its own upload key (Managed Google Play), so a leak of one key
 // never touches the other app. Same rules: never committed; absent = unsigned release.
 val enterpriseKeyProperties = signingProperties("key-enterprise.properties")
+// 1.1 push (Enterprise only): the Firebase project the Gateway sends wake-ups through. These
+// values are public identifiers (they end up in the APK), not secrets; without the file the
+// app builds and simply never registers for FCM (UnifiedPush / polling still work).
+val firebaseProperties = signingProperties("firebase-enterprise.properties")
 
 android {
     namespace = "com.selbir.authenticator"
@@ -62,6 +66,9 @@ android {
             dimension = "edition"
             applicationIdSuffix = ".enterprise"
             versionNameSuffix = "-enterprise"
+            for (key in listOf("FCM_PROJECT_ID", "FCM_APP_ID", "FCM_API_KEY", "FCM_SENDER_ID")) {
+                buildConfigField("String", key, "\"${firebaseProperties.getProperty(key, "")}\"")
+            }
         }
     }
 
@@ -118,6 +125,9 @@ dependencies {
 
     // QR scanning without Google Play services: works offline and on de-Googled devices.
     implementation(libs.zxing.embedded)
+    // 1.1 push wake-ups: Enterprise only; the public edition has no network code at all
+    "enterpriseImplementation"(platform(libs.firebase.bom))
+    "enterpriseImplementation"(libs.firebase.messaging)
 
     testImplementation(kotlin("test-junit"))
 

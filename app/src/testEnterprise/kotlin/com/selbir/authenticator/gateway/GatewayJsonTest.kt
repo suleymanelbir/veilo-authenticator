@@ -93,4 +93,12 @@ class GatewayJsonTest {
             java.util.Base64.getUrlDecoder().decode(GatewayJson.deviceStateHeader(DeviceState("x", "1", null, false, emptyList()))).decodeToString()
         ).jsonObject["patch_level"].toString())
     }
+
+    @Test
+    fun pushRegistrationBodyIsKindAndTokenOnly() {
+        val body = Json.parseToJsonElement(GatewayJson.pushRequest("fcm", "tok-123")).jsonObject
+        assertEquals(setOf("kind", "token"), body.keys)
+        assertEquals("fcm", body["kind"]!!.jsonPrimitive.content)
+        assertEquals("tok-123", body["token"]!!.jsonPrimitive.content)
+    }
 }

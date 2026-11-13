@@ -1,12 +1,16 @@
 package com.selbir.authenticator
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentActivity
+import com.selbir.authenticator.edition.Edition
 import com.selbir.authenticator.security.BiometricGate
 import com.selbir.authenticator.security.SensitiveClipboard
 import com.selbir.authenticator.ui.AppRoot
@@ -17,6 +21,18 @@ import com.selbir.authenticator.ui.AuthenticatorTheme
 class MainActivity : FragmentActivity() {
     private val viewModel: AppViewModel by viewModels()
 
+    // 1.1 push (Enterprise): "a sign-in is waiting" needs the notification permission (Android 13+)
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
+
+    private fun askForNotificationsOnce() {
+        if (!Edition.PUSH_CAPABLE || Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return
+        val prefs = getSharedPreferences("push", MODE_PRIVATE)
+        if (prefs.getBoolean("asked", false)) return
+        prefs.edit().putBoolean("asked", true).apply()
+        notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -24,6 +40,7 @@ class MainActivity : FragmentActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) setRecentsScreenshotEnabled(false)
 
+        askForNotificationsOnce()
         enableEdgeToEdge()
         setContent {
             AuthenticatorTheme {
