@@ -23,7 +23,11 @@
 
     <string name="accounts_empty">لا توجد حسابات بعد. اضغط + لإضافة حساب.</string>
     <plurals name="code_copied">
-        <item quantity="one">تم نسخ الرمز. سيُمسح من الحافظة خلال %1$d ثانية.</item>
+        <item quantity="zero">تم نسخ الرمز. سيُمسح من الحافظة الآن (%1$d ثانية).</item>
+        <item quantity="one">تم نسخ الرمز. سيُمسح من الحافظة خلال ثانية واحدة (%1$d).</item>
+        <item quantity="two">تم نسخ الرمز. سيُمسح من الحافظة خلال ثانيتين (%1$d).</item>
+        <item quantity="few">تم نسخ الرمز. سيُمسح من الحافظة خلال %1$d ثوانٍ.</item>
+        <item quantity="many">تم نسخ الرمز. سيُمسح من الحافظة خلال %1$d ثانية.</item>
         <item quantity="other">تم نسخ الرمز. سيُمسح من الحافظة خلال %1$d ثانية.</item>
     </plurals>
     <string name="badge_hardware_bound">مرتبط بهذا الجهاز</string>
@@ -236,4 +240,28 @@
     <string name="qr_login_choose_title">بأي حساب تريد تسجيل الدخول؟</string>
     <string name="qr_login_wrong_account">هذا الحساب لا يتبع مؤسسة تسجيل الدخول هذا. امسح الرمز مجددًا واختر حسابًا آخر.</string>
     <string name="challenge_refused_by_you">تم رفض تسجيل الدخول.</string>
+    <!-- Gateway enrolment and sign-in approval (Enterprise; were missing in Arabic) -->
+    <string name="enrol_gateway_notice">تسجيل لدى المؤسسة: سيُسجَّل هذا الهاتف لدى %1$s. مستوى المفتاح المطلوب: %2$s.</string>
+    <string name="enrol_gateway_hardware_only">تُحفظ تسجيلات المؤسسة دائماً في عتاد الأمان.</string>
+    <string name="enrol_gateway_recorded">تم التسجيل لدى مؤسستك.</string>
+    <string name="enrol_gateway_refused">رفض خادم Gateway الخاص بمؤسستك هذا التسجيل. اطلب رمز QR جديداً من المسؤول.</string>
+    <string name="enrol_gateway_refused_key_level">عتاد الأمان في هذا الهاتف لا يحقق مستوى المفتاح الذي تشترطه مؤسستك. تم تعطيل الرمز؛ تواصل مع المسؤول.</string>
+    <string name="enrol_gateway_refused_ticket">انتهت صلاحية رمز QR هذا أو سبق استخدامه. اطلب رمزاً جديداً من المسؤول.</string>
+    <string name="enrol_gateway_refused_app">خادم Gateway الخاص بمؤسستك لا يقبل هذا الإصدار من التطبيق.</string>
+    <string name="enrol_gateway_refused_attestation">تعذّر على خادم Gateway الخاص بمؤسستك التحقق من شهادة عتاد هذا الهاتف. تم تعطيل الرمز؛ تواصل مع المسؤول.</string>
+    <string name="enrol_gateway_refused_revoked">ألغت Google مفتاح الشهادة لهذا الهاتف. تم تعطيل الرمز؛ تواصل مع المسؤول.</string>
+    <string name="enrol_gateway_refused_device">محمّل الإقلاع في هذا الهاتف غير مقفل أو تعذّر التحقق من سلامة النظام، لذلك لا تسمح به مؤسستك. تم تعطيل الرمز.</string>
+    <string name="enrol_gateway_unreachable">تعذّر الوصول إلى خادم Gateway الخاص بمؤسستك. اتصل بالإنترنت وامسح رمز QR مرة أخرى.</string>
+    <string name="enrol_gateway_pin_mismatch">لم يُثبت الخادم أنه خادم Gateway الخاص بمؤسستك (شهادته لا تطابق رمز QR). لم يُرسَل شيء. أبلغ قسم تقنية المعلومات.</string>
+    <string name="challenge_title">الموافقة على تسجيل الدخول</string>
+    <string name="challenge_body">يطلب %1$s تسجيل الدخول باسم %2$s. اضغط الرقم الظاهر على شاشة تسجيل الدخول. إن لم تكن تسجّل الدخول الآن فاختر "لست أنا".</string>
+    <string name="challenge_not_me">لست أنا</string>
+    <string name="challenge_answered">تمت الموافقة على تسجيل الدخول.</string>
+    <string name="challenge_wrong_number">رقم خاطئ: تم رفض تسجيل الدخول.</string>
+    <string name="challenge_refused">رفض خادم Gateway الخاص بمؤسستك هذه الإجابة.</string>
+    <string name="challenge_gone">طلب تسجيل الدخول هذا لم يعد صالحاً (انتهت مدته أو تمت الإجابة عليه).</string>
+    <string name="challenge_seconds_left">متبقٍّ %1$d ث</string>
+    <string name="gateway_device_revoked">%1$s: ألغت مؤسستك هذا الجهاز. رموزه وموافقات تسجيل الدخول لم تعد تعمل؛ اطلب تسجيلاً جديداً من مكتب الدعم.</string>
+    <string name="badge_gateway_revoked">ألغته مؤسستك</string>
+    <string name="challenge_unreachable">تعذّر الوصول إلى خادم Gateway الخاص بمؤسستك. تحقق من الاتصال وحاول مرة أخرى.</string>
 </resources>

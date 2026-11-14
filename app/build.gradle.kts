@@ -36,8 +36,8 @@ android {
         // "strong biometric OR device credential" (setUserAuthenticationParameters).
         minSdk = 30
         targetSdk = 36
-        versionCode = 19
-        versionName = "0.5.7"
+        versionCode = 20
+        versionName = "0.5.8"
     }
 
     signingConfigs {
