@@ -48,7 +48,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.activity.compose.rememberLauncherForActivityResult
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import com.selbir.authenticator.R
+import com.selbir.authenticator.security.SecureCaptureActivity
 import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpType
 import com.selbir.authenticator.security.DeviceRisk
@@ -75,8 +79,16 @@ fun AccountListScreen(
     onSetGroup: (String, String) -> Unit,
     onTogglePin: (String) -> Unit,
     onNextHotp: (String) -> Unit,
+    /** Enterprise: a scanned "Veilo ile giriş" QR (Gateway 1.1). */
+    onQrLogin: (String) -> Unit = {},
+    onScannerVisible: (Boolean) -> Unit = {},
 ) {
     val context = LocalContext.current
+    val qrPrompt = stringResource(R.string.qr_login_prompt)
+    val qrScanner = rememberLauncherForActivityResult(ScanContract()) { result ->
+        onScannerVisible(false)
+        result.contents?.let(onQrLogin)
+    }
     var pendingDelete by remember { mutableStateOf<AccountRow?>(null) }
     var pendingEdit by remember { mutableStateOf<AccountRow?>(null) }
     var editingRow by remember { mutableStateOf<AccountRow?>(null) }
@@ -115,6 +127,21 @@ fun AccountListScreen(
                 },
                 actions = {
                     val rows = state.rows
+                    if (rows != null && rows.any { it.gatewayBound }) {
+                        IconButton(onClick = {
+                            onScannerVisible(true)
+                            qrScanner.launch(
+                                ScanOptions()
+                                    .setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                                    .setCaptureActivity(SecureCaptureActivity::class.java)
+                                    .setPrompt(qrPrompt)
+                                    .setBeepEnabled(false)
+                                    .setOrientationLocked(false)
+                            )
+                        }) {
+                            Icon(painterResource(R.drawable.ic_qr_scan), stringResource(R.string.qr_login_action))
+                        }
+                    }
                     if (rows != null && rows.isNotEmpty()) {
                         IconButton(onClick = {
                             searchVisible = !searchVisible

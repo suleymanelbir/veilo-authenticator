@@ -50,6 +50,7 @@ import com.selbir.authenticator.R
 import com.selbir.authenticator.core.OtpAlgorithm
 import com.selbir.authenticator.core.OtpAuthUri
 import com.selbir.authenticator.core.VeiloEnrolment
+import com.selbir.authenticator.core.VeiloQrLogin
 import com.selbir.authenticator.data.Protection
 import com.selbir.authenticator.edition.Edition
 import com.selbir.authenticator.security.SecureCaptureActivity
@@ -67,12 +68,18 @@ fun AddAccountScreen(
     groups: List<String> = emptyList(),
     onBack: () -> Unit,
     onScannerVisible: (Boolean) -> Unit,
+    /** A "Veilo ile giriş" QR scanned here by habit: handed over instead of "not a valid QR". */
+    onQrLogin: (String) -> Unit = {},
     onSave: () -> Unit,
 ) {
     val scanPrompt = stringResource(R.string.scan_prompt)
     val scanner = rememberLauncherForActivityResult(ScanContract()) { result ->
         onScannerVisible(false)
         val contents = result.contents ?: return@rememberLauncherForActivityResult
+        if (Edition.CONNECTED && VeiloQrLogin.looksLikeOne(contents)) {
+            onQrLogin(contents)
+            return@rememberLauncherForActivityResult
+        }
         try {
             val spec = OtpAuthUri.parse(contents)
             // Public edition: parsed for validity only, never acted on. Enterprise: confirmed on save.

@@ -56,6 +56,17 @@ sealed class ChallengeFetch {
     data class Unreachable(val detail: String) : ChallengeFetch()
 }
 
+/** What `POST /device/qr-login` (PROTOCOL.md §6) gave back for a scanned sign-in QR. */
+sealed class QrLoginResult {
+    /** The sign-in is now this device's; [challenge] is its Onayla / Reddet request. */
+    data class Claimed(val challenge: PendingChallenge) : QrLoginResult()
+
+    /** 4xx with the protocol reason: `qr_expired`, `login_<status>`, `unknown_login`, `wrong_organisation`, … */
+    data class Rejected(val httpStatus: Int, val code: String) : QrLoginResult()
+
+    data class Unreachable(val detail: String) : QrLoginResult()
+}
+
 sealed class AnswerResult {
     data object Answered : AnswerResult()
 
@@ -89,6 +100,9 @@ interface GatewayClient {
 
     /** `POST /device/challenges/{id}/refuse` (PROTOCOL.md §5.3): "Reddet" / "Not me" — the sign-in fails at once. */
     fun refuse(gatewayUrl: String, pins: List<String>, deviceId: String, challenge: PendingChallenge, signer: DeviceSigner): AnswerResult
+
+    /** `POST /device/qr-login` (PROTOCOL.md §6): claim the sign-in a browser shows as a QR. */
+    fun qrLogin(gatewayUrl: String, pins: List<String>, deviceId: String, loginId: String, secret: String, signer: DeviceSigner): QrLoginResult
 
     /**
      * `PUT /device/push` (PROTOCOL.md §5.2): how the Gateway wakes this device when a sign-in

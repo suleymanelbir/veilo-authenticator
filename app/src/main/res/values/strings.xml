@@ -253,6 +253,16 @@
     <string name="challenge_confirm_body">Sign-in to %1$s with %2$s. The password was correct; approve only if you are signing in right now.</string>
     <string name="challenge_approve">Approve</string>
     <string name="challenge_reject">Reject</string>
+    <string name="challenge_qr_body">Sign-in to %1$s with %2$s by QR. If you approve, the browser that showed the QR is signed in. Approve only if you scanned the QR on a screen in front of you.</string>
+    <string name="qr_login_action">Sign in with QR</string>
+    <string name="qr_login_prompt">Scan the \"Veilo ile giriş\" QR on the sign-in page</string>
+    <string name="qr_login_invalid">This is not a Veilo sign-in QR.</string>
+    <string name="qr_login_unknown_gateway">This QR belongs to a server this phone is not enrolled with. Nothing was sent.</string>
+    <string name="qr_login_expired">The QR has expired. Scan the current QR on the page.</string>
+    <string name="qr_login_taken">This sign-in is no longer waiting (approved elsewhere or ended). Reload the page.</string>
+    <string name="qr_login_not_allowed">Your organisation does not allow QR sign-in with this phone. Contact your IT team.</string>
+    <string name="qr_login_choose_title">Which account is signing in?</string>
+    <string name="qr_login_wrong_account">This account does not belong to the organisation of this sign-in. Scan again and choose another account.</string>
     <string name="challenge_refused_by_you">Sign-in rejected.</string>
     <string name="gateway_device_revoked">%1$s: your organisation has revoked this device. Its codes and sign-in approvals no longer work; ask your help desk for a new enrolment.</string>
     <string name="badge_gateway_revoked">Revoked by your organisation</string>

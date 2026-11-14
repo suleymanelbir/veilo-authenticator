@@ -249,6 +249,16 @@
     <string name="challenge_confirm_body">%2$s hesabıyla %1$s girişi. Şifre doğru girildi; yalnızca şu anda giriş yapan sizseniz onaylayın.</string>
     <string name="challenge_approve">Onayla</string>
     <string name="challenge_reject">Reddet</string>
+    <string name="challenge_qr_body">%2$s hesabıyla QR ile %1$s girişi. Onaylarsanız QR\'ı gösteren tarayıcı oturum açar. Yalnızca QR\'ı önünüzdeki ekrandan siz okuttuysanız onaylayın.</string>
+    <string name="qr_login_action">QR ile giriş</string>
+    <string name="qr_login_prompt">Giriş sayfasındaki \"Veilo ile giriş\" QR\'ını okutun</string>
+    <string name="qr_login_invalid">Bu bir Veilo giriş QR\'ı değil.</string>
+    <string name="qr_login_unknown_gateway">Bu QR, telefonun eşleşmediği bir sunucuya ait. Hiçbir şey gönderilmedi.</string>
+    <string name="qr_login_expired">QR\'ın süresi doldu. Sayfadaki güncel QR\'ı okutun.</string>
+    <string name="qr_login_taken">Bu giriş artık beklemiyor (başka yerde onaylandı ya da sona erdi). Sayfayı yenileyin.</string>
+    <string name="qr_login_not_allowed">Kurumunuz bu telefonla QR ile girişe izin vermiyor. BT biriminize başvurun.</string>
+    <string name="qr_login_choose_title">Hangi hesapla giriş yapılsın?</string>
+    <string name="qr_login_wrong_account">Bu hesap, giriş yapılan kuruma ait değil. Yeniden okutup başka bir hesap seçin.</string>
     <string name="challenge_refused_by_you">Giriş reddedildi.</string>
     <string name="gateway_device_revoked">%1$s: kurumunuz bu cihazı iptal etti. Kodları ve giriş onayları artık geçerli değil; yeni tanımlama için yardım masanıza başvurun.</string>
     <string name="badge_gateway_revoked">Kurumunuz tarafından iptal edildi</string>

@@ -85,6 +85,24 @@ class GatewayJsonTest {
     }
 
     @Test
+    fun qrLoginClaimCarriesAConfirmChallengeFromQr() {
+        val request = Json.parseToJsonElement(GatewayJson.qrLoginRequest("L1", "S1")).jsonObject
+        assertEquals("L1", request["login_id"]!!.jsonPrimitive.content)
+        assertEquals("S1", request["secret"]!!.jsonPrimitive.content)
+        val ok = """{"login":"L1","challenge":{"id":"c1","rp_id":"Kurum SSO · 85.1.2.3","nonce":"AAEC","choices":["42"],
+            "approval":"confirm","origin":"qr","expires_at":"x","status":"pending"}}"""
+        val claimed = assertIs<QrLoginResult.Claimed>(GatewayJson.qrLoginResult(200, ok))
+        assertEquals(true, claimed.challenge.fromQr)
+        assertEquals("Kurum SSO · 85.1.2.3", claimed.challenge.rpId)
+        // a number challenge where a confirm one belongs, or no challenge: not trusted
+        assertIs<QrLoginResult.Unreachable>(GatewayJson.qrLoginResult(200, """{"login":"L1","challenge":{"id":"c1","nonce":"AAEC","choices":["1","2","3"]}}"""))
+        assertIs<QrLoginResult.Unreachable>(GatewayJson.qrLoginResult(200, "{}"))
+        assertEquals(QrLoginResult.Rejected(409, "qr_expired"), GatewayJson.qrLoginResult(409, """{"detail":{"code":"qr_expired"}}"""))
+        assertEquals(QrLoginResult.Rejected(403, "wrong_organisation"), GatewayJson.qrLoginResult(403, """{"detail":{"code":"wrong_organisation"}}"""))
+        assertIs<QrLoginResult.Unreachable>(GatewayJson.qrLoginResult(502, ""))
+    }
+
+    @Test
     fun answerRequestAndResultFollowTheProtocol() {
         val request = Json.parseToJsonElement(GatewayJson.answerRequest("42", byteArrayOf(1, 2, 3))).jsonObject
         assertEquals("42", request["number"]!!.jsonPrimitive.content)

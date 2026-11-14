@@ -225,5 +225,15 @@
     <string name="challenge_confirm_body">تسجيل دخول إلى %1$s بالحساب %2$s. كانت كلمة المرور صحيحة؛ وافق فقط إذا كنت تسجّل الدخول الآن.</string>
     <string name="challenge_approve">موافقة</string>
     <string name="challenge_reject">رفض</string>
+    <string name="challenge_qr_body">تسجيل دخول إلى %1$s بالحساب %2$s عبر رمز QR. إذا وافقت، يُسجَّل دخول المتصفح الذي عرض الرمز. وافق فقط إذا مسحت الرمز من شاشة أمامك.</string>
+    <string name="qr_login_action">تسجيل الدخول برمز QR</string>
+    <string name="qr_login_prompt">امسح رمز \"Veilo ile giriş\" في صفحة تسجيل الدخول</string>
+    <string name="qr_login_invalid">هذا ليس رمز تسجيل دخول Veilo.</string>
+    <string name="qr_login_unknown_gateway">هذا الرمز يخص خادمًا غير مرتبط بهذا الهاتف. لم يُرسَل أي شيء.</string>
+    <string name="qr_login_expired">انتهت صلاحية الرمز. امسح الرمز الحالي في الصفحة.</string>
+    <string name="qr_login_taken">لم يعد تسجيل الدخول هذا قيد الانتظار (تمت الموافقة عليه في مكان آخر أو انتهى). أعد تحميل الصفحة.</string>
+    <string name="qr_login_not_allowed">لا تسمح مؤسستك بتسجيل الدخول برمز QR من هذا الهاتف. تواصل مع فريق تقنية المعلومات.</string>
+    <string name="qr_login_choose_title">بأي حساب تريد تسجيل الدخول؟</string>
+    <string name="qr_login_wrong_account">هذا الحساب لا يتبع مؤسسة تسجيل الدخول هذا. امسح الرمز مجددًا واختر حسابًا آخر.</string>
     <string name="challenge_refused_by_you">تم رفض تسجيل الدخول.</string>
 </resources>

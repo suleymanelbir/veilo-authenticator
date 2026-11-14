@@ -128,6 +128,19 @@ class HttpGatewayClient(
         }
     }
 
+    override fun qrLogin(gatewayUrl: String, pins: List<String>, deviceId: String, loginId: String, secret: String, signer: DeviceSigner): QrLoginResult {
+        val path = "/device/qr-login"
+        return try {
+            val body = GatewayJson.qrLoginRequest(loginId, secret).toByteArray()
+            val a = request(gatewayUrl + path, "POST", body, deviceAuth(deviceId, "POST", path, signer), pins)
+            GatewayJson.qrLoginResult(a.status, a.body)
+        } catch (e: PinMismatch) {
+            QrLoginResult.Unreachable(TLS_PIN_MISMATCH)
+        } catch (e: Exception) {
+            QrLoginResult.Unreachable(e.javaClass.simpleName)
+        }
+    }
+
     override fun registerPush(gatewayUrl: String, pins: List<String>, deviceId: String, signer: DeviceSigner, kind: String, token: String): Int {
         val path = "/device/push"
         return try {

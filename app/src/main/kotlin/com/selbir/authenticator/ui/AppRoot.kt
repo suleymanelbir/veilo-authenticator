@@ -1,7 +1,10 @@
 package com.selbir.authenticator.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -71,6 +74,10 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
                 groups = state.groups,
                 onBack = { viewModel.navigate(Screen.List) },
                 onScannerVisible = { viewModel.childActivityInFront = it },
+                onQrLogin = { text ->
+                    viewModel.navigate(Screen.List)
+                    viewModel.qrLogin(text)
+                },
                 onSave = {
                     val spec = form.toSpec()
                     if (spec == null) {
@@ -247,6 +254,8 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onSetGroup = viewModel::setGroup,
             onTogglePin = viewModel::togglePin,
             onNextHotp = { id -> scope.launch { withAuthRetry(viewModel, promptOnce) { viewModel.generateHotp(id) } } },
+            onQrLogin = viewModel::qrLogin,
+            onScannerVisible = { viewModel.childActivityInFront = it },
         )
     }
 
@@ -274,6 +283,26 @@ fun AppRoot(viewModel: AppViewModel, authenticate: suspend () -> Boolean) {
             onChoose = viewModel::answerChallenge,
             onDismiss = viewModel::dismissChallenge,
             onExpire = { viewModel.expireChallenge(prompt.challenge.id) },
+        )
+    }
+
+    state.qrChoice?.let { choice ->
+        if (!state.locked) AlertDialog(
+            onDismissRequest = viewModel::cancelQrChoice,
+            title = { Text(stringResource(R.string.qr_login_choose_title)) },
+            text = {
+                Column {
+                    choice.options.forEach { o ->
+                        TextButton(onClick = { viewModel.chooseQrAccount(o.accountId) }, modifier = Modifier.fillMaxWidth()) {
+                            Text(listOf(o.name, o.issuer).filter { it.isNotBlank() }.joinToString(" · "), modifier = Modifier.fillMaxWidth())
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = viewModel::cancelQrChoice) { Text(stringResource(android.R.string.cancel)) }
+            },
         )
     }
 

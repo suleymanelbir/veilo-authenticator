@@ -73,7 +73,12 @@ fun ChallengeDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 val confirm = prompt.challenge.isConfirm
-                Text(stringResource(if (confirm) R.string.challenge_confirm_body else R.string.challenge_body, prompt.challenge.rpId, account))
+                val body = when {
+                    prompt.challenge.fromQr -> R.string.challenge_qr_body
+                    confirm -> R.string.challenge_confirm_body
+                    else -> R.string.challenge_body
+                }
+                Text(stringResource(body, prompt.challenge.rpId, account))
                 if (!confirm) Row(
                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,

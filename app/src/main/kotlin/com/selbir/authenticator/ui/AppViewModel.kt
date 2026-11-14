@@ -28,6 +28,7 @@ import com.selbir.authenticator.core.Otp
 import com.selbir.authenticator.core.OtpSpec
 import com.selbir.authenticator.core.OtpType
 import com.selbir.authenticator.core.PendingChallenge
+import com.selbir.authenticator.core.VeiloQrLogin
 import com.selbir.authenticator.core.Transfer
 import com.selbir.authenticator.core.TransferException
 import com.selbir.authenticator.data.Account
@@ -42,6 +43,7 @@ import com.selbir.authenticator.gateway.AnswerResult
 import com.selbir.authenticator.gateway.ChallengeFetch
 import com.selbir.authenticator.gateway.ConfirmResult
 import com.selbir.authenticator.gateway.DeviceState
+import com.selbir.authenticator.gateway.QrLoginResult
 import com.selbir.authenticator.gateway.TLS_PIN_MISMATCH
 import com.selbir.authenticator.policy.Policy
 import com.selbir.authenticator.data.Protection
@@ -82,6 +84,8 @@ data class AccountRow(
     val pinned: Boolean = false,
     /** The organisation's Gateway revoked this device: the codes no longer work there. */
     val revoked: Boolean = false,
+    /** Enrolled with a Gateway that still accepts this device: it can answer sign-ins and scan sign-in QRs. */
+    val gatewayBound: Boolean = false,
 )
 
 data class UiState(
@@ -102,7 +106,13 @@ data class UiState(
     val exportableUnderPolicy: Int = 0,
     /** Enterprise flavour: a login waiting for number matching on this phone (PROTOCOL.md §5). */
     val challenge: ChallengePrompt? = null,
+    /** A sign-in QR scanned while several accounts on this phone belong to its Gateway: whose sign-in is it? */
+    val qrChoice: QrChoice? = null,
 )
+
+data class QrChoice(val qr: VeiloQrLogin, val options: List<Option>) {
+    data class Option(val accountId: String, val issuer: String, val name: String)
+}
 
 /** One Gateway challenge shown to the user, with the account it arrived for. */
 data class ChallengePrompt(
@@ -383,7 +393,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     fun lock() {
         _state.update {
-            if (it.locked) it else it.copy(locked = true, lockEpoch = it.lockEpoch + 1, screen = Screen.List, rows = null)
+            if (it.locked) it else it.copy(locked = true, lockEpoch = it.lockEpoch + 1, screen = Screen.List, rows = null, qrChoice = null)
         }
         addForm.clear()
         backupForm.clear()
@@ -588,6 +598,90 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 delay(CHALLENGE_POLL_MS)
                 dismissedChallenges.remove(prompt.challenge.id)
             }
+        }
+    }
+
+    /**
+     * A "Veilo ile giriş" QR was scanned (Gateway 1.1, PROTOCOL.md §6). The claim goes only to a
+     * Gateway this phone is already enrolled with — same URL, that enrolment's pins and device
+     * key — so a QR naming any other server sends nothing anywhere. The answer carries the
+     * Onayla / Reddet request, shown at once through the usual dialog.
+     */
+    fun qrLogin(text: String) {
+        if (!Edition.CONNECTED) return
+        val qr = try {
+            VeiloQrLogin.parse(text, allowPlainHttp = Edition.ALLOW_PLAIN_HTTP_GATEWAY)
+        } catch (e: IllegalArgumentException) {
+            toast(R.string.qr_login_invalid)
+            return
+        }
+        val state = _state.value
+        if (state.locked || state.challenge != null || policy.value.blocks(state.risks)) return
+        viewModelScope.launch {
+            val candidates = withContext(Dispatchers.IO) {
+                try {
+                    repository.all().filter { a ->
+                        val b = a.gateway
+                        b != null && b.revokedAt == null && VeiloQrLogin.sameGateway(b.url, qr.gatewayUrl)
+                    }
+                } catch (e: Exception) {
+                    emptyList()
+                }
+            }
+            when (candidates.size) {
+                0 -> toast(R.string.qr_login_unknown_gateway)
+                1 -> claimQrLogin(qr, candidates.single())
+                // several people's or roles' accounts on one Gateway: the user says who signs in
+                else -> _state.update {
+                    if (it.locked || it.challenge != null) it
+                    else it.copy(qrChoice = QrChoice(qr, candidates.map { a -> QrChoice.Option(a.id, a.issuer, a.name) }))
+                }
+            }
+        }
+    }
+
+    /** The user picked the account to sign in with from [UiState.qrChoice]. */
+    fun chooseQrAccount(accountId: String) {
+        val choice = _state.value.qrChoice ?: return
+        _state.update { it.copy(qrChoice = null) }
+        if (choice.options.none { it.accountId == accountId }) return
+        viewModelScope.launch {
+            val account = withContext(Dispatchers.IO) {
+                try {
+                    repository.all().find { it.id == accountId }
+                } catch (e: Exception) {
+                    null
+                }
+            } ?: return@launch
+            claimQrLogin(choice.qr, account)
+        }
+    }
+
+    fun cancelQrChoice() {
+        _state.update { it.copy(qrChoice = null) }
+    }
+
+    private suspend fun claimQrLogin(qr: VeiloQrLogin, account: Account) {
+        val binding = account.gateway ?: return
+        val r = withContext(Dispatchers.IO) {
+            val gateway = Edition.gateway(app) ?: return@withContext QrLoginResult.Unreachable("no gateway")
+            try {
+                gateway.qrLogin(binding.url, binding.pins, binding.deviceId, qr.loginId, qr.secret, DeviceKeyFactory.signer(DeviceKeyFactory.alias(account.id)))
+            } catch (e: Exception) {
+                QrLoginResult.Unreachable(e.javaClass.simpleName)
+            }
+        }
+        when {
+            r is QrLoginResult.Claimed -> _state.update {
+                if (it.locked || it.challenge != null) it
+                else it.copy(challenge = ChallengePrompt(account.id, account.issuer, account.name, r.challenge))
+            }
+            r is QrLoginResult.Unreachable -> toast(R.string.challenge_unreachable)
+            r is QrLoginResult.Rejected && r.code == DEVICE_REVOKED -> markRevoked(account.id, account.issuer.ifBlank { account.name })
+            r is QrLoginResult.Rejected && (r.code == "qr_expired" || r.code == "unknown_login") -> toast(R.string.qr_login_expired)
+            r is QrLoginResult.Rejected && r.code.startsWith("login_") -> toast(R.string.qr_login_taken)
+            r is QrLoginResult.Rejected && r.code == "wrong_organisation" -> toast(R.string.qr_login_wrong_account)
+            else -> toast(R.string.qr_login_not_allowed)
         }
     }
 
@@ -957,6 +1051,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             group = account.group,
             pinned = account.pinned,
             revoked = account.gateway?.revokedAt != null,
+            gatewayBound = account.gateway != null && account.gateway.revokedAt == null,
         )
     }
 

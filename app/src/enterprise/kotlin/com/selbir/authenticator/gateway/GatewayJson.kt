@@ -94,33 +94,60 @@ object GatewayJson {
     fun challengeFetch(status: Int, body: String): ChallengeFetch = try {
         when {
             status == 200 -> ChallengeFetch.Pending(
-                json.parseToJsonElement(body).jsonArray.mapNotNull { element ->
-                    val o = element as? JsonObject ?: return@mapNotNull null
-                    val choices = o["choices"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
-                    val id = o["id"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
-                    val nonce = o["nonce"]?.jsonPrimitive?.contentOrNull ?: return@mapNotNull null
-                    val approval = o["approval"]?.jsonPrimitive?.contentOrNull ?: PendingChallenge.APPROVAL_NUMBER
-                    val expected = when (approval) {
-                        PendingChallenge.APPROVAL_NUMBER -> 3
-                        PendingChallenge.APPROVAL_CONFIRM -> 1
-                        else -> return@mapNotNull null // a kind of approval this app does not know: never guess
-                    }
-                    if (choices.size != expected || !choices.all { VeiloChallenge.NUMBER_FORMAT.matches(it) }) return@mapNotNull null
-                    PendingChallenge(
-                        id = id,
-                        rpId = o["rp_id"]?.jsonPrimitive?.contentOrNull.orEmpty(),
-                        nonce = nonce,
-                        choices = choices,
-                        expiresAt = o["expires_at"]?.jsonPrimitive?.contentOrNull.orEmpty(),
-                        approval = approval,
-                    )
-                }
+                json.parseToJsonElement(body).jsonArray.mapNotNull { (it as? JsonObject)?.let(::challenge) }
             )
             status in 400..499 -> ChallengeFetch.Rejected(status, reasonCode(parseOrNull(body), status))
             else -> ChallengeFetch.Unreachable("http $status")
         }
     } catch (e: Exception) {
         ChallengeFetch.Unreachable("bad body: ${e.javaClass.simpleName}")
+    }
+
+    /**
+     * One pending challenge as the Gateway sends it, or null when it is unusable: `number`
+     * needs three choices, `confirm` one, and an approval kind this app does not know is
+     * never guessed at.
+     */
+    private fun challenge(o: JsonObject): PendingChallenge? {
+        val choices = o["choices"]?.jsonArray?.mapNotNull { it.jsonPrimitive.contentOrNull }.orEmpty()
+        val id = o["id"]?.jsonPrimitive?.contentOrNull ?: return null
+        val nonce = o["nonce"]?.jsonPrimitive?.contentOrNull ?: return null
+        val approval = o["approval"]?.jsonPrimitive?.contentOrNull ?: PendingChallenge.APPROVAL_NUMBER
+        val expected = when (approval) {
+            PendingChallenge.APPROVAL_NUMBER -> 3
+            PendingChallenge.APPROVAL_CONFIRM -> 1
+            else -> return null
+        }
+        if (choices.size != expected || !choices.all { VeiloChallenge.NUMBER_FORMAT.matches(it) }) return null
+        return PendingChallenge(
+            id = id,
+            rpId = o["rp_id"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+            nonce = nonce,
+            choices = choices,
+            expiresAt = o["expires_at"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+            approval = approval,
+            origin = o["origin"]?.jsonPrimitive?.contentOrNull.orEmpty(),
+        )
+    }
+
+    /** `POST /device/qr-login` body. */
+    fun qrLoginRequest(loginId: String, secret: String): String = JsonObject(
+        mapOf("login_id" to JsonPrimitive(loginId), "secret" to JsonPrimitive(secret))
+    ).toString()
+
+    /** `POST /device/qr-login` answer: 200 `{login, challenge}`; the challenge must be a confirm one. */
+    fun qrLoginResult(status: Int, body: String): QrLoginResult = try {
+        val obj = parseOrNull(body)
+        when {
+            status == 200 -> {
+                val ch = (obj?.get("challenge") as? JsonObject)?.let(::challenge)
+                if (ch == null || !ch.isConfirm) QrLoginResult.Unreachable("bad body") else QrLoginResult.Claimed(ch)
+            }
+            status in 400..499 -> QrLoginResult.Rejected(status, reasonCode(obj, status))
+            else -> QrLoginResult.Unreachable("http $status")
+        }
+    } catch (e: Exception) {
+        QrLoginResult.Unreachable("bad body: ${e.javaClass.simpleName}")
     }
 
     const val DEVICE_STATE_HEADER = "X-Veilo-Device-State"

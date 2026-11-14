@@ -48,11 +48,19 @@ data class PendingChallenge(
      * and signs the single choice exactly like a chosen number.
      */
     val approval: String = APPROVAL_NUMBER,
+    /**
+     * What started it (Gateway 1.1): [ORIGIN_LDAP] (the directory already accepted the password),
+     * [ORIGIN_QR] (this phone scanned a sign-in QR) or anything else. Only chooses the wording.
+     */
+    val origin: String = "",
 ) {
     val isConfirm: Boolean get() = approval == APPROVAL_CONFIRM
+    val fromQr: Boolean get() = origin == ORIGIN_QR
 
     companion object {
         const val APPROVAL_NUMBER = "number"
         const val APPROVAL_CONFIRM = "confirm"
+        const val ORIGIN_LDAP = "ldap"
+        const val ORIGIN_QR = "qr"
     }
 }
