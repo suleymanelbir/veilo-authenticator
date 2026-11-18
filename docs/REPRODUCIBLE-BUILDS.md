@@ -1,5 +1,12 @@
 # Reproducible builds
 
+> **Note (2026-11-18):** the app's source code is being reorganised and will be republished
+> in this repository. Until then the steps below cannot be followed; the method and the
+> verification done for v0.3.0 are kept here for reference.
+> **Not (2026-11-18):** uygulamanın kaynak kodu yeniden düzenleniyor ve bu repoda yeniden
+> yayımlanacak. O zamana kadar aşağıdaki adımlar izlenemez; yöntem ve v0.3.0 için yapılan
+> doğrulama kayıt olarak burada duruyor.
+
 Anyone can check that the APK on Google Play was built from this repository, with nothing
 added. The build is deterministic: the same source, built with the pinned toolchain, gives
 the same bytes every time. Only the signature differs, and that is stripped before comparing.
