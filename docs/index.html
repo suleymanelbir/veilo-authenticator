@@ -1,0 +1,3487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veilo Authenticator — Your Codes. Your Device. Zero Compromise.</title>
+    <meta name="description" content="Veilo Authenticator: offline, open-source two-factor authentication for Android. Hardware-backed keys, zero tracking, encrypted backup. TOTP, HOTP, MFA, OTP security.">
+    <meta name="keywords" content="authenticator, 2FA, TOTP, HOTP, OTP, MFA, two factor authentication, security, offline authenticator, hardware-backed, StrongBox, open source, Android">
+    <link rel="canonical" href="https://suleymanelbir.github.io/veilo-authenticator/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;900&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           VEILO AUTHENTICATOR — LANDING PAGE
+           Design System: Microsoft Sentinel / Defender aesthetic
+           ============================================================ */
+
+        :root {
+            --shield-blue: #3b82f6;
+            --shield-blue-dark: #1e40af;
+            --shield-glow: rgba(59,130,246,0.4);
+            --shield-blue-subtle: rgba(96,165,250,0.15);
+            --emerald: #10b981;
+            --emerald-bright: #34d399;
+            --emerald-glow: rgba(16,185,129,0.25);
+            --bg-dark: #0b1628;
+            --bg-panel: #111e33;
+            --bg-card: #162240;
+            --bg-card-hover: #1a2a4d;
+            --threat-red: #ef4444;
+            --amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #b8c5da;
+            --text-faint: #475569;
+            --border: var(--shield-blue-subtle);
+            --border-strong: rgba(59,130,246,0.3);
+            --font-display: 'Orbitron', monospace;
+            --font-heading: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 0.35s var(--ease);
+        }
+
+        /* ---- RESET & BASE ---- */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        ::selection { background: rgba(37,99,235,0.3); color: #fff; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--shield-blue-dark); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--shield-blue); }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+
+        /* Language Toggle */
+        .lang-tr { display: none; }
+        body.tr .lang-en { display: none; }
+        body.tr .lang-tr { display: block; }
+        body.tr span.lang-en { display: none; }
+        body.tr span.lang-tr { display: inline; }
+        body.tr div.lang-en { display: none; }
+        body.tr div.lang-tr { display: flex; }
+        body.tr p.lang-en { display: none; }
+        body.tr p.lang-tr { display: block; }
+        body.tr h1.lang-en,
+        body.tr h2.lang-en,
+        body.tr h3.lang-en { display: none; }
+        body.tr h1.lang-tr,
+        body.tr h2.lang-tr,
+        body.tr h3.lang-tr { display: block; }
+        body.tr a.lang-en { display: none; }
+        body.tr a.lang-tr { display: inline-flex; }
+        body.tr li.lang-en { display: none; }
+        body.tr li.lang-tr { display: list-item; }
+
+        /* ---- TYPOGRAPHY ---- */
+        h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height: 1.2; }
+        h1 { font-size: clamp(2.4rem, 5vw, 4rem); }
+        h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+        h3 { font-size: clamp(1.1rem, 2vw, 1.4rem); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--shield-blue);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 640px;
+            margin-bottom: 48px;
+        }
+
+        .text-center { text-align: center; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* ---- REVEAL ANIMATION ---- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+           NAVIGATION
+           ============================================================ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            transition: background 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+        }
+        .nav.scrolled {
+            background: rgba(7, 17, 31, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 10px 0;
+            box-shadow: 0 1px 0 var(--border);
+        }
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+        .nav-brand svg {
+            width: 32px;
+            height: 32px;
+        }
+        .nav-brand span {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color var(--transition);
+        }
+        .nav-links a:hover { color: var(--text-main); }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lang-toggle {
+            background: rgba(59,130,246,0.1);
+            border: 1px solid var(--border-strong);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .lang-toggle:hover {
+            background: rgba(37,99,235,0.2);
+            color: var(--text-main);
+        }
+
+        .btn-nav {
+            background: var(--shield-blue);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-nav:hover {
+            background: var(--shield-blue-dark);
+            box-shadow: 0 0 20px var(--shield-glow);
+        }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px;
+        }
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text-main);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(7,17,31,0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+        }
+        .mobile-menu.active { display: flex; }
+        .mobile-menu a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: color var(--transition);
+        }
+        .mobile-menu a:hover { color: var(--shield-blue); }
+
+        @media (max-width: 800px) {
+            .nav-links { display: none; }
+            .nav-actions .btn-nav { display: none; }
+            .hamburger { display: flex; }
+        }
+
+        /* ============================================================
+           SECTION 1: HERO
+           ============================================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            padding-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(59,130,246,0.12), transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(16,185,129,0.06), transparent 45%),
+                var(--bg-dark);
+        }
+
+        #shield-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero-bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--shield-glow) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: radar-pulse 4s ease-out infinite;
+        }
+
+        @keyframes radar-pulse {
+            0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 0.15; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.8); }
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid var(--border-strong);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--shield-blue);
+            margin-bottom: 24px;
+        }
+        .hero-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--emerald);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+            50% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        .hero h1 .accent {
+            color: var(--shield-blue);
+            display: block;
+        }
+
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            line-height: 1.7;
+            max-width: 520px;
+            margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--shield-blue);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background: var(--shield-blue-dark);
+            box-shadow: 0 0 30px var(--shield-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: var(--text-main);
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-strong);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+        .btn-outline:hover {
+            border-color: var(--shield-blue);
+            background: rgba(37,99,235,0.08);
+            transform: translateY(-2px);
+        }
+
+        .hero-trust {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+        }
+        .hero-trust span {
+            color: var(--text-muted);
+        }
+
+        /* Phone Mockup */
+        .phone-mockup {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            animation: float-phone 4s ease-in-out infinite;
+        }
+        @keyframes float-phone {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .phone-frame {
+            width: 300px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-strong);
+            border-radius: 32px;
+            padding: 20px;
+            box-shadow:
+                0 0 60px rgba(37,99,235,0.15),
+                0 20px 60px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .phone-notch {
+            width: 120px;
+            height: 24px;
+            background: var(--bg-dark);
+            border-radius: 0 0 16px 16px;
+            margin: -20px auto 16px;
+        }
+        .phone-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        .phone-header-title {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: var(--shield-blue);
+        }
+        .phone-header-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(37,99,235,0.15);
+            border: 1px solid var(--border-strong);
+        }
+
+        .otp-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .otp-card:hover {
+            border-color: var(--border-strong);
+        }
+        .otp-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .otp-issuer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .otp-issuer-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .otp-issuer-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .otp-pin-badge {
+            font-size: 0.6rem;
+            color: var(--amber);
+            opacity: 0.7;
+        }
+        .otp-timer-ring {
+            position: relative;
+            width: 32px;
+            height: 32px;
+        }
+        .otp-timer-ring svg {
+            width: 32px;
+            height: 32px;
+            transform: rotate(-90deg);
+        }
+        .otp-timer-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.06);
+            stroke-width: 3;
+        }
+        .otp-timer-ring .ring-progress {
+            fill: none;
+            stroke: var(--emerald);
+            stroke-width: 3;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .otp-timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 0.5rem;
+            color: var(--text-muted);
+        }
+        .otp-code {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: var(--text-main);
+        }
+        .otp-code .digit {
+            display: inline-block;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .otp-code .digit.changing {
+            transform: translateY(-8px);
+            opacity: 0;
+        }
+
+        @media (max-width: 800px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-subtitle { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .hero-trust { text-align: center; }
+            .phone-mockup { margin-top: 40px; }
+        }
+
+        /* ============================================================
+           SECTION 2: TRUST STRIP
+           ============================================================ */
+        .trust-strip {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: rgba(15,23,42,0.4);
+            text-align: center;
+        }
+        .trust-strip-text {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+        }
+        .trust-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .trust-logo {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            opacity: 0.6;
+            transition: opacity var(--transition);
+        }
+        .trust-logo:hover { opacity: 1; }
+        .trust-dot {
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--text-faint);
+            opacity: 0.3;
+        }
+        .trust-compat {
+            color: var(--text-faint);
+            font-size: 0.75rem;
+            margin-top: 12px;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 480px) {
+            .trust-logos { gap: 20px; }
+            .trust-dot { display: none; }
+        }
+
+        /* ============================================================
+           SECTION 3: HOW IT WORKS — SECURITY PIPELINE
+           ============================================================ */
+        .pipeline-section {
+            background: var(--bg-panel);
+        }
+
+        .pipeline-track {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin-top: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pipeline-stage {
+            flex: 1;
+            position: relative;
+            padding: 32px 20px 28px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all var(--transition);
+            cursor: default;
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 20px 50%);
+            margin-left: -10px;
+        }
+        .pipeline-stage:first-child {
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 50%, calc(100% - 20px) 100%, 0 100%, 0 50%);
+            margin-left: 0;
+            border-radius: 12px 0 0 12px;
+        }
+        .pipeline-stage:last-child {
+            clip-path: polygon(0 0, 100% 0, 100% 50%, 100% 100%, 0 100%, 20px 50%);
+            border-radius: 0 12px 12px 0;
+        }
+        .pipeline-stage:hover {
+            background: linear-gradient(180deg, rgba(59,130,246,0.34), rgba(37,99,235,0.14));
+            border-color: var(--shield-blue);
+            box-shadow: inset 0 3px 0 var(--shield-blue), inset 0 0 40px rgba(59,130,246,0.22);
+            z-index: 2;
+        }
+        .pipeline-track:hover .pipeline-stage:not(:hover) { opacity: 0.5; }
+        .pipeline-stage .pipeline-icon { transition: all var(--transition); }
+        .pipeline-stage:hover .pipeline-icon {
+            background: rgba(59,130,246,0.3);
+            border-color: var(--shield-blue);
+            box-shadow: 0 0 22px var(--shield-glow);
+            transform: scale(1.18);
+        }
+        .pipeline-stage:hover .pipeline-label { color: #fff; text-shadow: 0 0 12px var(--shield-glow); }
+        .pipeline-stage:hover .pipeline-desc { color: var(--text-main); }
+
+        .pipeline-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 1.2rem;
+        }
+
+        .pipeline-label {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--shield-blue);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .pipeline-desc {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+
+        /* Flowing dots */
+        .pipeline-flow-dots {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .flow-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--emerald-bright);
+            box-shadow: 0 0 8px var(--emerald-glow);
+            top: -2px;
+            animation: flow-across 3s linear infinite;
+        }
+        .flow-dot:nth-child(2) { animation-delay: -1s; }
+        .flow-dot:nth-child(3) { animation-delay: -2s; }
+
+        @keyframes flow-across {
+            0% { left: -2%; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { left: 102%; opacity: 0; }
+        }
+
+        @media (max-width: 800px) {
+            .pipeline-track {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .pipeline-stage {
+                clip-path: none !important;
+                margin-left: 0 !important;
+                border-radius: 12px !important;
+            }
+            .pipeline-flow-dots { display: none; }
+        }
+
+        /* ============================================================
+           SECTION 4: LIVE DASHBOARD (FILM FRAME)
+           ============================================================ */
+        .dashboard-section {
+            background: var(--bg-dark);
+        }
+
+        .film-frame {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-strong);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.5), 0 0 40px rgba(37,99,235,0.08);
+            max-width: 960px;
+            margin: 48px auto 0;
+        }
+
+        .film-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(7,17,31,0.6);
+            border-bottom: 1px solid var(--border);
+        }
+        .film-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .film-dots span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .film-dots span:nth-child(1) { background: var(--threat-red); }
+        .film-dots span:nth-child(2) { background: var(--amber); }
+        .film-dots span:nth-child(3) { background: var(--emerald); }
+        .film-titlebar-text {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+        }
+
+        .film-body {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr 1fr;
+            gap: 0;
+            min-height: 320px;
+        }
+
+        .film-col {
+            padding: 24px;
+            border-right: 1px solid var(--border);
+        }
+        .film-col:last-child { border-right: none; }
+
+        .film-col-title {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* Left: Active Tokens */
+        .token-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            transition: background var(--transition);
+            cursor: default;
+        }
+        .token-item:hover { background: rgba(37,99,235,0.06); }
+        .token-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald-glow);
+        }
+        .token-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            flex: 1;
+        }
+        .token-time {
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            color: var(--text-faint);
+        }
+
+        /* Center: Big OTP */
+        .film-otp-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .film-otp-issuer {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--shield-blue);
+            margin-bottom: 16px;
+        }
+        .film-otp-ring {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 16px;
+        }
+        .film-otp-ring svg {
+            width: 140px;
+            height: 140px;
+            transform: rotate(-90deg);
+        }
+        .film-otp-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.04);
+            stroke-width: 4;
+        }
+        .film-otp-ring .ring-progress {
+            fill: none;
+            stroke: var(--emerald);
+            stroke-width: 4;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .film-otp-code {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            color: var(--text-main);
+        }
+        .film-otp-timer {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Right: Security Status */
+        .status-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .status-item:last-child { border-bottom: none; }
+        .status-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .status-value {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .status-dot.green {
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald-glow);
+        }
+        .status-dot.red {
+            background: var(--threat-red);
+            box-shadow: 0 0 6px rgba(239,68,68,0.4);
+        }
+        .status-dot.amber {
+            background: var(--amber);
+            box-shadow: 0 0 6px rgba(245,158,11,0.4);
+        }
+
+        /* Bottom bar */
+        .film-bottom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            background: rgba(16,185,129,0.04);
+        }
+        .film-bottom-stripe {
+            width: 3px;
+            height: 16px;
+            border-radius: 2px;
+            background: var(--emerald);
+        }
+        .film-bottom-text {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .film-bottom-text strong {
+            color: var(--emerald);
+            font-weight: 600;
+        }
+
+        @media (max-width: 800px) {
+            .film-body {
+                grid-template-columns: 1fr;
+            }
+            .film-col { border-right: none; border-bottom: 1px solid var(--border); }
+            .film-col:last-child { border-bottom: none; }
+        }
+
+        /* ============================================================
+           SECTION 5: THREAT HEATMAP
+           ============================================================ */
+        .heatmap-section {
+            background:
+                radial-gradient(circle at 70% 20%, rgba(59,130,246,0.06), transparent 50%),
+                var(--bg-panel);
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 48px;
+        }
+
+        .heatmap-header {
+            padding: 16px 20px;
+            font-family: var(--font-display);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            text-transform: uppercase;
+            background: rgba(7,17,31,0.5);
+            border-radius: 8px;
+        }
+
+        .heatmap-category {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .heatmap-cell {
+            padding: 16px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            border-left: 3px solid transparent;
+            transition: all var(--transition);
+        }
+        .heatmap-cell:hover {
+            transform: translateX(2px);
+        }
+
+        .heatmap-cell.red {
+            background: rgba(239,68,68,0.1);
+            border-left-color: var(--threat-red);
+            color: var(--threat-red);
+        }
+        .heatmap-cell.amber {
+            background: rgba(245,158,11,0.1);
+            border-left-color: var(--amber);
+            color: var(--amber);
+        }
+        .heatmap-cell.green {
+            background: rgba(16,185,129,0.1);
+            border-left-color: var(--emerald);
+            color: var(--emerald);
+            box-shadow: inset 0 0 20px rgba(16,185,129,0.05);
+        }
+
+        .heatmap-cell-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .heatmap-cell.red .heatmap-cell-dot {
+            background: var(--threat-red);
+            box-shadow: 0 0 6px rgba(239,68,68,0.4);
+        }
+        .heatmap-cell.amber .heatmap-cell-dot {
+            background: var(--amber);
+            box-shadow: 0 0 6px rgba(245,158,11,0.4);
+        }
+        .heatmap-cell.green .heatmap-cell-dot {
+            background: var(--emerald);
+            box-shadow: 0 0 6px var(--emerald-glow);
+        }
+
+        @media (max-width: 800px) {
+            .heatmap-grid {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                font-size: 0.7rem;
+            }
+            .heatmap-header, .heatmap-category, .heatmap-cell {
+                padding: 10px 10px;
+                font-size: 0.55rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .heatmap-grid {
+                grid-template-columns: 1.2fr 1fr 1fr 1fr;
+            }
+            .heatmap-cell-dot { display: none; }
+            .heatmap-header, .heatmap-category, .heatmap-cell {
+                padding: 8px 6px;
+                font-size: 0.5rem;
+                letter-spacing: 0;
+            }
+        }
+
+        /* Differentiator cards */
+        .diff-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 56px;
+        }
+
+        .diff-card {
+            background: rgba(22,34,64,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 14px;
+            padding: 28px 24px;
+            text-align: center;
+            transition: all var(--transition);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .diff-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.3);
+            background: rgba(26,42,77,0.9);
+        }
+        .diff-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.4rem;
+        }
+        .diff-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .diff-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .diff-question {
+            text-align: center;
+            margin-top: 56px;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 800px) {
+            .diff-cards { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .diff-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================================
+           SECTION 5b: AUTHENTICATOR COMPARISON
+           ============================================================ */
+        .compare-section {
+            background:
+                radial-gradient(circle at 50% 30%, rgba(59,130,246,0.05), transparent 50%),
+                var(--bg-dark);
+        }
+
+        .compare-wrap {
+            overflow-x: auto;
+            margin-top: 48px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 780px;
+            font-size: 14px;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .compare-table thead th {
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            background: var(--bg-panel);
+        }
+
+        .compare-table thead th.veilo-col {
+            color: var(--shield-blue);
+            text-shadow: 0 0 12px var(--shield-glow);
+            background: rgba(59,130,246,0.06);
+            border-top: 2px solid var(--shield-blue);
+        }
+
+        .compare-table tbody tr {
+            transition: background var(--transition);
+        }
+
+        .compare-table tbody tr:hover td {
+            background: rgba(59,130,246,0.16);
+            border-bottom-color: rgba(59,130,246,0.45);
+        }
+        .compare-table tbody tr:hover td.veilo-col {
+            background: rgba(59,130,246,0.28);
+        }
+        .compare-table tbody tr:hover td.feat-name {
+            color: #fff;
+            box-shadow: inset 4px 0 0 var(--shield-blue);
+        }
+        .compare-table tbody tr:hover .cmp-yes {
+            text-shadow: 0 0 10px var(--emerald-glow);
+        }
+
+        .compare-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .compare-table td.feat-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .compare-table td.veilo-col {
+            background: rgba(59,130,246,0.04);
+        }
+
+        .cmp-yes {
+            color: var(--emerald);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .cmp-no {
+            color: var(--text-faint);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .cmp-partial {
+            color: var(--amber);
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .compare-note {
+            text-align: center;
+            color: var(--text-faint);
+            font-size: 12px;
+            margin-top: 16px;
+            font-style: italic;
+        }
+
+        @media (max-width: 800px) {
+            .compare-table { font-size: 12px; }
+            .compare-table th, .compare-table td { padding: 12px 14px; }
+        }
+
+        /* ============================================================
+           SECTION 6: RECOVERY & BACKUP
+           ============================================================ */
+        .recovery-section {
+            background: var(--bg-dark);
+        }
+
+        .recovery-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .recovery-card {
+            background: rgba(22,34,64,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 16px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .recovery-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--shield-blue), var(--emerald));
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .recovery-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+        }
+        .recovery-card:hover::before { opacity: 1; }
+
+        .recovery-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: rgba(37,99,235,0.08);
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.6rem;
+        }
+
+        .recovery-card h3 {
+            margin-bottom: 10px;
+        }
+        .recovery-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .recovery-callout {
+            margin-top: 48px;
+            padding: 28px 36px;
+            background: rgba(37,99,235,0.05);
+            border-left: 3px solid var(--shield-blue);
+            border-radius: 0 12px 12px 0;
+            text-align: center;
+        }
+        .recovery-callout p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            font-style: italic;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1100px) {
+            .recovery-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 800px) {
+            .recovery-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================================
+           SECTION 7: ECOSYSTEM
+           ============================================================ */
+        /* ---- ENTERPRISE ---- */
+        .enterprise-section {
+            background:
+                radial-gradient(circle at 75% 30%, rgba(59,130,246,0.08), transparent 55%),
+                var(--bg-panel);
+            border-top: 1px solid var(--border);
+        }
+        .enterprise-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+            align-items: center;
+            margin-top: 48px;
+        }
+        .policy-list { display: flex; flex-direction: column; gap: 14px; }
+        .policy-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 18px 20px;
+            background: rgba(22,34,64,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 14px;
+            transition: all var(--transition);
+        }
+        .policy-item:hover { border-color: var(--border-strong); transform: translateX(4px); }
+        .policy-item-icon {
+            flex: 0 0 42px;
+            width: 42px; height: 42px;
+            border-radius: 11px;
+            background: rgba(37,99,235,0.1);
+            border: 1px solid var(--border-strong);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem;
+        }
+        .policy-item h4 { font-size: 1rem; margin-bottom: 4px; }
+        .policy-item p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; }
+
+        /* MDM console mockup */
+        .mdm-panel {
+            background: rgba(17,30,51,0.9);
+            border: 1px solid var(--border-strong);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.08);
+        }
+        .mdm-head {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px;
+            background: rgba(11,22,40,0.8);
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+        .mdm-head .mdm-badge {
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: var(--emerald-glow);
+            color: var(--emerald-bright);
+            font-size: 0.62rem;
+        }
+        .mdm-body { padding: 10px 18px 18px; }
+        .mdm-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(96,165,250,0.08);
+            font-size: 0.88rem;
+        }
+        .mdm-row:last-child { border-bottom: none; }
+        .mdm-row .mdm-key { color: var(--text-main); }
+        .mdm-row .mdm-key small { display: block; color: var(--text-faint); font-size: 0.72rem; font-family: var(--font-display); letter-spacing: 0.05em; margin-top: 2px; }
+        .mdm-val {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-strong);
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .mdm-val.on { color: var(--emerald-bright); border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+        .mdm-val.off { color: var(--threat-red); border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.08); }
+        .mdm-foot {
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: rgba(37,99,235,0.08);
+            border-left: 3px solid var(--shield-blue);
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .mdm-foot strong { color: var(--text-main); }
+        .enterprise-logos {
+            display: flex; flex-wrap: wrap; gap: 10px 22px;
+            justify-content: center;
+            margin-top: 40px;
+            color: var(--text-faint);
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+        }
+        .enterprise-logos span { padding: 6px 0; }
+        .enterprise-cta { text-align: center; margin-top: 36px; }
+        .enterprise-cta a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all var(--transition);
+        }
+        .enterprise-cta a:hover { border-color: var(--shield-blue); background: rgba(59,130,246,0.1); }
+        .enterprise-cta a { text-decoration: none; }
+        .enterprise-cta a + a { margin-left: 10px; }
+        .enterprise-cta a.cta-primary { background: var(--shield-blue); border-color: var(--shield-blue); color: #fff; }
+        .enterprise-cta a.cta-primary:hover { filter: brightness(1.1); background: var(--shield-blue); }
+        @media (max-width: 520px) { .enterprise-cta a { display: flex; justify-content: center; } .enterprise-cta a + a { margin: 10px 0 0; } }
+        .enterprise-cta small { display: block; margin-top: 12px; color: var(--text-faint); font-size: 0.8rem; }
+        @media (max-width: 960px) {
+            .enterprise-grid { grid-template-columns: 1fr; gap: 32px; }
+        }
+
+        /* Tier badges (v0.4 offline / v0.5 connected) */
+        .tier-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            margin-top: 18px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(245,158,11,0.4);
+            background: rgba(245,158,11,0.08);
+            color: var(--amber);
+            font-family: var(--font-display);
+            font-size: 0.66rem;
+            letter-spacing: 0.14em;
+        }
+        .tier-badge.live {
+            border-color: rgba(16,185,129,0.4);
+            background: rgba(16,185,129,0.08);
+            color: var(--emerald-bright);
+        }
+
+        /* ============================================================
+           SECTION 6c: GATEWAY (ENTERPRISE CONNECTED)
+           ============================================================ */
+        .gateway-section {
+            background:
+                radial-gradient(circle at 20% 35%, rgba(16,185,129,0.06), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59,130,246,0.08), transparent 55%),
+                var(--bg-dark);
+            border-top: 1px solid var(--border);
+        }
+        .gateway-flow {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 44px;
+        }
+        .gateway-step {
+            position: relative;
+            padding: 18px 18px 18px 20px;
+            background: rgba(22,34,64,0.6);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 14px;
+        }
+        .gateway-step::after {
+            content: '\2192';
+            position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--shield-blue); font-size: 1.1rem; opacity: 0.8;
+        }
+        .gateway-step:last-child::after { content: none; }
+        .gateway-step .step-no {
+            font-family: var(--font-display); font-size: 0.62rem; letter-spacing: 0.14em;
+            color: var(--shield-blue); margin-bottom: 8px;
+        }
+        .gateway-step h5 { font-size: 0.95rem; margin-bottom: 4px; }
+        .gateway-step p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.5; }
+        .mdm-tabs { display: flex; gap: 4px; padding: 10px 18px 0; border-bottom: 1px solid var(--border); background: rgba(11,22,40,0.5); }
+        .mdm-tabs > span { padding: 8px 14px; font-size: 0.78rem; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+        .mdm-tabs > span.on { color: var(--text-main); border-bottom-color: var(--shield-blue); }
+        .mdm-val.pending { color: var(--amber); border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
+
+        /* Documentation strip */
+        .docs-strip { margin-top: 64px; }
+        .docs-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 28px;
+        }
+        .docs-card {
+            display: block;
+            padding: 28px 22px;
+            color: inherit;
+            text-decoration: none;
+        }
+        .docs-card .recovery-icon { width: 52px; height: 52px; font-size: 1.4rem; margin-bottom: 16px; }
+        .docs-card h3 { font-size: 1.02rem; }
+        .docs-card p { font-size: 0.86rem; }
+        .docs-card small {
+            display: block; margin-top: 14px;
+            color: var(--shield-blue);
+            font-family: var(--font-display); font-size: 0.68rem; letter-spacing: 0.1em;
+        }
+        @media (max-width: 1100px) {
+            .docs-cards { grid-template-columns: repeat(2, 1fr); }
+            .gateway-flow { grid-template-columns: repeat(2, 1fr); }
+            .gateway-step::after { content: none; }
+        }
+        @media (max-width: 800px) {
+            .docs-cards { grid-template-columns: 1fr; }
+            .gateway-flow { grid-template-columns: 1fr; }
+        }
+
+        .ecosystem-section {
+            background:
+                radial-gradient(circle at 30% 60%, rgba(59,130,246,0.06), transparent 50%),
+                var(--bg-panel);
+        }
+
+        .ecosystem-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 48px;
+        }
+
+        .eco-card {
+            background: rgba(22,34,64,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--shield-blue-subtle);
+            border-radius: 16px;
+            padding: 32px 24px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        }
+        .eco-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .eco-accent {
+            width: 40px;
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        .eco-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .eco-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .eco-link {
+            color: var(--shield-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap var(--transition);
+        }
+        .eco-link:hover { gap: 8px; }
+
+        @media (max-width: 1100px) {
+            .ecosystem-cards { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 800px) {
+            .ecosystem-cards { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .ecosystem-cards { grid-template-columns: 1fr; }
+        }
+
+        /* ============================================================
+           SECTION 8: FINAL CTA
+           ============================================================ */
+        .cta-section {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at center, rgba(37,99,235,0.15) 0%, transparent 60%),
+                linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-dark) 100%);
+            pointer-events: none;
+        }
+        .cta-section .container { position: relative; z-index: 2; }
+        .cta-section h2 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 16px;
+        }
+        .cta-subtitle {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            margin-bottom: 40px;
+        }
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all var(--transition);
+        }
+        .btn-cta.primary {
+            background: var(--shield-blue);
+            color: #fff;
+        }
+        .btn-cta.primary:hover {
+            background: var(--shield-blue-dark);
+            box-shadow: 0 0 40px var(--shield-glow);
+            transform: translateY(-2px);
+        }
+        .btn-cta.secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-strong);
+        }
+        .btn-cta.secondary:hover {
+            border-color: var(--shield-blue);
+            background: rgba(37,99,235,0.08);
+            transform: translateY(-2px);
+        }
+        .cta-note {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border);
+            padding: 64px 0 0;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            padding-bottom: 48px;
+        }
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+        .footer-col h4 {
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--text-faint);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        .footer-col ul {
+            list-style: none;
+        }
+        .footer-col li {
+            margin-bottom: 10px;
+        }
+        .footer-col a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color var(--transition);
+        }
+        .footer-col a:hover { color: var(--text-main); }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-copy {
+            color: var(--text-faint);
+            font-size: 0.8rem;
+        }
+        .footer-badges {
+            display: flex;
+            gap: 8px;
+        }
+        .footer-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(37,99,235,0.08);
+            border: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-size: 0.55rem;
+            letter-spacing: 1px;
+            color: var(--text-faint);
+        }
+
+        @media (max-width: 800px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { justify-content: center; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         NAVIGATION
+         ============================================================ -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-brand">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <path d="M16 2L4 8v8c0 7.73 5.12 14.96 12 16 6.88-1.04 12-8.27 12-16V8L16 2z" fill="none" stroke="var(--shield-blue)" stroke-width="1.5"/>
+                    <path d="M16 6L8 10v6c0 5.55 3.4 10.74 8 11.5 4.6-.76 8-5.95 8-11.5v-6L16 6z" fill="rgba(37,99,235,0.12)" stroke="var(--shield-blue)" stroke-width="1"/>
+                    <path d="M13 16l2 2 4-4" stroke="var(--emerald-bright)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>VEILO</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features"><span class="lang-en">Features</span><span class="lang-tr">Özellikler</span></a></li>
+                <li><a href="#security"><span class="lang-en">Security</span><span class="lang-tr">Güvenlik</span></a></li>
+                <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a></li>
+                <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
+                <li><a href="#enterprise"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a></li>
+                <li><a href="#gateway">Gateway</a></li>
+                <li><a href="#ecosystem"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="lang-toggle" id="langToggle">TR / EN</button>
+                <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-nav" target="_blank">
+                    <span class="lang-en">GitHub</span>
+                    <span class="lang-tr">GitHub</span>
+                </a>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#features" class="mobile-link"><span class="lang-en">Features</span><span class="lang-tr">Özellikler</span></a>
+        <a href="#security" class="mobile-link"><span class="lang-en">Security</span><span class="lang-tr">Güvenlik</span></a>
+        <a href="#compare" class="mobile-link"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a>
+        <a href="#recovery" class="mobile-link"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a>
+        <a href="#enterprise" class="mobile-link"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a>
+        <a href="#gateway" class="mobile-link">Gateway</a>
+        <a href="#ecosystem" class="mobile-link"><span class="lang-en">Ecosystem</span><span class="lang-tr">Ekosistem</span></a>
+        <button class="lang-toggle" onclick="toggleLanguage()">TR / EN</button>
+    </div>
+
+    <!-- ============================================================
+         SECTION 1: HERO
+         ============================================================ -->
+    <section class="hero" id="hero">
+        <canvas id="shield-canvas"></canvas>
+        <div class="hero-bg-glow"></div>
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <div class="hero-badge">
+                        <div class="pulse-dot"></div>
+                        <span class="lang-en">HARDWARE-BACKED 2FA</span>
+                        <span class="lang-tr">DONANIM DESTEKLİ 2FA</span>
+                    </div>
+
+                    <h1 class="lang-en">Your Codes. Your Device.<span class="accent">Zero Compromise.</span></h1>
+                    <h1 class="lang-tr">Kodlarınız. Cihazınız.<span class="accent">Sıfır Taviz.</span></h1>
+
+                    <p class="hero-subtitle lang-en">Offline 2FA that stores your keys in hardware — no cloud, no tracking, no account needed.</p>
+                    <p class="hero-subtitle lang-tr">Anahtarlarınızı donanımda saklayan çevrimdışı 2FA — bulut yok, izleme yok, hesap gerekmez.</p>
+
+                    <div class="hero-buttons">
+                        <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-primary" target="_blank">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.3 2.3-8.636-8.632z"/></svg>
+                            <span class="lang-en">Get Started</span>
+                            <span class="lang-tr">Başla</span>
+                        </a>
+                        <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-outline" target="_blank">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            <span class="lang-en">View Source</span>
+                            <span class="lang-tr">Kaynak Kodu</span>
+                        </a>
+                    </div>
+
+                    <p class="hero-trust">
+                        <span class="lang-en">Open source &middot; 11 security layers &middot; 3 languages</span>
+                        <span class="lang-tr">Açık kaynak &middot; 11 güvenlik katmanı &middot; 3 dil desteği</span>
+                    </p>
+                </div>
+
+                <div class="phone-mockup">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-header">
+                            <span class="phone-header-title">VEILO AUTH</span>
+                            <div class="phone-header-icon"></div>
+                        </div>
+
+                        <!-- OTP Card 1: GitHub -->
+                        <div class="otp-card" id="otpCard0">
+                            <div class="otp-card-header">
+                                <div class="otp-issuer">
+                                    <div class="otp-issuer-icon" style="background:#333">GH</div>
+                                    <span class="otp-issuer-name">GitHub</span>
+                                    <span class="otp-pin-badge">&#9733;</span>
+                                </div>
+                                <div class="otp-timer-ring" id="ring0">
+                                    <svg viewBox="0 0 32 32">
+                                        <circle class="ring-bg" cx="16" cy="16" r="13"/>
+                                        <circle class="ring-progress" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <span class="otp-timer-text">14s</span>
+                                </div>
+                            </div>
+                            <div class="otp-code" id="otpCode0">
+                                <span class="digit">6</span><span class="digit">5</span><span class="digit">4</span>
+                                <span style="letter-spacing:8px"> </span>
+                                <span class="digit">2</span><span class="digit">8</span><span class="digit">1</span>
+                            </div>
+                        </div>
+
+                        <!-- OTP Card 2: Google -->
+                        <div class="otp-card" id="otpCard1">
+                            <div class="otp-card-header">
+                                <div class="otp-issuer">
+                                    <div class="otp-issuer-icon" style="background:#4285f4">G</div>
+                                    <span class="otp-issuer-name">Google</span>
+                                </div>
+                                <div class="otp-timer-ring" id="ring1">
+                                    <svg viewBox="0 0 32 32">
+                                        <circle class="ring-bg" cx="16" cy="16" r="13"/>
+                                        <circle class="ring-progress" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <span class="otp-timer-text">47s</span>
+                                </div>
+                            </div>
+                            <div class="otp-code" id="otpCode1">
+                                <span class="digit">9</span><span class="digit">8</span><span class="digit">1</span>
+                                <span style="letter-spacing:8px"> </span>
+                                <span class="digit">5</span><span class="digit">5</span><span class="digit">2</span>
+                            </div>
+                        </div>
+
+                        <!-- OTP Card 3: AWS -->
+                        <div class="otp-card" id="otpCard2">
+                            <div class="otp-card-header">
+                                <div class="otp-issuer">
+                                    <div class="otp-issuer-icon" style="background:#ff9900">A</div>
+                                    <span class="otp-issuer-name">AWS</span>
+                                </div>
+                                <div class="otp-timer-ring" id="ring2">
+                                    <svg viewBox="0 0 32 32">
+                                        <circle class="ring-bg" cx="16" cy="16" r="13"/>
+                                        <circle class="ring-progress" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <span class="otp-timer-text">22s</span>
+                                </div>
+                            </div>
+                            <div class="otp-code" id="otpCode2">
+                                <span class="digit">4</span><span class="digit">3</span><span class="digit">8</span>
+                                <span style="letter-spacing:8px"> </span>
+                                <span class="digit">7</span><span class="digit">1</span><span class="digit">9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: TRUST STRIP
+         ============================================================ -->
+    <section class="trust-strip">
+        <div class="container">
+            <p class="trust-strip-text">
+                <span class="lang-en">Works with every service that supports two-factor authentication</span>
+                <span class="lang-tr">İki faktörlü doğrulama destekleyen tüm servislerle çalışır</span>
+            </p>
+            <div class="trust-logos">
+                <span class="trust-logo">GOOGLE</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">GITHUB</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">MICROSOFT</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">AWS</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">BINANCE</span>
+                <span class="trust-dot"></span>
+                <span class="trust-logo">CLOUDFLARE</span>
+            </div>
+            <p class="trust-compat">
+                <span class="lang-en">And thousands more — any service with TOTP / HOTP support</span>
+                <span class="lang-tr">Ve binlercesi — TOTP / HOTP destekleyen her servis</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: HOW IT WORKS — SECURITY PIPELINE
+         ============================================================ -->
+    <section class="pipeline-section" id="features">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">HOW IT WORKS</span>
+                    <span class="lang-tr">NASIL ÇALIŞIR</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">How Veilo Protects You</span>
+                    <span class="lang-tr">Veilo Sizi Nasıl Koruyor</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">From scan to verification — every step is encrypted, isolated, and air-gapped.</span>
+                    <span class="lang-tr">Taramadan doğrulamaya kadar her adim şifrelenmiş, izole ve ağ bağlantısız.</span>
+                </p>
+            </div>
+
+            <div class="pipeline-track reveal" style="transition-delay: 0.2s">
+                <div class="pipeline-flow-dots">
+                    <div class="flow-dot"></div>
+                    <div class="flow-dot"></div>
+                    <div class="flow-dot"></div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128247;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">SCAN</span>
+                        <span class="lang-tr">TARA</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">QR code or manual entry</span>
+                        <span class="lang-tr">QR kod veya manuel giriş</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128273;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">STORE</span>
+                        <span class="lang-tr">DEPOLA</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">Keystore / StrongBox chip + encrypted vault</span>
+                        <span class="lang-tr">Keystore / StrongBox çipi + şifreli kasa</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128274;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">ENCRYPT</span>
+                        <span class="lang-tr">ŞİFRELE</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">AES-256-GCM wrapping</span>
+                        <span class="lang-tr">AES-256-GCM şifreleme</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#9881;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">GENERATE</span>
+                        <span class="lang-tr">ÜRET</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">HMAC computed in secure hardware</span>
+                        <span class="lang-tr">HMAC güvenli donanım içinde hesaplanır</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128737;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">PROTECT</span>
+                        <span class="lang-tr">KORU</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">FLAG_SECURE, biometric gate</span>
+                        <span class="lang-tr">FLAG_SECURE, biyometrik kapısı</span>
+                    </div>
+                </div>
+
+                <div class="pipeline-stage">
+                    <div class="pipeline-icon">&#128465;</div>
+                    <div class="pipeline-label">
+                        <span class="lang-en">CLEAR</span>
+                        <span class="lang-tr">TEMIZLE</span>
+                    </div>
+                    <div class="pipeline-desc">
+                        <span class="lang-en">Memory zeroed, clipboard cleared</span>
+                        <span class="lang-tr">Bellek sıfırlandı, pano temizlendi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: LIVE DASHBOARD (FILM FRAME)
+         ============================================================ -->
+    <section class="dashboard-section" id="security">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">LIVE PREVIEW</span>
+                    <span class="lang-tr">CANLI ÖNİZLEME</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Security at a Glance</span>
+                    <span class="lang-tr">Bir Bakışta Güvenlik</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">Real-time monitoring of your authentication status and security posture.</span>
+                    <span class="lang-tr">Kimlik doğrulama durumunuzun ve güvenlik yapılanmanızın gerçek zamanlı izlenmesi.</span>
+                </p>
+            </div>
+
+            <div class="film-frame reveal" style="transition-delay: 0.2s">
+                <div class="film-titlebar">
+                    <div class="film-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="film-titlebar-text">VEILO AUTHENTICATOR v0.2.0</span>
+                </div>
+
+                <div class="film-body">
+                    <!-- Left Column: Active Tokens -->
+                    <div class="film-col">
+                        <div class="film-col-title">
+                            <span class="lang-en">ACTIVE TOKENS</span>
+                            <span class="lang-tr">AKTİF TOKENLAR</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">GitHub</span>
+                            <span class="token-time">14s</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">Google</span>
+                            <span class="token-time">47s</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">AWS Console</span>
+                            <span class="token-time">22s</span>
+                        </div>
+                        <div class="token-item">
+                            <span class="token-dot"></span>
+                            <span class="token-name">Cloudflare</span>
+                            <span class="token-time">08s</span>
+                        </div>
+                    </div>
+
+                    <!-- Center Column: Big OTP -->
+                    <div class="film-col film-otp-center">
+                        <div class="film-otp-issuer">GITHUB</div>
+                        <div class="film-otp-ring" id="dashRing">
+                            <svg viewBox="0 0 140 140">
+                                <circle class="ring-bg" cx="70" cy="70" r="62"/>
+                                <circle class="ring-progress" cx="70" cy="70" r="62" stroke-dasharray="389.56" stroke-dashoffset="0"/>
+                            </svg>
+                            <div class="film-otp-code" id="dashOtp">483 291</div>
+                        </div>
+                        <div class="film-otp-timer" id="dashTimer">
+                            <span class="lang-en">Refreshes in 14s</span>
+                            <span class="lang-tr">14 saniye içinde yenilenir</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Security Status -->
+                    <div class="film-col">
+                        <div class="film-col-title">
+                            <span class="lang-en">SECURITY STATUS</span>
+                            <span class="lang-tr">GÜVENLİK DURUMU</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">StrongBox</span>
+                            <span class="status-value"><span class="status-dot green"></span> ACTIVE</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Root Detection</span>
+                            <span class="status-label lang-tr">Root Tespiti</span>
+                            <span class="status-value"><span class="status-dot green"></span> CLEAR</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Debugger</span>
+                            <span class="status-value"><span class="status-dot green"></span> CLEAR</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Network Access</span>
+                            <span class="status-label lang-tr">Ağ Erişimi</span>
+                            <span class="status-value"><span class="status-dot red"></span> BLOCKED</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label lang-en">Last Backup</span>
+                            <span class="status-label lang-tr">Son Yedekleme</span>
+                            <span class="status-value"><span class="status-dot amber"></span> 2h ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="film-bottom">
+                    <div class="film-bottom-stripe"></div>
+                    <div class="film-bottom-text">
+                        <span class="lang-en">Code copied &middot; clipboard will auto-clear in <strong>28s</strong></span>
+                        <span class="lang-tr">Kod kopyalandı &middot; pano <strong>28 saniye</strong> içinde otomatik temizlenecek</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: THREAT HEATMAP
+         ============================================================ -->
+    <section class="heatmap-section" id="compare">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">THREAT ANALYSIS</span>
+                    <span class="lang-tr">TEHDİT ANALİZİ</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Why Authenticator Apps Win</span>
+                    <span class="lang-tr">Neden Doğrulama Uygulamaları Kazanır</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">SMS and email codes are fundamentally broken. See why hardware-backed TOTP is the only secure option.</span>
+                    <span class="lang-tr">SMS ve e-posta kodları temelden kusurlu. Donanım destekli TOTP'nin neden tek güvenli seçenek olduğunu görün.</span>
+                </p>
+            </div>
+
+            <!-- Heatmap Grid -->
+            <div class="heatmap-grid reveal" style="transition-delay: 0.2s">
+                <!-- Header Row -->
+                <div class="heatmap-header">
+                    <span class="lang-en">CATEGORY</span>
+                    <span class="lang-tr">KATEGORI</span>
+                </div>
+                <div class="heatmap-header text-center">SMS 2FA</div>
+                <div class="heatmap-header text-center">EMAIL 2FA</div>
+                <div class="heatmap-header text-center">VEILO AUTH</div>
+
+                <!-- Row 1: Phishing Risk -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Phishing Risk</span>
+                    <span class="lang-tr">Oltalama Riski</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> HIGH</div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> HIGH</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> NONE</div>
+
+                <!-- Row 2: SIM Swap -->
+                <div class="heatmap-category">
+                    <span class="lang-en">SIM Swap Attack</span>
+                    <span class="lang-tr">SIM Değiştirme Saldırısı</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> HIGH</div>
+                <div class="heatmap-cell amber"><span class="heatmap-cell-dot"></span> NONE</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> NONE</div>
+
+                <!-- Row 3: Offline Access -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Offline Access</span>
+                    <span class="lang-tr">Çevrimdışı Erişim</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> NO</div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> NO</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> YES</div>
+
+                <!-- Row 4: Token Security -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Token Security</span>
+                    <span class="lang-tr">Token Güvenliği</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> LOW</div>
+                <div class="heatmap-cell amber"><span class="heatmap-cell-dot"></span> MEDIUM</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> MAXIMUM</div>
+
+                <!-- Row 5: Data Sovereignty -->
+                <div class="heatmap-category">
+                    <span class="lang-en">Data Sovereignty</span>
+                    <span class="lang-tr">Veri Egemenliği</span>
+                </div>
+                <div class="heatmap-cell red"><span class="heatmap-cell-dot"></span> NONE</div>
+                <div class="heatmap-cell amber"><span class="heatmap-cell-dot"></span> PARTIAL</div>
+                <div class="heatmap-cell green"><span class="heatmap-cell-dot"></span> FULL</div>
+            </div>
+
+            <!-- Differentiator Question -->
+            <p class="diff-question reveal" style="transition-delay: 0.3s">
+                <span class="lang-en">What makes Veilo different from other authenticators?</span>
+                <span class="lang-tr">Veilo'yu diğer doğrulayıcılardan farklı kılan ne?</span>
+            </p>
+
+            <!-- Differentiator Cards -->
+            <div class="diff-cards reveal" style="transition-delay: 0.4s">
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#128187;</div>
+                    <h3>
+                        <span class="lang-en">Hardware-Backed</span>
+                        <span class="lang-tr">Donanım Destekli</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Keys stored in StrongBox secure chip, never accessible by any app or process.</span>
+                        <span class="lang-tr">Anahtarlar StrongBox güvenli çipte saklanır, hiçbir uygulama veya işlem tarafından erişilemez.</span>
+                    </p>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#9889;</div>
+                    <h3>
+                        <span class="lang-en">Truly Offline</span>
+                        <span class="lang-tr">Tamamen Çevrimdışı</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">INTERNET permission completely removed. Your secrets never touch a network.</span>
+                        <span class="lang-tr">INTERNET izni tamamen kaldırıldı. Sırlarınız asla bir aga dokunmaz.</span>
+                    </p>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#128165;</div>
+                    <h3>
+                        <span class="lang-en">Memory Zeroing</span>
+                        <span class="lang-tr">Bellek Sıfırlama</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Secret key material is zeroed from memory immediately after use. No residual traces.</span>
+                        <span class="lang-tr">Gizli anahtar materyali kullanımdan hemen sonra bellekten sıfırlanır. Kalıntı iz yok.</span>
+                    </p>
+                </div>
+                <div class="diff-card">
+                    <div class="diff-card-icon">&#128270;</div>
+                    <h3>
+                        <span class="lang-en">Open Source</span>
+                        <span class="lang-tr">Açık Kaynak</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Full source code on GitHub. Audit it yourself, verify every claim we make.</span>
+                        <span class="lang-tr">Tam kaynak kodu GitHub'da. Kendiniz denetleyin, yaptığımız her iddiaya doğrulayın.</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5b: AUTHENTICATOR COMPARISON
+         ============================================================ -->
+    <section class="compare-section section-padding">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">COMPARISON</span>
+                    <span class="lang-tr">KARŞILAŞTIRMA</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">How We Compare to Other Authenticators</span>
+                    <span class="lang-tr">Diğer Doğrulama Uygulamalarıyla Karşılaştırma</span>
+                </h2>
+                <p class="section-subtitle">
+                    <span class="lang-en">Not all authenticator apps are created equal. Here's what sets Veilo apart — no names, just facts.</span>
+                    <span class="lang-tr">Tüm doğrulama uygulamaları aynı değildir. Veilo'yu farklı kılan özellikler — isim yok, sadece gerçekler.</span>
+                </p>
+            </div>
+
+            <div class="compare-wrap reveal" style="transition-delay: 0.2s">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="lang-en">Feature</span>
+                                <span class="lang-tr">Özellik</span>
+                            </th>
+                            <th class="veilo-col">Veilo</th>
+                            <th>
+                                <span class="lang-en">Popular Free App</span>
+                                <span class="lang-tr">Popüler Ücretsiz Uygulama</span>
+                            </th>
+                            <th>
+                                <span class="lang-en">Popular Open-Source App</span>
+                                <span class="lang-tr">Popüler Açık Kaynak Uygulama</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Hardware-Backed Keys (StrongBox)</span>
+                                <span class="lang-tr">Donanım Destekli Anahtarlar (StrongBox)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Fully Offline (No INTERNET Permission)</span>
+                                <span class="lang-tr">Tamamen Çevrimdışı (İnternet İzni Yok)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Zero Analytics &amp; Tracking</span>
+                                <span class="lang-tr">Sıfır Analitik ve İzleme</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Encrypted Backup (Argon2id + AES-256)</span>
+                                <span class="lang-tr">Şifreli Yedekleme (Argon2id + AES-256)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Printable PDF Backup</span>
+                                <span class="lang-tr">Yazdırılabilir PDF Yedek</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Screen Capture Blocked</span>
+                                <span class="lang-tr">Ekran Görüntüsü Engeli</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Clipboard Auto-Clear</span>
+                                <span class="lang-tr">Pano Otomatik Temizleme</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Root &amp; Debugger Detection</span>
+                                <span class="lang-tr">Root ve Hata Ayıklayıcı Tespiti</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Secret Zeroed in Memory</span>
+                                <span class="lang-tr">Bellekte Anahtar Sıfırlama</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Open Source</span>
+                                <span class="lang-tr">Açık Kaynak</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">SHA-256 / SHA-512 / 8-Digit Codes</span>
+                                <span class="lang-tr">SHA-256 / SHA-512 / 8 Haneli Kodlar</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-yes">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Favorites &amp; Account Groups</span>
+                                <span class="lang-tr">Favoriler ve Hesap Grupları</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Account Names Encrypted at Rest</span>
+                                <span class="lang-tr">Hesap Adları Diskte Şifreli</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Phone-to-Phone Transfer Without Cloud</span>
+                                <span class="lang-tr">Bulutsuz Telefondan Telefona Aktarım</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">MDM Policy Control (Android Enterprise)</span>
+                                <span class="lang-tr">MDM Politika Kontrolü (Android Enterprise)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Reproducible Builds (Verify the APK Yourself)</span>
+                                <span class="lang-tr">Tekrarlanabilir Derleme (APK'yı Kendiniz Doğrulayın)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Device Attestation Verified by Your Own Server</span>
+                                <span class="lang-tr">Cihaz Doğrulaması (Attestation) Kendi Sunucunuzda</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">Number-Matching Approval Without a Vendor Cloud</span>
+                                <span class="lang-tr">Satıcı Bulutu Olmadan Numara Eşleştirmeli Onay</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-partial">~</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feat-name">
+                                <span class="lang-en">RADIUS / privacyIDEA Integration (VPN, Wi-Fi, SSH)</span>
+                                <span class="lang-tr">RADIUS / privacyIDEA Entegrasyonu (VPN, Wi-Fi, SSH)</span>
+                            </td>
+                            <td class="veilo-col"><span class="cmp-yes">&#10003;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                            <td><span class="cmp-no">&#10007;</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="compare-note reveal" style="transition-delay: 0.3s">
+                <span class="lang-en">Based on publicly available feature lists as of November 2026. No specific products are named or endorsed.</span>
+                <span class="lang-tr">Kasım 2026 itibarıyla kamuya açık özellik listelerine dayanmaktadır. Belirli bir ürün adı verilmemekte veya onaylanmamaktadır.</span>
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: RECOVERY & BACKUP
+         ============================================================ -->
+    <section class="recovery-section" id="recovery">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">RECOVERY</span>
+                    <span class="lang-tr">KURTARMA</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Lose Your Phone? Recover in Minutes.</span>
+                    <span class="lang-tr">Telefonunuzu mu Kaybettiniz? Dakikalar İçinde Kurtarın.</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">The #1 fear with authenticator apps — solved.</span>
+                    <span class="lang-tr">Doğrulama uygulamalarının bir numaralı korkusu — çözüldü.</span>
+                </p>
+            </div>
+
+            <div class="recovery-cards reveal" style="transition-delay: 0.2s">
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128272;</div>
+                    <h3>
+                        <span class="lang-en">Encrypted Backup</span>
+                        <span class="lang-tr">Şifrelenmiş Yedekleme</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Argon2id + AES-256-GCM encrypted file. Export once, import on any new device with your password.</span>
+                        <span class="lang-tr">Argon2id + AES-256-GCM şifrelenmiş dosya. Bir kez dışarı aktarın, şifrenizle herhangi bir yeni cihaza içeri aktarın.</span>
+                    </p>
+                </div>
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128196;</div>
+                    <h3>
+                        <span class="lang-en">Printable PDF</span>
+                        <span class="lang-tr">Yazdırılabilir PDF</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">QR codes on paper. Store in a safe, scan to restore. Works even if you lose access to all digital devices.</span>
+                        <span class="lang-tr">Kağıt üzerinde QR kodları. Kasada saklayın, tarayarak geri yükleyin. Tüm dijital cihazlara erişiminizi kaybetseniz bile çalışır.</span>
+                    </p>
+                </div>
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128260;</div>
+                    <h3>
+                        <span class="lang-en">Easy Migration</span>
+                        <span class="lang-tr">Kolay Geçiş</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">Import from Google Authenticator, Microsoft Authenticator, or Aegis with a single scan. Switch in seconds.</span>
+                        <span class="lang-tr">Google Authenticator, Microsoft Authenticator veya Aegis'ten tek bir taramayla içeri aktarın. Saniyeler içinde geçiş yapın.</span>
+                    </p>
+                </div>
+                <div class="recovery-card">
+                    <div class="recovery-icon">&#128241;</div>
+                    <h3>
+                        <span class="lang-en">Phone-to-Phone Transfer</span>
+                        <span class="lang-tr">Telefondan Telefona Aktarım</span>
+                    </h3>
+                    <p>
+                        <span class="lang-en">New phone? Point the cameras at each other. ECDH key exchange + AES-256-GCM, animated QR frames, no cloud, no cable, no file.</span>
+                        <span class="lang-tr">Yeni telefon mu? Kameraları birbirine tutun. ECDH anahtar değişimi + AES-256-GCM, hareketli QR kareleri; bulut yok, kablo yok, dosya yok.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="recovery-callout reveal" style="transition-delay: 0.3s">
+                <p>
+                    <span class="lang-en">"Your codes are always recoverable. Your security is never compromised."</span>
+                    <span class="lang-tr">"Kodlarınız her zaman kurtarılabilir. Güvenliğiniz asla tehlikeye girmez."</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6b: ENTERPRISE
+         ============================================================ -->
+    <section class="enterprise-section section-padding" id="enterprise">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">ENTERPRISE</span>
+                    <span class="lang-tr">KURUMSAL</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Managed by Your IT. Trusted by Your People.</span>
+                    <span class="lang-tr">BT'niz Yönetir. Çalışanlarınız Güvenir.</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">Veilo speaks Android Enterprise. Push policy from Intune, Google Workspace, Knox or any MDM — no custom build, no server, no account.</span>
+                    <span class="lang-tr">Veilo Android Enterprise dilini konuşur. Intune, Google Workspace, Knox veya herhangi bir MDM'den politika gönderin; özel derleme, sunucu ve hesap gerekmez.</span>
+                </p>
+                <span class="tier-badge live">
+                    <span class="lang-en">OFFLINE TIER &middot; AVAILABLE IN v0.4</span>
+                    <span class="lang-tr">ÇEVRİMDIŞI KATMAN &middot; v0.4 İLE KULLANILABİLİR</span>
+                </span>
+            </div>
+
+            <div class="enterprise-grid">
+                <div class="policy-list reveal">
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128737;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Hardware-only enforcement</span>
+                                <span class="lang-tr">Yalnızca donanım anahtarı zorlaması</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">One switch and every secret must live in the secure chip. Existing software-backed accounts are moved on next unlock; the software option disappears from the app.</span>
+                                <span class="lang-tr">Tek anahtarla tüm sırlar güvenli çipte tutulur. Mevcut yazılım anahtarlı hesaplar bir sonraki kilit açılışında taşınır; yazılım seçeneği uygulamadan kalkar.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#128274;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Seal every exit</span>
+                                <span class="lang-tr">Her çıkışı mühürleyin</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">Disable encrypted export, import, PDF backup, and phone-to-phone transfer independently. Secrets enrolled on a corporate device stay on that device.</span>
+                                <span class="lang-tr">Şifreli dışa aktarma, içe aktarma, PDF yedek ve telefondan telefona aktarımı ayrı ayrı kapatın. Kurum cihazına kaydedilen sırlar o cihazda kalır.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#9888;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Risk-based blocking</span>
+                                <span class="lang-tr">Risk tabanlı engelleme</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">Refuse to generate codes on rooted devices or when a debugger is attached. Users see a clear screen with your support contact, not a silent failure.</span>
+                                <span class="lang-tr">Root'lu cihazda veya debugger bağlıyken kod üretmeyi reddedin. Kullanıcı sessiz bir hata değil, destek iletişiminizi gösteren net bir ekran görür.</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="policy-item">
+                        <div class="policy-item-icon">&#127970;</div>
+                        <div>
+                            <h4>
+                                <span class="lang-en">Your name, your support line</span>
+                                <span class="lang-tr">Sizin adınız, sizin destek hattınız</span>
+                            </h4>
+                            <p>
+                                <span class="lang-en">"Managed by Acme Corp." under the title, your help desk in About. Policy is subtractive only — Veilo can never gain a capability the public edition lacks.</span>
+                                <span class="lang-tr">Başlığın altında "Acme A.Ş. tarafından yönetiliyor", Hakkında'da destek hattınız. Politika yalnızca kısıtlar; Veilo herkese açık sürümde olmayan bir yetenek asla kazanmaz.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mdm-panel reveal" style="transition-delay: 0.15s">
+                    <div class="mdm-head">
+                        <span>
+                            <span class="lang-en">MANAGED CONFIGURATION</span>
+                            <span class="lang-tr">YÖNETİLEN YAPILANDIRMA</span>
+                        </span>
+                        <span class="mdm-badge">
+                            <span class="lang-en">APPLIED</span>
+                            <span class="lang-tr">UYGULANDI</span>
+                        </span>
+                    </div>
+                    <div class="mdm-body">
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Organization name</span>
+                                <span class="lang-tr">Kurum adı</span>
+                                <small>organization_name</small>
+                            </div>
+                            <span class="mdm-val">Acme Corp.</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Hardware-bound keys only</span>
+                                <span class="lang-tr">Yalnızca donanım anahtarı</span>
+                                <small>hardware_bound_only</small>
+                            </div>
+                            <span class="mdm-val on">ON</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Backup export</span>
+                                <span class="lang-tr">Yedek dışa aktarma</span>
+                                <small>allow_backup_export</small>
+                            </div>
+                            <span class="mdm-val off">OFF</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">PDF backup</span>
+                                <span class="lang-tr">PDF yedek</span>
+                                <small>allow_pdf_export</small>
+                            </div>
+                            <span class="mdm-val off">OFF</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Phone-to-phone transfer</span>
+                                <span class="lang-tr">Telefondan telefona aktarım</span>
+                                <small>allow_transfer_send</small>
+                            </div>
+                            <span class="mdm-val off">OFF</span>
+                        </div>
+                        <div class="mdm-row">
+                            <div class="mdm-key">
+                                <span class="lang-en">Block on rooted device</span>
+                                <span class="lang-tr">Root'lu cihazda engelle</span>
+                                <small>block_on_rooted_device</small>
+                            </div>
+                            <span class="mdm-val on">ON</span>
+                        </div>
+                        <div class="mdm-foot">
+                            <span class="lang-en"><strong>10 policy keys</strong>, standard Android <em>RestrictionsManager</em>. Rendered as a form by your MDM, applied on the device within seconds, reverted the moment you clear it.</span>
+                            <span class="lang-tr"><strong>10 politika anahtarı</strong>, standart Android <em>RestrictionsManager</em>. MDM'iniz form olarak gösterir, cihazda saniyeler içinde uygulanır, kaldırdığınız anda geri alınır.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="enterprise-logos reveal">
+                <span>MICROSOFT INTUNE</span>
+                <span>GOOGLE WORKSPACE</span>
+                <span>SAMSUNG KNOX</span>
+                <span>WORKSPACE ONE</span>
+                <span>MOBILEIRON / IVANTI</span>
+                <span>SOTI MOBICONTROL</span>
+            </div>
+
+            <div class="enterprise-cta reveal">
+                <a href="ADMIN-GUIDE.html">
+                    <span class="lang-en">Read the Administrator Guide &rarr;</span>
+                    <span class="lang-tr">Yönetici Kılavuzunu Okuyun &rarr;</span>
+                </a>
+                <small>
+                    <span class="lang-en">Verified end-to-end with Google's Test DPC on a work profile. Managed Google Play listing follows the production release.</span>
+                    <span class="lang-tr">Google Test DPC ile iş profilinde uçtan uca doğrulandı. Managed Google Play listesi üretim sürümünün ardından geliyor.</span>
+                </small>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6c: GATEWAY (ENTERPRISE CONNECTED)
+         ============================================================ -->
+    <section class="gateway-section section-padding" id="gateway">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">ENTERPRISE &middot; CONNECTED</span>
+                    <span class="lang-tr">KURUMSAL &middot; BAĞLI</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Your Own MFA Server. No Vendor Cloud in the Loop.</span>
+                    <span class="lang-tr">Kendi MFA Sunucunuz. Arada Satıcı Bulutu Yok.</span>
+                </h2>
+                <p class="section-subtitle mx-auto">
+                    <span class="lang-en">Veilo MFA Gateway turns the app into a company-managed second factor: central enrolment, hardware attestation and phishing-resistant approvals, delivered to the systems you already run over RADIUS.</span>
+                    <span class="lang-tr">Veilo MFA Gateway uygulamayı kurumun yönettiği ikinci faktöre dönüştürür: merkezi kayıt, donanım doğrulaması ve oltalamaya dayanıklı onaylar, zaten kullandığınız sistemlere RADIUS üzerinden ulaşır.</span>
+                </p>
+                <span class="tier-badge">
+                    <span class="lang-en">CONNECTED TIER &middot; PILOT PROGRAMME</span>
+                    <span class="lang-tr">BAĞLI KATMAN &middot; PİLOT PROGRAMI</span>
+                </span>
+            </div>
+
+            <div class="gateway-flow reveal" style="transition-delay: 0.1s">
+                <div class="gateway-step">
+                    <div class="step-no">01</div>
+                    <h5><span class="lang-en">Enrol</span><span class="lang-tr">Kayıt</span></h5>
+                    <p><span class="lang-en">One-time QR from the console. Key born in the secure chip.</span><span class="lang-tr">Konsoldan tek kullanımlık QR. Anahtar güvenli çipte doğar.</span></p>
+                </div>
+                <div class="gateway-step">
+                    <div class="step-no">02</div>
+                    <h5><span class="lang-en">Attest</span><span class="lang-tr">Doğrula</span></h5>
+                    <p><span class="lang-en">Chain checked against Google roots. Policy enforced at the door.</span><span class="lang-tr">Zincir Google kökleriyle doğrulanır. Politika kapıda uygulanır.</span></p>
+                </div>
+                <div class="gateway-step">
+                    <div class="step-no">03</div>
+                    <h5><span class="lang-en">Match</span><span class="lang-tr">Eşleştir</span></h5>
+                    <p><span class="lang-en">Three numbers on the phone, one on the screen. Signed answer.</span><span class="lang-tr">Telefonda üç sayı, ekranda bir. İmzalı yanıt.</span></p>
+                </div>
+                <div class="gateway-step">
+                    <div class="step-no">04</div>
+                    <h5><span class="lang-en">Accept</span><span class="lang-tr">Kabul</span></h5>
+                    <p><span class="lang-en">RADIUS Access-Accept to VPN, Wi-Fi or SSH. Audit row written.</span><span class="lang-tr">VPN, Wi-Fi veya SSH'e RADIUS Access-Accept. Denetim satırı yazılır.</span></p>
+                </div>
+            </div>
+
+            <div class="enterprise-cta reveal">
+                <a href="https://gateway.veilo.tr/" class="cta-primary">
+                    <span class="lang-en">Explore Veilo Gateway &rarr;</span>
+                    <span class="lang-tr">Veilo Gateway'i inceleyin &rarr;</span>
+                </a>
+                <a href="mailto:partner@veilo.tr?subject=Veilo%20MFA%20Gateway%20pilot">
+                    <span class="lang-en">Request a pilot</span>
+                    <span class="lang-tr">Pilot talep edin</span>
+                </a>
+                <small>
+                    <span class="lang-en">Gateway runs on your own server, with its own admin console on your own domain. Installation, features, security and current release status: gateway.veilo.tr. The Enterprise edition is distributed through your MDM (Managed Google Play). <a href="https://gateway.veilo.tr/security-review-2026-11.html">Security review, November 2026 &rarr;</a></span>
+                    <span class="lang-tr">Gateway kendi sunucunuzda, kendi alan adınızdaki yönetim konsoluyla çalışır. Kurulum, özellikler, güvenlik ve güncel sürüm durumu: gateway.veilo.tr. Kurumsal sürüm MDM'iniz (Managed Google Play) üzerinden dağıtılır. <a href="https://gateway.veilo.tr/security-review-2026-11.html">Güvenlik incelemesi, Kasım 2026 &rarr;</a></span>
+                </small>
+            </div>
+
+            <div class="docs-strip reveal">
+                <div class="text-center">
+                    <p class="section-label">
+                        <span class="lang-en">DOCUMENTATION</span>
+                        <span class="lang-tr">BELGELER</span>
+                    </p>
+                    <h3>
+                        <span class="lang-en">What Your Security Team Will Ask For</span>
+                        <span class="lang-tr">Güvenlik Ekibinizin İsteyeceği Belgeler</span>
+                    </h3>
+                </div>
+                <div class="docs-cards">
+                    <a class="recovery-card docs-card" href="ADMIN-GUIDE.html">
+                        <div class="recovery-icon">&#128214;</div>
+                        <h3><span class="lang-en">Administrator Guide</span><span class="lang-tr">Yönetici Kılavuzu</span></h3>
+                        <p><span class="lang-en">Every managed-configuration key, what it does on the device, and how to roll it out from Intune, Workspace or Knox.</span><span class="lang-tr">Her yönetilen yapılandırma anahtarı, cihazda ne yaptığı ve Intune, Workspace veya Knox'tan nasıl dağıtılacağı.</span></p>
+                        <small>MDM &middot; v0.4</small>
+                    </a>
+                    <a class="recovery-card docs-card" href="SECURITY-ASSESSMENT.html">
+                        <div class="recovery-icon">&#128270;</div>
+                        <h3><span class="lang-en">Security Assessment</span><span class="lang-tr">Güvenlik Değerlendirmesi</span></h3>
+                        <p><span class="lang-en">Threat model, key hierarchy, what an attacker with the phone can and cannot do. Written for reviewers, not marketing.</span><span class="lang-tr">Tehdit modeli, anahtar hiyerarşisi, telefonu ele geçiren saldırganın yapabildikleri ve yapamadıkları. Pazarlama için değil, denetçiler için yazıldı.</span></p>
+                        <small>REPORT v1.0</small>
+                    </a>
+                    <a class="recovery-card docs-card" href="REPRODUCIBLE-BUILDS.html">
+                        <div class="recovery-icon">&#128260;</div>
+                        <h3><span class="lang-en">Reproducible Builds</span><span class="lang-tr">Tekrarlanabilir Derleme</span></h3>
+                        <p><span class="lang-en">Rebuild the APK from source and compare it byte for byte with the one on your devices.</span><span class="lang-tr">APK'yı kaynaktan yeniden derleyin, cihazlarınızdakiyle bayt bayt karşılaştırın.</span></p>
+                        <small>VERIFY YOURSELF</small>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 7: ECOSYSTEM
+         ============================================================ -->
+    <section class="ecosystem-section" id="ecosystem">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">
+                    <span class="lang-en">OUR PRODUCTS</span>
+                    <span class="lang-tr">ÜRÜNLERİMİZ</span>
+                </p>
+                <h2 class="section-title">
+                    <span class="lang-en">Part of the Veilo Security Suite</span>
+                    <span class="lang-tr">Veilo Güvenlik Paketinin Parçası</span>
+                </h2>
+            </div>
+
+            <div class="ecosystem-cards reveal" style="transition-delay: 0.2s">
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: linear-gradient(90deg, var(--emerald), var(--shield-blue));"></div>
+                    <h3>Veilo Authenticator</h3>
+                    <p>
+                        <span class="lang-en">Free authenticator for personal use. Generates two-step verification codes on your phone, with no internet permission and no account.</span>
+                        <span class="lang-tr">Bireysel kullanım için ücretsiz doğrulama uygulaması. İki adımlı doğrulama kodlarını telefonunuzda üretir; internet izni yoktur, hesap gerekmez.</span>
+                    </p>
+                    <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="eco-link" target="_blank">
+                        <span class="lang-en">Get it on Google Play</span>
+                        <span class="lang-tr">Google Play'de aç</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: linear-gradient(90deg, var(--amber), var(--shield-blue));"></div>
+                    <h3>Veilo Enterprise</h3>
+                    <p>
+                        <span class="lang-en">Corporate edition that pairs with Veilo Gateway: number-matching sign-in approval and a hardware-bound device key. Distributed by your IT through Managed Google Play.</span>
+                        <span class="lang-tr">Veilo Gateway ile eşleşen kurumsal sürüm: sayı eşleştirmeli giriş onayı ve donanıma bağlı cihaz anahtarı. Kurumunuzun BT birimi Managed Google Play üzerinden dağıtır.</span>
+                    </p>
+                    <a href="#gateway" class="eco-link">
+                        <span class="lang-en">How it works</span>
+                        <span class="lang-tr">Nasıl çalışır</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: linear-gradient(90deg, var(--shield-blue), var(--emerald));"></div>
+                    <h3>Veilo Gateway</h3>
+                    <p>
+                        <span class="lang-en">On-premises MFA server that pairs with Veilo Authenticator. Push approval with number matching, device attestation, RADIUS for VPN/firewall, audit and SIEM export.</span>
+                        <span class="lang-tr">Veilo Authenticator ile eşleşen kurum içi MFA sunucusu. Sayı eşleştirmeli push onayı, cihaz doğrulama, VPN/firewall için RADIUS, denetim kaydı ve SIEM aktarımı.</span>
+                    </p>
+                    <a href="https://gateway.veilo.tr/" class="eco-link" target="_blank">
+                        <span class="lang-en">Visit gateway.veilo.tr</span>
+                        <span class="lang-tr">gateway.veilo.tr</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--shield-blue);"></div>
+                    <h3>Veilo Messenger</h3>
+                    <p>
+                        <span class="lang-en">Self-hosted, end-to-end encrypted corporate messaging for closed networks. Signal Protocol, Zero-Trust mesh VPN, voice/video calls.</span>
+                        <span class="lang-tr">Kapalı ağlar için self-hosted, uçtan uca şifreli kurumsal mesajlaşma. Signal Protocol, Zero-Trust mesh VPN, sesli/görüntülü arama.</span>
+                    </p>
+                    <a href="https://veilo.tr/" class="eco-link" target="_blank">
+                        <span class="lang-en">Visit veilo.tr</span>
+                        <span class="lang-tr">veilo.tr</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--emerald);"></div>
+                    <h3>Axon</h3>
+                    <p>
+                        <span class="lang-en">Smart backbone for enterprise infrastructure. Encrypted file transfer, multi-device terminal, Docker/SSH/Nginx management, real-time monitoring.</span>
+                        <span class="lang-tr">Kurumsal altyapının akıllı omurgası. Şifreli dosya transferi, çoklu cihaz terminal, Docker/SSH/Nginx yönetimi, gerçek zamanlı izleme.</span>
+                    </p>
+                    <a href="https://axon.veilo.tr/" class="eco-link" target="_blank">
+                        <span class="lang-en">Visit axon.veilo.tr</span>
+                        <span class="lang-tr">axon.veilo.tr</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--amber);"></div>
+                    <h3>Radar</h3>
+                    <p>
+                        <span class="lang-en">Real-time attack detection and automated response. Sigma rules, MITRE ATT&amp;CK mapping, SOAR playbooks. Zero cloud dependency.</span>
+                        <span class="lang-tr">Gerçek zamanlı saldırı tespit ve otomatik müdahale. Sigma kuralları, MITRE ATT&amp;CK eşleme, SOAR playbook'ları. Sıfır bulut bağımlılığı.</span>
+                    </p>
+                    <a href="https://radar.veilo.tr/" class="eco-link" target="_blank">
+                        <span class="lang-en">Visit radar.veilo.tr</span>
+                        <span class="lang-tr">radar.veilo.tr</span>
+                        &rarr;
+                    </a>
+                </div>
+
+                <div class="eco-card">
+                    <div class="eco-accent" style="background: var(--threat-red);"></div>
+                    <h3>Voltbox</h3>
+                    <p>
+                        <span class="lang-en">Zero-knowledge enterprise password vault. Master password never reaches the server. Argon2id + AES-256-GCM encryption.</span>
+                        <span class="lang-tr">Sıfır bilgi mimarili kurumsal şifre kasası. Ana parola asla sunucuya ulaşmaz. Argon2id + AES-256-GCM şifreleme.</span>
+                    </p>
+                    <a href="https://volt.veilo.tr/" class="eco-link" target="_blank">
+                        <span class="lang-en">Visit volt.veilo.tr</span>
+                        <span class="lang-tr">volt.veilo.tr</span>
+                        &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 8: FINAL CTA
+         ============================================================ -->
+    <section class="cta-section">
+        <div class="cta-bg"></div>
+        <div class="container">
+            <div class="reveal">
+                <h2>
+                    <span class="lang-en">Protect Your Digital Identity Today</span>
+                    <span class="lang-tr">Dijital Kimliğinizi Bugün Koruyun</span>
+                </h2>
+                <p class="cta-subtitle">
+                    <span class="lang-en">Free. Open source. Built for security.</span>
+                    <span class="lang-tr">Ücretsiz. Açık kaynak. Güvenlik için inşa edildi.</span>
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" class="btn-cta primary" target="_blank">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.3 2.3-8.636-8.632z"/></svg>
+                        <span class="lang-en">Google Play</span>
+                        <span class="lang-tr">Google Play</span>
+                    </a>
+                    <a href="https://github.com/suleymanelbir/veilo-authenticator" class="btn-cta secondary" target="_blank">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        <span class="lang-en">GitHub</span>
+                        <span class="lang-tr">GitHub</span>
+                    </a>
+                </div>
+                <p class="cta-note">
+                    <span class="lang-en">No account required &middot; No data collected &middot; No internet needed</span>
+                    <span class="lang-tr">Hesap gerekmez &middot; Veri toplanmaz &middot; Internet gerekmez</span>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-brand">
+                        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+                            <path d="M16 2L4 8v8c0 7.73 5.12 14.96 12 16 6.88-1.04 12-8.27 12-16V8L16 2z" fill="none" stroke="var(--shield-blue)" stroke-width="1.5"/>
+                            <path d="M13 16l2 2 4-4" stroke="var(--emerald-bright)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>VEILO</span>
+                    </a>
+                    <p>
+                        <span class="lang-en">Next-generation authentication for the security-conscious. Open source, offline, hardware-backed.</span>
+                        <span class="lang-tr">Güvenlik bilincine sahip kullanıcılar için yeni nesil kimlik doğrulama. Açık kaynak, çevrimdışı, donanım destekli.</span>
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>
+                        <span class="lang-en">PRODUCT</span>
+                        <span class="lang-tr">ÜRÜN</span>
+                    </h4>
+                    <ul>
+                        <li><a href="#features"><span class="lang-en">Features</span><span class="lang-tr">Özellikler</span></a></li>
+                        <li><a href="#compare"><span class="lang-en">Compare</span><span class="lang-tr">Karşılaştır</span></a></li>
+                        <li><a href="#recovery"><span class="lang-en">Recovery</span><span class="lang-tr">Kurtarma</span></a></li>
+                        <li><a href="#enterprise"><span class="lang-en">Enterprise</span><span class="lang-tr">Kurumsal</span></a></li>
+                        <li><a href="#gateway"><span class="lang-en">MFA Gateway</span><span class="lang-tr">MFA Gateway</span></a></li>
+                        <li><a href="https://play.google.com/store/apps/details?id=tr.veilo.authenticator" target="_blank">Google Play</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>
+                        <span class="lang-en">SECURITY</span>
+                        <span class="lang-tr">GÜVENLİK</span>
+                    </h4>
+                    <ul>
+                        <li><a href="#security"><span class="lang-en">Dashboard</span><span class="lang-tr">Kontrol Paneli</span></a></li>
+                        <li><a href="ADMIN-GUIDE.html"><span class="lang-en">Admin Guide (MDM)</span><span class="lang-tr">Yönetici Kılavuzu (MDM)</span></a></li>
+                        <li><a href="REPRODUCIBLE-BUILDS.html"><span class="lang-en">Reproducible Builds</span><span class="lang-tr">Tekrarlanabilir Derleme</span></a></li>
+                        <li><a href="https://github.com/suleymanelbir/veilo-authenticator/releases" target="_blank"><span class="lang-en">Releases</span><span class="lang-tr">Sürümler</span></a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>
+                        <span class="lang-en">LEGAL</span>
+                        <span class="lang-tr">YASAL</span>
+                    </h4>
+                    <ul>
+                        <li><a href="privacy.html"><span class="lang-en">Privacy Policy</span><span class="lang-tr">Gizlilik Politikası</span></a></li>
+                        <li><a href="SECURITY-ASSESSMENT.html"><span class="lang-en">Security Report</span><span class="lang-tr">Güvenlik Raporu</span></a></li>
+                        <li><a href="https://github.com/suleymanelbir/veilo-authenticator/blob/main/LICENSE" target="_blank"><span class="lang-en">License (Apache-2.0)</span><span class="lang-tr">Lisans (Apache-2.0)</span></a></li>
+                        <li><a href="https://github.com/suleymanelbir/veilo-authenticator" target="_blank"><span class="lang-en">Source Code</span><span class="lang-tr">Kaynak Kodu</span></a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span class="footer-copy">&copy; 2024 Veilo Security. <span class="lang-en">All rights reserved.</span><span class="lang-tr">Tüm hakları saklıdır.</span></span>
+                <div class="footer-badges">
+                    <span class="footer-badge">TOTP</span>
+                    <span class="footer-badge">HOTP</span>
+                    <span class="footer-badge">OPEN SOURCE</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================
+         JAVASCRIPT
+         ============================================================ -->
+    <script>
+    (function() {
+        'use strict';
+
+        /* ---- LANGUAGE TOGGLE ---- */
+        function detectLang() {
+            var saved = localStorage.getItem('veilo-lang');
+            if (saved) return saved;
+            var nav = navigator.language || navigator.userLanguage || 'en';
+            return nav.toLowerCase().startsWith('tr') ? 'tr' : 'en';
+        }
+
+        function setLang(lang) {
+            if (lang === 'tr') {
+                document.body.classList.add('tr');
+            } else {
+                document.body.classList.remove('tr');
+            }
+            localStorage.setItem('veilo-lang', lang);
+        }
+
+        var currentLang = detectLang();
+        setLang(currentLang);
+
+        window.toggleLanguage = function() {
+            currentLang = currentLang === 'en' ? 'tr' : 'en';
+            setLang(currentLang);
+        };
+
+        document.getElementById('langToggle').addEventListener('click', window.toggleLanguage);
+
+        /* ---- NAV SCROLL ---- */
+        var nav = document.getElementById('nav');
+        var lastScroll = 0;
+        window.addEventListener('scroll', function() {
+            var st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > 60) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+            lastScroll = st;
+        }, { passive: true });
+
+        /* ---- HAMBURGER MENU ---- */
+        var hamburger = document.getElementById('hamburger');
+        var mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', function() {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+        document.querySelectorAll('.mobile-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        /* ---- INTERSECTION OBSERVER (reveal) ---- */
+        var reveals = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            reveals.forEach(function(el) { observer.observe(el); });
+        } else {
+            reveals.forEach(function(el) { el.classList.add('visible'); });
+        }
+
+        /* ---- OTP ANIMATION (Phone Mockup) ---- */
+        var otpAccounts = [
+            { timer: 14, code: [6,5,4,2,8,1] },
+            { timer: 47, code: [9,8,1,5,5,2] },
+            { timer: 22, code: [4,3,8,7,1,9] }
+        ];
+
+        function randomDigit() { return Math.floor(Math.random() * 10); }
+
+        function generateNewCode() {
+            return [randomDigit(), randomDigit(), randomDigit(), randomDigit(), randomDigit(), randomDigit()];
+        }
+
+        function getTimerColor(seconds) {
+            if (seconds <= 5) return 'var(--threat-red)';
+            if (seconds <= 10) return 'var(--amber)';
+            return 'var(--emerald)';
+        }
+
+        function updateOtpCards() {
+            var circumference = 2 * Math.PI * 13; // r=13 for the small rings
+            otpAccounts.forEach(function(acc, i) {
+                acc.timer--;
+                if (acc.timer <= 0) {
+                    acc.timer = 30;
+                    acc.code = generateNewCode();
+                    // Animate digit change
+                    var codeEl = document.getElementById('otpCode' + i);
+                    if (codeEl) {
+                        var digits = codeEl.querySelectorAll('.digit');
+                        digits.forEach(function(d, di) {
+                            d.classList.add('changing');
+                            setTimeout(function() {
+                                d.textContent = acc.code[di];
+                                d.classList.remove('changing');
+                            }, 200);
+                        });
+                    }
+                }
+
+                // Update ring
+                var ring = document.getElementById('ring' + i);
+                if (ring) {
+                    var progress = ring.querySelector('.ring-progress');
+                    var timerText = ring.querySelector('.otp-timer-text');
+                    var offset = circumference * (1 - acc.timer / 30);
+                    progress.style.strokeDashoffset = offset;
+                    progress.style.stroke = getTimerColor(acc.timer);
+                    timerText.textContent = acc.timer + 's';
+                }
+            });
+        }
+
+        setInterval(updateOtpCards, 1000);
+
+        /* ---- DASHBOARD OTP ANIMATION ---- */
+        var dashTimer = 14;
+        var dashCode = '483 291';
+        var dashCircumference = 2 * Math.PI * 62;
+
+        function updateDashOtp() {
+            dashTimer--;
+            if (dashTimer <= 0) {
+                dashTimer = 30;
+                var c = generateNewCode();
+                dashCode = c[0] + '' + c[1] + '' + c[2] + ' ' + c[3] + '' + c[4] + '' + c[5];
+                var otpEl = document.getElementById('dashOtp');
+                if (otpEl) otpEl.textContent = dashCode;
+            }
+
+            var ringEl = document.getElementById('dashRing');
+            if (ringEl) {
+                var progress = ringEl.querySelector('.ring-progress');
+                var offset = dashCircumference * (1 - dashTimer / 30);
+                progress.style.strokeDashoffset = offset;
+                progress.style.stroke = getTimerColor(dashTimer);
+            }
+
+            var timerEl = document.getElementById('dashTimer');
+            if (timerEl) {
+                var enSpan = timerEl.querySelector('.lang-en');
+                var trSpan = timerEl.querySelector('.lang-tr');
+                if (enSpan) enSpan.textContent = 'Refreshes in ' + dashTimer + 's';
+                if (trSpan) trSpan.textContent = dashTimer + ' saniye içinde yenilenir';
+            }
+        }
+
+        setInterval(updateDashOtp, 1000);
+
+        /* ---- SHIELD CANVAS ANIMATION ---- */
+        var canvas = document.getElementById('shield-canvas');
+        var ctx = canvas.getContext('2d');
+        var mouseX = 0, mouseY = 0;
+        var particles = [];
+        var scanAngle = 0;
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function resizeCanvas() {
+            var hero = document.getElementById('hero');
+            canvas.width = hero.offsetWidth;
+            canvas.height = hero.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Shield shape points
+        function getShieldPoints(cx, cy, size) {
+            var points = [];
+            var steps = 60;
+            for (var i = 0; i <= steps; i++) {
+                var t = i / steps;
+                var x, y;
+                if (t <= 0.15) {
+                    // top-left to top-center
+                    var p = t / 0.15;
+                    x = cx - size * 0.5 * (1 - p);
+                    y = cy - size * 0.6 + size * 0.15 * (1 - p);
+                } else if (t <= 0.35) {
+                    // top-center to top-right
+                    var p = (t - 0.15) / 0.2;
+                    x = cx + size * 0.5 * p;
+                    y = cy - size * 0.6 + size * 0.15 * p;
+                } else if (t <= 0.65) {
+                    // right side curve down
+                    var p = (t - 0.35) / 0.3;
+                    x = cx + size * 0.5 * (1 - p * 0.7);
+                    y = cy - size * 0.45 + size * 1.1 * p;
+                } else if (t <= 0.85) {
+                    // bottom curve to point
+                    var p = (t - 0.65) / 0.2;
+                    x = cx + size * 0.15 * (1 - p);
+                    y = cy + size * 0.65 + size * 0.15 * p;
+                } else {
+                    // point back up left side
+                    var p = (t - 0.85) / 0.15;
+                    x = cx - size * 0.5 * p;
+                    y = cy + size * 0.8 * (1 - p) - size * 0.6 * p;
+                }
+                points.push({ x: x, y: y });
+            }
+            return points;
+        }
+
+        // Particles
+        var numParticles = 40;
+        for (var i = 0; i < numParticles; i++) {
+            particles.push({
+                angle: Math.random() * Math.PI * 2,
+                radius: 80 + Math.random() * 160,
+                speed: 0.002 + Math.random() * 0.008,
+                size: 1 + Math.random() * 2.5,
+                isThreat: Math.random() < 0.15,
+                opacity: 0.3 + Math.random() * 0.5
+            });
+        }
+
+        function drawShield() {
+            if (prefersReducedMotion) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var cx = canvas.width * 0.5;
+            var cy = canvas.height * 0.5;
+            var size = Math.min(canvas.width, canvas.height) * 0.22;
+
+            // Shield outline
+            var points = getShieldPoints(cx, cy, size);
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (var i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'rgba(37,99,235,0.12)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Scan line
+            scanAngle += 0.012;
+            var scanX = cx + Math.cos(scanAngle) * size * 1.5;
+            var scanY = cy + Math.sin(scanAngle) * size * 1.5;
+            var grad = ctx.createLinearGradient(cx, cy, scanX, scanY);
+            grad.addColorStop(0, 'rgba(37,99,235,0.08)');
+            grad.addColorStop(1, 'rgba(37,99,235,0)');
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(scanX, scanY);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Particles
+            particles.forEach(function(p) {
+                p.angle += p.speed;
+
+                var px = cx + Math.cos(p.angle) * p.radius;
+                var py = cy + Math.sin(p.angle) * p.radius;
+
+                // Mouse repulsion
+                var dx = px - mouseX;
+                var dy = py - mouseY;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120 && dist > 0) {
+                    var force = (120 - dist) / 120 * 30;
+                    px += (dx / dist) * force;
+                    py += (dy / dist) * force;
+                }
+
+                ctx.beginPath();
+                ctx.arc(px, py, p.size, 0, Math.PI * 2);
+                if (p.isThreat) {
+                    ctx.fillStyle = 'rgba(239,68,68,' + (p.opacity * 0.7) + ')';
+                    ctx.shadowColor = 'rgba(239,68,68,0.3)';
+                } else {
+                    ctx.fillStyle = 'rgba(16,185,129,' + (p.opacity * 0.6) + ')';
+                    ctx.shadowColor = 'rgba(16,185,129,0.2)';
+                }
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            requestAnimationFrame(drawShield);
+        }
+
+        if (!prefersReducedMotion) {
+            requestAnimationFrame(drawShield);
+        }
+
+    })();
+    </script>
+</body>
+</html>

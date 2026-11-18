@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizlilik Politikasi — Veilo Authenticator</title>
+    <meta name="description" content="Veilo Authenticator gizlilik politikasi. Uygulama hicbir kisisel veri toplamaz, iletmez ve paylasmaz.">
+    <link rel="canonical" href="https://veilo.tr/authenticator/privacy">
+    <style>
+        :root {
+            --bg: #0a0f1a;
+            --surface: #111827;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #00C875;
+            --border: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .lang-switch {
+            text-align: right;
+            margin-bottom: 2rem;
+        }
+        .lang-switch a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        .lang-switch a:hover { border-color: var(--accent); }
+        h1 {
+            font-family: 'Syne', 'Inter', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+        .updated {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+        .lead {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            border-radius: 4px;
+        }
+        h2 {
+            font-size: 1.2rem;
+            margin: 2rem 0 0.8rem;
+            color: var(--text);
+        }
+        p, li { margin-bottom: 0.6rem; }
+        ul { padding-left: 1.5rem; }
+        li strong { color: var(--text); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border);
+        }
+        th {
+            background: var(--surface);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        a { color: var(--accent); }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 3rem 0;
+        }
+        .back {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back:hover { text-decoration: underline; }
+        .section { display: none; }
+        .section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="lang-switch">
+            <a href="#" onclick="switchLang('tr'); return false;" id="btn-tr">Turkce</a>
+            <a href="#" onclick="switchLang('en'); return false;" id="btn-en">English</a>
+        </div>
+
+        <!-- TURKISH -->
+        <div id="lang-tr" class="section active">
+            <h1>Gizlilik Politikasi</h1>
+            <p class="updated">Son guncelleme: 7 Kasim 2026</p>
+            <p class="lead"><strong>Veilo Authenticator hicbir kisisel veriyi toplamaz, iletmez ve paylasmaz.</strong> Uygulamanin internet izni yoktur: cihazinizdan disariya hicbir sey gonderemez.</p>
+
+            <h2>Cihazinizda kalanlar</h2>
+            <ul>
+                <li><strong>Hesaplariniz.</strong> Girdiginiz ya da taradiginiz hizmet ve hesap adlari ile kod uretmekte kullanilan gizli anahtarlar. Gizli anahtarlar cihazin guvenli donaniminda (Android Keystore) tutulur ya da onunla sifrelenir. Uygulamanin ozel depolama alaninda saklanir; Android bulut yedeklemesine ve cihazdan cihaza aktarima dahil edilmez.</li>
+                <li><strong>Baska hicbir sey.</strong> Uygulamada analiz, reklam, hata raporlama ya da ucuncu taraf hizmeti yoktur; kullanici hesabi olusturulmaz.</li>
+            </ul>
+
+            <h2>Izinler</h2>
+            <table>
+                <tr><th>Izin</th><th>Neden</th></tr>
+                <tr><td>Kamera</td><td>Yalnizca hesap eklerken QR kodu taramak icin. Goruntuler cihazda islenir; saklanmaz ve hicbir yere gonderilmez.</td></tr>
+                <tr><td>Biyometri / ekran kilidi</td><td>Kilit acma islemini Android yurutur. Uygulama parmak izinizi, yuzunuzu ya da PIN'inizi hicbir zaman almaz; yalnizca dogrulamanin basarili olup olmadigini ogrenir.</td></tr>
+            </table>
+
+            <h2>Sizin tercihinizle olanlar</h2>
+            <ul>
+                <li><strong>Kod kopyalamak</strong>, kodu cihazin panosuna koyar; kullandiginiz diger uygulamalar panoyu okuyabilir. Uygulama kodu yaklasik 30 saniye sonra panodan siler.</li>
+                <li><strong>Yedek disa aktarmak</strong>, sectiginiz parolayla sifrelenmis bir dosyayi belirlediginiz konuma yazar. O andan sonra dosya uygulamanin degil, sizin denetiminizdir.</li>
+            </ul>
+
+            <h2>Verilerinizi silmek</h2>
+            <p>Uygulama icinden bir hesabi kaldirabilir ya da uygulamayi kaldirarak (veya Android ayarlarindan verilerini temizleyerek) sakladigi her seyi silebilirsiniz. Disa aktardiginiz yedek dosyalarini, kaydettiginiz yerden ayrica silmeniz gerekir.</p>
+
+            <h2>Uygulama magazalari</h2>
+            <p>Uygulamayi bir uygulama magazasindan kurarsaniz, magaza isletmecisi kendi gizlilik politikasi kapsaminda kurulum ve cokme istatistikleri gibi bilgiler toplayabilir. Uygulamanin kendisi hicbir sey gondermez.</p>
+
+            <h2>Degisiklikler</h2>
+            <p>Bu politika degisirse yeni surum, yeni tarihiyle ayni adreste yayimlanir.</p>
+
+            <h2>Iletisim</h2>
+            <p>Bu politikayla ilgili sorulariniz icin: <a href="mailto:suleymanelbir@gmail.com">suleymanelbir@gmail.com</a></p>
+
+            <a href="https://veilo.tr" class="back">&larr; veilo.tr</a>
+        </div>
+
+        <!-- ENGLISH -->
+        <div id="lang-en" class="section">
+            <h1>Privacy Policy</h1>
+            <p class="updated">Last updated: 7 November 2026</p>
+            <p class="lead"><strong>Veilo Authenticator does not collect, transmit or share any personal data.</strong> The app has no internet permission: it cannot send anything off your device.</p>
+
+            <h2>What stays on your device</h2>
+            <ul>
+                <li><strong>Your accounts.</strong> The service and account names you enter or scan, and the secret keys used to generate codes. Secret keys are held in, or encrypted by, the device's secure hardware (Android Keystore). They are kept in the app's private storage and are excluded from Android cloud backup and device-to-device transfer.</li>
+                <li><strong>Nothing else.</strong> The app has no analytics, advertising, crash reporting or third-party services, and creates no user account.</li>
+            </ul>
+
+            <h2>Permissions</h2>
+            <table>
+                <tr><th>Permission</th><th>Why</th></tr>
+                <tr><td>Camera</td><td>Only to scan a QR code when you add an account. Images are processed on the device and are not stored or sent anywhere.</td></tr>
+                <tr><td>Biometrics / screen lock</td><td>Unlocking is handled by Android. The app never receives your fingerprint, face or PIN; it is only told whether the check succeeded.</td></tr>
+            </table>
+
+            <h2>Things you choose to do</h2>
+            <ul>
+                <li><strong>Copying a code</strong> places it on the device clipboard, where other apps you use may be able to read it. The app removes it again after about 30 seconds.</li>
+                <li><strong>Exporting a backup</strong> writes a file, encrypted with a passphrase you choose, to the location you pick. From then on that file is under your control, not the app's.</li>
+            </ul>
+
+            <h2>Deleting your data</h2>
+            <p>Remove an account inside the app, or uninstall the app (or clear its data in Android settings) to delete everything it has stored. Backup files you exported must be deleted separately, wherever you saved them.</p>
+
+            <h2>App stores</h2>
+            <p>If you install the app from an app store, the store operator may collect information such as installs and crash statistics under its own privacy policy. The app itself sends nothing.</p>
+
+            <h2>Changes</h2>
+            <p>If this policy changes, the new version will be published at the same address with a new date.</p>
+
+            <h2>Contact</h2>
+            <p>Questions about this policy: <a href="mailto:suleymanelbir@gmail.com">suleymanelbir@gmail.com</a></p>
+
+            <a href="https://veilo.tr" class="back">&larr; veilo.tr</a>
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang) {
+            document.getElementById('lang-tr').classList.toggle('active', lang === 'tr');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+            document.documentElement.lang = lang === 'en' ? 'en' : 'tr';
+        }
+        if (navigator.language && navigator.language.startsWith('en')) switchLang('en');
+    </script>
+</body>
+</html>
