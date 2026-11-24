@@ -191,19 +191,19 @@ html.js:not(.rm) .layer{transform:none}
 /* responsive */
 @media (max-width:980px){
   .links{display:none}
-  .hero-grid,.ent-grid{grid-template-columns:1fr}
+  .hero-grid,.ent-grid{grid-template-columns:minmax(0,1fr)}
   .hero-visual{margin-top:16px}
   .live{left:auto;right:-14%;bottom:-6%;min-width:220px}
   .gw-steps,.rec-list{grid-template-columns:repeat(2,1fr)}
-  .big-list li{grid-template-columns:1fr;gap:12px}
+  .big-list li{grid-template-columns:minmax(0,1fr);gap:12px}
   .prod-list a{grid-template-columns:1fr auto;gap:6px 16px}
   .prod-desc{grid-column:1/-1;grid-row:2}
   .prod-list .small{display:none}
-  .docs{grid-template-columns:1fr}
+  .docs{grid-template-columns:minmax(0,1fr)}
   .docs a{margin-right:0}
 }
 @media (max-width:820px){
-  .descent-grid{grid-template-columns:1fr}
+  .descent-grid{grid-template-columns:minmax(0,1fr)}
   html.js:not(.rm) .descent-grid{grid-template-rows:auto 1fr;align-content:center;gap:8px;padding-top:72px}
   html.js:not(.rm) .stack-wrap{order:-1;min-height:0;height:52svh}
   html.js:not(.rm) .stack{width:min(190px,44vw)}
@@ -212,7 +212,7 @@ html.js:not(.rm) .layer{transform:none}
   .step .h2{font-size:clamp(1.8rem,7vw,2.4rem)}
   .step p{font-size:16px}
   .stack-wrap{min-height:520px}
-  .match-visual{grid-template-columns:1fr;justify-items:center}
+  .match-visual{grid-template-columns:minmax(0,1fr);justify-items:center}
   .login{justify-self:center}
   .stamp{right:4%;bottom:4%}
   .tr{grid-template-columns:1fr 1fr 1fr;font-size:14px}
@@ -221,7 +221,7 @@ html.js:not(.rm) .layer{transform:none}
   .th>span:first-child{display:none}
 }
 @media (max-width:560px){
-  .gw-steps,.rec-list{grid-template-columns:1fr}
+  .gw-steps,.rec-list{grid-template-columns:minmax(0,1fr)}
   .live{position:relative;right:auto;bottom:auto;margin-top:-56px;margin-left:24px}
   .nav .btn{display:none}
 }
@@ -259,3 +259,6 @@ html.js:not(.rm) .layer{transform:none}
 .qn-panel a[aria-current]{color:var(--ink);background:var(--paper-2)}
 .qn-btn:hover{border-color:var(--ink)}
 .qn-btn:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+
+/* 2026-11-24 mobil: yatay taşma güvenliği (animasyon başlangıç durumları dahil) */
+main{overflow-x:clip}
