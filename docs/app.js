@@ -21,6 +21,15 @@
     d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && pm.open) { pm.open = false; pm.querySelector('summary').focus(); } });
   }
 
+
+  /* ---------- pusula (sayfa içi hızlı gezinme) ---------- */
+  var qn = d.getElementById('qn'), qb = d.getElementById('qn-btn');
+  function qOpen(v) { qn.classList.toggle('open', v); qb.setAttribute('aria-expanded', v ? 'true' : 'false'); }
+  qb.addEventListener('click', function (e) { e.stopPropagation(); qOpen(!qn.classList.contains('open')); });
+  d.addEventListener('click', function () { qOpen(false); });
+  d.addEventListener('keydown', function (e) { if (e.key === 'Escape') qOpen(false); });
+  qn.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { qOpen(false); }); });
+
   /* ---------- live TOTP (RFC 6238 test key, SHA-1, 6 digits, 30 s) ---------- */
   var codeEls = d.querySelectorAll('[data-code]'), secEls = d.querySelectorAll('[data-secs]'), bars = d.querySelectorAll('[data-bar]');
   var keyP = (window.crypto && crypto.subtle) ? crypto.subtle.importKey('raw', new TextEncoder().encode('12345678901234567890'), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']) : null;
