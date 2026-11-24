@@ -226,3 +226,24 @@ html.js:not(.rm) .layer{transform:none}
   .nav .btn{display:none}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- Ürünler menüsü (tüm Veilo sitelerinde ortak) ---------- */
+.prod-menu{position:relative}
+.prod-menu>summary{list-style:none;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px;color:var(--muted);padding:9px 14px;border:1px solid var(--line);border-radius:999px;transition:color .2s,border-color .2s;user-select:none}
+.prod-menu>summary::-webkit-details-marker{display:none}
+.prod-menu>summary:hover,.prod-menu[open]>summary{color:var(--ink);border-color:var(--ink)}
+.prod-menu>summary:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.prod-menu .chev{transition:transform .25s var(--ease)}
+.prod-menu[open] .chev{transform:rotate(180deg)}
+.prod-pop{position:absolute;right:0;top:calc(100% + 10px);z-index:60;width:min(320px,calc(100vw - 2*var(--pad)));display:grid;gap:2px;padding:8px;background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:0 20px 50px -12px rgba(13,20,36,.22)}
+.prod-menu[open] .prod-pop{animation:prodIn .22s var(--ease)}
+@keyframes prodIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.prod-pop a{display:grid;gap:2px;padding:10px 12px;border-radius:10px;transition:background .15s}
+.prod-pop a:hover,.prod-pop a:focus-visible{background:var(--paper-2);outline:none}
+.prod-pop b{display:flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--ink)}
+.prod-pop small{font-size:12.5px;line-height:1.4;color:var(--muted)}
+.prod-pop a[aria-current] b{color:var(--signal)}
+.prod-here{font-size:10.5px;font-weight:400;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:560px){.prod-menu>summary{padding:8px 11px;font-size:13px}}
+@media (max-width:560px){.lang{white-space:nowrap;padding:8px 10px}.prod-pop{position:fixed;left:var(--pad);right:var(--pad);top:64px;width:auto}}
+@media (max-width:400px){.nav .brand-sub{display:none}}

@@ -14,6 +14,13 @@
     setLang(html.getAttribute('data-lang') === 'tr' ? 'en' : 'tr');
   });
 
+  /* ---------- Ürünler menüsü: dışarı tıklayınca / Esc ile kapan ---------- */
+  var pm = d.querySelector('.prod-menu');
+  if (pm) {
+    d.addEventListener('click', function (e) { if (pm.open && !pm.contains(e.target)) pm.open = false; });
+    d.addEventListener('keydown', function (e) { if (e.key === 'Escape' && pm.open) { pm.open = false; pm.querySelector('summary').focus(); } });
+  }
+
   /* ---------- live TOTP (RFC 6238 test key, SHA-1, 6 digits, 30 s) ---------- */
   var codeEls = d.querySelectorAll('[data-code]'), secEls = d.querySelectorAll('[data-secs]'), bars = d.querySelectorAll('[data-bar]');
   var keyP = (window.crypto && crypto.subtle) ? crypto.subtle.importKey('raw', new TextEncoder().encode('12345678901234567890'), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']) : null;
