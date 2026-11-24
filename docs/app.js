@@ -26,6 +26,10 @@
   var qn = d.getElementById('qn'), qb = d.getElementById('qn-btn');
   function qOpen(v) { qn.classList.toggle('open', v); qb.setAttribute('aria-expanded', v ? 'true' : 'false'); }
   qb.addEventListener('click', function (e) { e.stopPropagation(); qOpen(!qn.classList.contains('open')); });
+
+  /* pusula: sayfanın ne kadarı okundu (axon ile aynı) */
+  var qring = d.getElementById('qn-ring');
+  if (qring) { var qrs = function () { var m = d.documentElement.scrollHeight - innerHeight; qring.style.strokeDashoffset = (144.5 * (1 - Math.min(1, (window.scrollY || 0) / Math.max(1, m)))).toFixed(1); }; addEventListener('scroll', qrs, { passive: true }); addEventListener('resize', qrs); qrs(); }
   d.addEventListener('click', function () { qOpen(false); });
   d.addEventListener('keydown', function (e) { if (e.key === 'Escape') qOpen(false); });
   qn.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function () { qOpen(false); }); });

@@ -262,3 +262,9 @@ html.js:not(.rm) .layer{transform:none}
 
 /* 2026-11-24 mobil: yatay taşma güvenliği (animasyon başlangıç durumları dahil) */
 main{overflow-x:clip}
+
+/* pusula ilerleme halkası (axon ile aynı) */
+.qn-btn{position:relative}
+.qn-btn svg.qn-ring{position:absolute;top:-1px;left:-1px;width:calc(100% + 2px);height:calc(100% + 2px);transform:rotate(-90deg);pointer-events:none}
+.qn-ring circle{fill:none;stroke:var(--signal);stroke-width:2;stroke-dasharray:144.5;stroke-dashoffset:144.5;transition:stroke-dashoffset .12s linear}
+@media (prefers-reduced-motion:reduce){.qn-ring circle{transition:none}}
